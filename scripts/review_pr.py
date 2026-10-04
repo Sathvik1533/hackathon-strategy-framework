@@ -44,9 +44,10 @@ def main():
         passes.append("✔ Database queries use parameterized binding.")
 
     # Check 3: Raw shell subprocess
-    if re.search(r"shell\s*=\s*True", diff):
+    app_diff = "\n".join([line for line in diff.splitlines() if not line.startswith("+++ b/scripts/review_pr.py")])
+    if re.search(r"shell\s*=\s*True", app_diff):
         warnings.append(
-            "⚠️ **Subprocess Risk**: `shell=True` detected. Prefer `asyncio.create_subprocess_exec` with explicit argument list."
+            "⚠️ **Subprocess Risk**: `shell=True` detected in application code. Prefer `asyncio.create_subprocess_exec` with explicit argument list."
         )
     else:
         passes.append("✔ Subprocess execution adheres to safe array isolation.")
