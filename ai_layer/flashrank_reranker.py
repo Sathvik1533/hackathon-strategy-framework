@@ -1,16 +1,16 @@
-from typing import List, Dict, Any
+from typing import Any
 
 try:
     from flashrank import Ranker, RerankRequest
+
     ranker = Ranker(model_name="ms-marco-TinyBERT-L-2-v2", cache_dir="/tmp/flashrank")
 except Exception:
     ranker = None
 
+
 def rerank_candidate_chunks(
-    query: str,
-    raw_candidates: List[Dict[str, Any]],
-    top_n: int = 5
-) -> List[Dict[str, Any]]:
+    query: str, raw_candidates: list[dict[str, Any]], top_n: int = 5
+) -> list[dict[str, Any]]:
     """
     Stage 2 Neural Reranker: Takes top 25 broad candidates from pgvector,
     computes cross-attention, and returns top 5 high-precision chunks.
@@ -31,7 +31,7 @@ def rerank_candidate_chunks(
             "id": r["id"],
             "title": r.get("meta", {}).get("title", ""),
             "content": r["text"],
-            "rerank_score": round(float(r["score"]), 4)
+            "rerank_score": round(float(r["score"]), 4),
         }
         for r in results[:top_n]
     ]

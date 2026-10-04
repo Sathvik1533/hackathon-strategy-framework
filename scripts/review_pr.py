@@ -1,13 +1,15 @@
+import re
 import subprocess
 import sys
-import re
+
 
 def run_cmd(cmd: str) -> str:
     try:
         res = subprocess.run(cmd, shell=True, capture_output=True, text=True)
         return res.stdout.strip()
-    except Exception as e:
+    except Exception:
         return ""
+
 
 def main():
     print("## 🤖 Automated PR Reviewer Agent Report")
@@ -22,26 +24,36 @@ def main():
     passes = []
 
     # Check 1: Hardcoded API keys / Secrets
-    if re.search(r'(sk-[a-zA-Z0-9]{32,}|ghp_[a-zA-Z0-9]{36,}|password\s*=\s*["\'][^"\']+["\'])', diff, re.I):
-        issues.append("🚨 **Hardcoded Secret Detected**: Potential raw API key or password found in diff. Use `.env`.")
+    if re.search(
+        r'(sk-[a-zA-Z0-9]{32,}|ghp_[a-zA-Z0-9]{36,}|password\s*=\s*["\'][^"\']+["\'])',
+        diff,
+        re.IGNORECASE,
+    ):
+        issues.append(
+            "🚨 **Hardcoded Secret Detected**: Potential raw API key or password found in diff. Use `.env`."
+        )
     else:
         passes.append("✔ No exposed hardcoded API keys detected.")
 
     # Check 2: Unsafe SQL execution
     if re.search(r'\.execute\(f["\']', diff) or re.search(r'\.execute\(\s*["\'].*%s', diff):
-        issues.append("🚨 **SQL Injection Risk**: Direct string interpolation detected in SQL statement. Use bound `:param` parameters.")
+        issues.append(
+            "🚨 **SQL Injection Risk**: Direct string interpolation detected in SQL statement. Use bound `:param` parameters."
+        )
     else:
         passes.append("✔ Database queries use parameterized binding.")
 
     # Check 3: Raw shell subprocess
-    if re.search(r'shell\s*=\s*True', diff):
-        warnings.append("⚠️ **Subprocess Risk**: `shell=True` detected. Prefer `asyncio.create_subprocess_exec` with explicit argument list.")
+    if re.search(r"shell\s*=\s*True", diff):
+        warnings.append(
+            "⚠️ **Subprocess Risk**: `shell=True` detected. Prefer `asyncio.create_subprocess_exec` with explicit argument list."
+        )
     else:
         passes.append("✔ Subprocess execution adheres to safe array isolation.")
 
     # Check 4: Ruff Lint Check
     ruff_check = run_cmd("ruff check .")
-    if ruff_check:
+    if ruff_check and "All checks passed" not in ruff_check:
         warnings.append(f"⚠️ **Lint Warnings Detected**:\n```\n{ruff_check[:400]}\n```")
     else:
         passes.append("✔ Ruff zero-lint errors passed.")
@@ -64,6 +76,7 @@ def main():
     else:
         print("\n### 🎉 Review Status: **APPROVED FOR MERGE**")
         print("All production standards and security guardrails satisfied.")
+
 
 if __name__ == "__main__":
     main()

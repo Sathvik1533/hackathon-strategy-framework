@@ -1,14 +1,16 @@
-from typing import List, Dict, Any
-from sqlalchemy.ext.asyncio import AsyncSession
+from typing import Any
+
 from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncSession
+
 
 async def hybrid_rrf_search(
     session: AsyncSession,
     query_text: str,
-    query_embedding: List[float],
+    query_embedding: list[float],
     limit: int = 10,
-    rrf_k: int = 60
-) -> List[Dict[str, Any]]:
+    rrf_k: int = 60,
+) -> list[dict[str, Any]]:
     """
     Executes dense vector search and sparse full-text search in PostgreSQL,
     combining rankings via Reciprocal Rank Fusion (RRF).
@@ -49,20 +51,10 @@ async def hybrid_rrf_search(
 
     result = await session.execute(
         raw_sql,
-        {
-            "vector": str(query_embedding),
-            "query": query_text,
-            "rrf_k": rrf_k,
-            "limit": limit
-        }
+        {"vector": str(query_embedding), "query": query_text, "rrf_k": rrf_k, "limit": limit},
     )
 
     return [
-        {
-            "id": row.id,
-            "title": row.title,
-            "content": row.content,
-            "score": float(row.rrf_score)
-        }
+        {"id": row.id, "title": row.title, "content": row.content, "score": float(row.rrf_score)}
         for row in result.fetchall()
     ]

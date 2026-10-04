@@ -1,9 +1,10 @@
-from fastapi import APIRouter, HTTPException, status
-from src.app.schemas.auth import UserLogin, Token, UserResponse
-from src.app.schemas.common import ResponseEnvelope
+from fastapi import APIRouter, HTTPException
 from src.app.core.security import create_access_token
+from src.app.schemas.auth import Token, UserLogin
+from src.app.schemas.common import ResponseEnvelope
 
 router = APIRouter()
+
 
 @router.post("/login", response_model=ResponseEnvelope[Token])
 async def login(credentials: UserLogin):
@@ -13,7 +14,4 @@ async def login(credentials: UserLogin):
         raise HTTPException(status_code=400, detail="Invalid email")
 
     token = create_access_token(subject=credentials.email)
-    return ResponseEnvelope(
-        data=Token(access_token=token),
-        message="Authentication successful"
-    )
+    return ResponseEnvelope(data=Token(access_token=token), message="Authentication successful")

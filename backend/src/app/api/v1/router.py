@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from src.app.api.v1.endpoints import health, auth, jobs, ai_agent
+from src.app.api.v1.endpoints import ai_agent, auth, health, jobs
 
 api_v1_router = APIRouter()
 

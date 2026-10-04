@@ -1,14 +1,15 @@
 import os
 from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, Request, status
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from fastapi.exceptions import RequestValidationError
 from fastapi.staticfiles import StaticFiles
-
+from src.app.api.v1.router import api_v1_router
 from src.app.core.config import settings
 from src.app.core.database import engine
-from src.app.api.v1.router import api_v1_router
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -17,13 +18,14 @@ async def lifespan(app: FastAPI):
     # Shutdown actions
     await engine.dispose()
 
+
 def create_app() -> FastAPI:
     app = FastAPI(
         title=settings.PROJECT_NAME,
         version="1.0.0",
         lifespan=lifespan,
         docs_url="/docs",
-        redoc_url="/redoc"
+        redoc_url="/redoc",
     )
 
     # CORS configuration
@@ -48,9 +50,9 @@ def create_app() -> FastAPI:
                 "error": {
                     "code": "VALIDATION_ERROR",
                     "message": "Invalid request parameters",
-                    "details": exc.errors()
-                }
-            }
+                    "details": exc.errors(),
+                },
+            },
         )
 
     @app.exception_handler(Exception)
@@ -61,16 +63,19 @@ def create_app() -> FastAPI:
                 "success": False,
                 "error": {
                     "code": "INTERNAL_SERVER_ERROR",
-                    "message": "An unexpected server error occurred."
-                }
-            }
+                    "message": "An unexpected server error occurred.",
+                },
+            },
         )
 
     # Mount frontend static directory if exists
-    frontend_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), "frontend")
+    frontend_dir = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), "frontend"
+    )
     if os.path.exists(frontend_dir):
         app.mount("/", StaticFiles(directory=frontend_dir, html=True), name="frontend")
 
     return app
+
 
 app = create_app()

@@ -1,8 +1,11 @@
 import operator
-from typing import Annotated, Sequence, TypedDict, Literal
-from langchain_core.messages import BaseMessage, HumanMessage, AIMessage
+from collections.abc import Sequence
+from typing import Annotated, Literal, TypedDict
+
+from langchain_core.messages import AIMessage, BaseMessage
 from langchain_openai import ChatOpenAI
-from langgraph.graph import StateGraph, END, START
+from langgraph.graph import END, START, StateGraph
+
 
 class AgentState(TypedDict):
     messages: Annotated[Sequence[BaseMessage], operator.add]
@@ -10,6 +13,7 @@ class AgentState(TypedDict):
     requires_human_approval: bool
     risk_level: Literal["low", "medium", "high"]
     artifacts: dict
+
 
 class Supervisor:
     def __init__(self):
@@ -35,20 +39,26 @@ class Supervisor:
 
         return {"next_node": next_step}
 
+
 async def researcher_node(state: AgentState):
     return {
-        "messages": [AIMessage(content="[Researcher]: Extracted relevant facts from vector context.")],
-        "risk_level": "low"
+        "messages": [
+            AIMessage(content="[Researcher]: Extracted relevant facts from vector context.")
+        ],
+        "risk_level": "low",
     }
+
 
 async def action_worker_node(state: AgentState):
     return {
         "messages": [AIMessage(content="[ActionWorker]: Executed isolated FastMCP tool call.")],
-        "risk_level": "low"
+        "risk_level": "low",
     }
+
 
 async def human_gate_node(state: AgentState):
     return {"requires_human_approval": False}
+
 
 def build_supervisor_graph(checkpointer=None):
     workflow = StateGraph(AgentState)
@@ -73,8 +83,8 @@ def build_supervisor_graph(checkpointer=None):
             "researcher": "researcher",
             "action_worker": "action_worker",
             "human_gate": "human_gate",
-            END: END
-        }
+            END: END,
+        },
     )
 
     workflow.add_edge("researcher", "supervisor")
@@ -83,5 +93,5 @@ def build_supervisor_graph(checkpointer=None):
 
     return workflow.compile(
         checkpointer=checkpointer,
-        interrupt_before=["human_gate"]  # Halts before sensitive actions
+        interrupt_before=["human_gate"],  # Halts before sensitive actions
     )
