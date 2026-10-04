@@ -1,0 +1,80 @@
+version: "3.8"
+
+services:
+  # 1. Primary FastAPI API Service
+  api:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile
+    container_name: hsf_api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres_secret@postgres:5432/hackathon_db
+      - REDIS_URL=redis://redis:6379/0
+      - MCP_SERVER_URL=http://mcp_server:8001/sse
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - hsf_internal_network
+
+  # 2. FastMCP SSE Tool Server
+  mcp_server:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile
+    container_name: hsf_mcp_server
+    command: python ai_layer/fastmcp_server.py
+    ports:
+      - "8001:8001"
+    environment:
+      - MCP_TRANSPORT=sse
+    networks:
+      - hsf_internal_network
+
+  # 3. PostgreSQL Database with pgvector Extension
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: hsf_postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres_secret
+      - POSTGRES_DB=hackathon_db
+    volumes:
+      - hsf_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - hsf_internal_network
+
+  # 4. Redis for Task Queues & Sub-10ms Semantic Caching
+  redis:
+    image: redis:7-alpine
+    container_name: hsf_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - hsf_redisdata:/data
+    networks:
+      - hsf_internal_network
+
+networks:
+  hsf_internal_network:
+    driver: bridge
+
+volumes:
+  hsf_pgdata:
+  hsf_redisdata:

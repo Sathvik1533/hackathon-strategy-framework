@@ -1,0 +1,29 @@
+{
+  "name": "hackathon-strategy-framework",
+  "version": "1.0.0",
+  "description": "Production-grade hackathon acceleration framework and pre-ready template ecosystem for Agentic AI, FastAPI, LangGraph, pgvector, and cloud deployments.",
+  "main": "bin/cli.js",
+  "bin": {
+    "hackathon-framework": "./bin/cli.js",
+    "hsf": "./bin/cli.js"
+  },
+  "scripts": {
+    "start": "node bin/cli.js init",
+    "init": "node bin/cli.js init",
+    "pitch": "node bin/cli.js pitch",
+    "eval": "node bin/cli.js eval",
+    "review": "node bin/cli.js review"
+  },
+  "keywords": [
+    "hackathon",
+    "agentic-ai",
+    "langgraph",
+    "fastapi",
+    "pgvector",
+    "mcp",
+    "docker",
+    "marp"
+  ],
+  "author": "Sathvik1533",
+  "license": "MIT"
+}
