@@ -3,10 +3,9 @@ import json
 import uuid
 from collections.abc import AsyncGenerator
 
-import redis.asyncio as aioredis
-from src.app.core.config import settings
+from src.app.core.redis import get_redis_client
 
-redis_client = aioredis.from_url(settings.REDIS_URL, decode_responses=True)
+redis_client = get_redis_client()
 
 
 class JobService:

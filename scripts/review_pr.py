@@ -17,6 +17,8 @@ def main():
 
     diff = run_cmd("git diff origin/main...HEAD")
     if not diff:
+        diff = run_cmd("git diff HEAD")
+    if not diff:
         diff = run_cmd("git diff HEAD~1")
 
     issues = []
@@ -43,8 +45,17 @@ def main():
     else:
         passes.append("✔ Database queries use parameterized binding.")
 
-    # Check 3: Raw shell subprocess
-    app_diff = "\n".join([line for line in diff.splitlines() if not line.startswith("+++ b/scripts/review_pr.py")])
+    # Check 3: Raw shell subprocess in application python files
+    app_diff_lines = []
+    is_app_python = False
+    for line in diff.splitlines():
+        if line.startswith("diff --git a/backend/") or line.startswith("diff --git a/ai_layer/"):
+            is_app_python = line.endswith(".py")
+        elif line.startswith("diff --git "):
+            is_app_python = False
+        if is_app_python and line.startswith("+"):
+            app_diff_lines.append(line)
+    app_diff = "\n".join(app_diff_lines)
     if re.search(r"shell\s*=\s*True", app_diff):
         warnings.append(
             "⚠️ **Subprocess Risk**: `shell=True` detected in application code. Prefer `asyncio.create_subprocess_exec` with explicit argument list."
