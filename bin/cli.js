@@ -262,15 +262,50 @@ switch (command) {
     });
     break;
 
+  case 'start':
+  case 'wizard':
+    banner();
+    run('python3 scripts/quickstart_wizard.py', 'Launching Teammate Quickstart Wizard');
+    break;
+
+  case 'rehearse':
+    banner();
+    {
+      const isQuick = process.argv.includes('--quick');
+      const testDemo = process.argv.includes('--test-demo');
+      const extraArgs = [isQuick ? '--quick' : '', testDemo ? '--test-demo' : ''].filter(Boolean).join(' ');
+      run(`python3 scripts/pitch_rehearsal.py ${extraArgs}`.trim(), 'Starting 6-Minute Pitch Rehearsal Simulator');
+    }
+    break;
+
+  case 'certify':
+    banner();
+    run('python3 scripts/generate_judge_report.py', 'Compiling Judge Audit & Certification Report');
+    break;
+
+  case 'cheat':
+    banner();
+    console.log(`\x1b[36m📋 Displaying Teammate Quick-Start Cheat Sheet...\x1b[0m\n`);
+    if (fs.existsSync('docs/TEAMMATE_CHEAT_SHEET.md')) {
+      console.log(fs.readFileSync('docs/TEAMMATE_CHEAT_SHEET.md', 'utf8'));
+    } else {
+      console.log('Cheat sheet available at docs/TEAMMATE_CHEAT_SHEET.md');
+    }
+    break;
+
   case 'help':
   default:
     banner();
     console.log(`
 \x1b[1mAvailable Commands:\x1b[0m
+  \x1b[33mhsf wizard\x1b[0m      - 60-second interactive onboarding wizard (assigns role, branch & Autobot)
+  \x1b[33mhsf cheat\x1b[0m       - View teammate pocket cheat sheet (roles, files to edit, test commands)
   \x1b[33mhsf init\x1b[0m        - Bootstrap .env, launch Docker multi-service stack, and seed DB
   \x1b[33mhsf strategize\x1b[0m  - Activate Orbit Mascot Agent to deconstruct problem & generate prompts
   \x1b[33mhsf onboard\x1b[0m     - Launch interactive Senior Orbit onboarding wizard for teammate
   \x1b[33mhsf squad\x1b[0m       - Deploy Transformers Robot Squad (1-6+ members) & 5-layer Features Menu
+  \x1b[33mhsf rehearse\x1b[0m    - Run 6-minute live stage presentation rehearsal simulator
+  \x1b[33mhsf certify\x1b[0m     - Generate formal judge verification & benchmark audit certificate
   \x1b[33mhsf gaps\x1b[0m        - Inspect 5. What Else Are You Missing? The Hackathon Victory Gap Analysis
   \x1b[33mhsf skill\x1b[0m       - List skills or dynamically fetch external skill: hsf skill fetch <name>
   \x1b[33mhsf memory\x1b[0m      - Inspect developer telemetry stream, learned bottlenecks & health index
@@ -286,8 +321,8 @@ switch (command) {
   1. git clone https://github.com/Sathvik1533/hackathon-strategy-framework.git
   2. cd hackathon-strategy-framework
   3. ./init.sh
-  4. hsf strategize "Your Hackathon Problem Statement"
-  5. hsf onboard  (or open http://localhost:8000 and click Senior Orbit in bottom-right)
+  4. npx hsf wizard (or python3 scripts/quickstart_wizard.py)
+  5. npx hsf cheat  (view your exact files and test commands)
     `);
     break;
 }

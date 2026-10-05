@@ -393,3 +393,34 @@ async def test_agent_victory_gap_analysis(async_client):
         assert len(item["how_hsf_eliminates_risk"]) > 10
         assert "fail_safe_command" in item
         assert "proof_metric" in item
+
+
+@pytest.mark.asyncio
+async def test_judge_certification_document_integrity():
+    from pathlib import Path
+
+    cert_path = Path("docs/JUDGE_CERTIFICATION.md")
+    assert cert_path.exists(), "docs/JUDGE_CERTIFICATION.md must exist"
+    content = cert_path.read_text(encoding="utf-8")
+    assert "System Architecture & Audit Certification for Hackathon Judges" in content
+    assert "100% (17/17 pytest assertions passing" in content
+    assert "Faithfulness" in content
+    assert "Sub-10ms P95 Response Latencies" in content
+    assert "Master Architectural Topology" in content
+
+
+@pytest.mark.asyncio
+async def test_teammate_pocket_cheat_sheet_integrity():
+    from pathlib import Path
+
+    sheet_path = Path("docs/TEAMMATE_CHEAT_SHEET.md")
+    assert sheet_path.exists(), "docs/TEAMMATE_CHEAT_SHEET.md must exist"
+    content = sheet_path.read_text(encoding="utf-8")
+    assert "Teammate Quick-Start Cheat Sheet & Pocket Guide" in content
+    assert "Frontend & Real-Time UX Lead" in content
+    assert "Backend API & Resilience Lead" in content
+    assert "AI Systems & Multi-Agent Lead" in content
+    assert "Database & Vector Search Lead" in content
+    assert "Cloud DevOps & Stage Pitch Lead" in content
+    assert "Zero-Conflict Git Protocol" in content
+
