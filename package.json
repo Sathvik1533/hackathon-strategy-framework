@@ -15,7 +15,9 @@
     "review": "node bin/cli.js review",
     "diagram": "node bin/cli.js diagram",
     "archify": "node bin/cli.js archify",
-    "strategize": "node bin/cli.js strategize"
+    "strategize": "node bin/cli.js strategize",
+    "onboard": "node bin/cli.js onboard",
+    "pair": "node bin/cli.js pair"
   },
   "keywords": [
     "hackathon",

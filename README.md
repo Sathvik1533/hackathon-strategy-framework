@@ -833,6 +833,181 @@ Navigate to [http://localhost:8000](http://localhost:8000). The **Orbit Mascot S
 
 ---
 
+### 3. Senior Orbit: The Senior Principal Engineer Sitting Beside You 👓🤖
+
+Beyond high-level strategy, Orbit acts as an interactive **Senior Principal Engineer pairing partner** throughout the entire hackathon sprint. While teammates write code, Senior Orbit actively inspects their progress, warns them against architectural antipatterns, and advises what to DO and what NOT to do:
+
+* **Desktop & Web Floating Widget**: Present on all 4 frontend pages (`index.html`, `documents.html`, `analytics.html`, `connectivity.html`). Features an animated floating avatar in the bottom-right corner with live branch status, periodic speech bubble tips, and an expandable 3-tab companion drawer.
+* **Teammate Onboarding Questionnaire**: Before writing code, teammates complete a 60-second onboarding interview:
+  1. **Name**: Identifies the teammate.
+  2. **Assigned Role**: Backend API & Resilience Lead, Database & Vector Lead, AI & Multi-Agent Lead, Frontend Console Lead, or Cloud DevOps Lead.
+  3. **Active Git Branch**: e.g., `feat/backend-api`, `feat/database-rls`, `feat/ai-supervisor`, `feat/frontend-console`, `feat/devops-cloud`.
+  4. **Agentic AI IDE**: Google Antigravity, Anthropic Claude Code, Cursor AI, Windsurf AI, or Hero Agent.
+  5. **Knowledge Level**: Beginner, Intermediate, Advanced, or Senior Specialist.
+  6. **Contribution Goal**: What specific deliverable the teammate aims to build.
+  7. **Groq API Key (Optional)**: If provided, unlocks ultra-fast live conversational senior engineering reasoning and code critique powered by Groq's `llama-3.3-70b-versatile` model. (If omitted, Orbit operates deterministically with zero latency using our built-in Senior Knowledge Base).
+* **Branch-Aware Senior Desk**: Orbit observes your active branch and immediately tailors guidance:
+  - **What You Must DO Right Now**: Role-specific, concrete checklist.
+  - **⚠️ What NOT To Do (Senior Guardrails)**: Critical anti-patterns (no blocking calls in async def, no raw SQL concatenation, no infinite while loops, no untyped dict returns).
+  - **Ask Senior Orbit**: Paste questions or code snippets for instant review and vulnerability detection.
+  - **1-Click Copy AI IDE Prompt**: Tailored for your specific AI IDE with branch rules embedded.
+* **CLI Companion (`hsf pair` & `hsf onboard`)**:
+  ```bash
+  # Launch the interactive terminal onboarding wizard:
+  hsf onboard
+
+  # View Senior Orbit Principal Engineer Desk for your active git branch:
+  hsf pair
+
+  # Ask Senior Orbit a technical question or submit code for review:
+  hsf pair "f'SELECT * FROM users WHERE id = {user_id}'"
+  ```
+
+---
+
+## 🧠 Software Design Pattern Decision Matrix (Parent Agent)
+
+The Parent Agent (`HSFMascotAgent`) evaluates the announced problem statement at Hour 0 and deterministically selects the optimal **Software Design Pattern** under strict 24-hour hackathon constraints:
+
+```mermaid
+flowchart TD
+    Problem["Hackathon Problem Statement"] --> Classifier{"Parent Agent Decision Engine"}
+    Classifier -->|High-throughput / Telemetry / IoT / Real-Time| EDA["Event-Driven Architecture (EDA)<br/>Redis Streams + CQRS Light"]
+    Classifier -->|Multi-Agent Tools / Regulatory / Clinical| Hexagonal["Modular Monolith + Hexagonal Ports & Adapters<br/>FastMCP Tool Isolation (Port 8001)"]
+    Classifier -->|Default Enterprise / Document RAG / B2B SaaS| ModMono["Modular Monolith + Async Worker Mesh<br/>(Redis Pub/Sub Background Workers)"]
+
+    EDA --> Rollout["Role Delegation & Layer Scaffolding"]
+    Hexagonal --> Rollout
+    ModMono --> Rollout
+```
+
+### 1. Comparative Architectural Matrix
+
+| Architectural Pattern | When Parent Agent Selects It | Core Benefits | Why NOT Alternative in 24h? |
+| :--- | :--- | :--- | :--- |
+| **Modular Monolith + Event-Driven Workers (Default Gold Standard)** | Standard B2B SaaS, document intelligence, RAG search, analytics platforms. | Unified codebase velocity; zero network serialization overhead; async Redis worker queues prevent event-loop stalls. | **Why NOT Microservices?** Microservices require multiple Dockerfiles, API gateway configs, and distributed tracing. Teams lose 12 hours debugging container networking. |
+| **Event-Driven Architecture (EDA) + CQRS Light** | High-ingestion telemetry, drone fleets, IoT sensors, live fraud detection, financial tickers. | Sub-5ms command acknowledgment; command writes decoupled from read queries; Redis SETNX idempotency mutex. | **Why NOT Simple Monolith?** Naive monolithic synchronous handlers block the asyncio loop during heavy AI ingestion, causing HTTP 504 Gateway Timeouts. |
+| **Hexagonal Ports & Adapters + FastMCP Isolation** | Complex multi-agent coordination, clinical healthcare, legal compliance, untrusted tool execution. | Domain core completely decoupled from LLM inference providers; FastMCP tools run in an isolated subprocess on port 8001. | **Why NOT Distributed Agent Microservices?** Version divergence between agent repos leads to incompatible payload schemas during last-minute merges. |
+
+### 2. The 5 Fatal Microservice Traps in a 24-Hour Hackathon
+1. **The Cross-Container Network Latency Trap**: Every REST or gRPC hop between 5 microservices adds 20-50ms latency. An agent workflow executing 10 tool hops accumulates 500ms+ in pure transport overhead.
+2. **The Distributed Transaction Hell**: When an operation touches user auth, billing, and vector embeddings across separate databases, two-phase commits (2PC) or Sagas are required. In a 24h hackathon, data inevitably falls out of sync.
+3. **The Docker Compose Networking Quagmire**: Multiple microservice containers require complex DNS aliases, CORS headers, port forwarding, and health check dependency chains (`depends_on`). One misconfigured environment variable breaks the entire application.
+4. **The Deployment Pipeline Drag**: Deploying 5 microservices to AWS requires 5 ECR repositories, 5 ECS task definitions, and multiple Application Load Balancer target groups.
+5. **The Merge Conflict Nightmare**: When 5 teammates work in separate microservice repositories, nobody tests the end-to-end integration until Hour 22. Incompatibilities discovered at Hour 23 are impossible to fix.
+
+---
+
+## 🗂️ Full Project Directory Anatomy & Rules
+
+The HSF repository follows a strict, high-discipline directory structure. Every directory has an explicit purpose, allowed contents, and strictly forbidden anti-patterns:
+
+```
+hackathon-strategy-framework/
+├── frontend/              # High-Density Vanilla SPA & Real-Time Console
+│   ├── index.html         # Agent Execution Console & Orbit Mascot Panel
+│   ├── documents.html     # Document Vault & pgvector Hybrid Search UI
+│   ├── analytics.html     # System Telemetry & Circuit Breaker Status UI
+│   ├── connectivity.html  # Inter-Layer Connectivity Topology & Network Map
+│   ├── style.css          # Design Tokens (Plus Jakarta Sans + JetBrains Mono)
+│   ├── app.js             # SSE EventSource listener & job lifecycle manager
+│   ├── orbit-widget.js    # Senior Orbit Floating Mascot Companion & Onboarding
+│   └── orbit-widget.css   # Mascot Glassmorphism & Desktop Widget Styles
+├── backend/               # Asynchronous API Layer (FastAPI 0.115+)
+│   ├── src/app/
+│   │   ├── api/v1/        # Layered REST Routers & SSE Stream Endpoints
+│   │   ├── core/          # Invariant Ports: Database, Redis Pool, Resilience
+│   │   ├── models/        # SQLAlchemy 2.0 Async PostgreSQL Models
+│   │   ├── schemas/       # Pydantic v2 Request/Response Envelopes
+│   │   └── services/      # Domain Logic Handlers & Redis Job Dispatcher
+│   └── tests/             # Pytest Async Test Suite (11/11 Verified Passing)
+├── database/              # PostgreSQL 16 ACID Core & Vector Store
+│   ├── supabase_rls.sql   # Supabase Row-Level Security Policies (auth.uid())
+│   ├── migrations/        # Alembic Migration Scripts
+│   └── seed_data.py       # Instant 3-Second Synthetic Vector & Entity Seeder
+├── ai_layer/              # Multi-Agent Orchestration & RAG Pipeline
+│   ├── mascot_agent.py    # Orbit Strategy & Senior Engineer Decision Engine
+│   ├── langgraph_supervisor.py # Cyclic Multi-Agent StateGraph with Human Gate
+│   ├── fastmcp_server.py  # Isolated FastMCP SSE Tool Server (Port 8001)
+│   ├── hybrid_retriever.py# Dense pgvector + Sparse BM25 Fusion (RRF k=60)
+│   ├── flashrank_reranker.py # Ultra-Fast Cross-Encoder Neural Reranker (<20ms)
+│   └── eval_harness.py    # RAGAS Golden Dataset Evaluation Harness
+├── infra/                 # Containerization & Cloud Deployment
+│   ├── Dockerfile         # Multi-Stage Minimal Build (<180MB, Non-Root appuser)
+│   ├── docker-compose.yml # Local 4-Service Network (API, Postgres, Redis, FastMCP)
+│   ├── aws-architecture.md# AWS Production Architecture Specification
+│   ├── aws-ecs-task-definition.json # Serverless ECS Fargate Task Definition
+│   └── deploy_aws.sh      # Automated Cloud Deployment Script
+├── pitch/                 # Presentation Engine & Fail-Safe Demo
+│   ├── pitch.marp.md      # Marp Code-Rendered 6-Minute Pitch Deck
+│   ├── presentation.html  # Interactive HTML Slide Deck (Self-Contained)
+│   ├── demo.sh            # Live Terminal Stage Backup Runner (Offline-Ready)
+│   └── generate_pitch.sh  # Automated Slide Compilation Pipeline
+├── scripts/               # Automation & Reviewer Utilities
+│   ├── mascot_agent.py    # Standalone CLI Strategy Decomposer
+│   ├── senior_companion.py# CLI Senior Engineer Companion & Branch Watcher
+│   └── review_pr.py       # Local PR Reviewer Agent & Security Scanner
+├── docs/                  # OpenAPI Specs & Team Guides
+│   ├── openapi.json       # OpenAPI 3.1 Specification Contract
+│   ├── team-advantages-guide.md # Complete Kickoff & Competitor Moat Playbook
+│   └── architecture/      # Interactive Archify SVG Topologies
+└── bin/cli.js             # Unified Developer CLI (`hsf` command)
+```
+
+### Granular Directory Responsibilities & Anti-Pattern Rules:
+
+#### 1. `frontend/` (Vanilla SPA & Real-Time Console)
+* **What Belongs Here**: High-density HTML views, scoped CSS stylesheets, native JavaScript event handlers, SSE `EventSource` listeners, and the Senior Orbit companion widget.
+* **Allowed Files**: `index.html`, `documents.html`, `analytics.html`, `connectivity.html`, `style.css`, `app.js`, `orbit-widget.js`, `orbit-widget.css`.
+* **🚫 Forbidden Anti-Patterns**:
+  - NEVER introduce a heavy build system (e.g. create-react-app, Vite, Next.js) midway through the sprint. It inflates Docker build time from 30s to 12 minutes and risks container breakage.
+  - NEVER poll backend endpoints with `setInterval()` when SSE is already streaming on `/api/v1/jobs/{id}/stream`.
+  - NEVER hardcode API keys or secret tokens in client-side JavaScript.
+
+#### 2. `backend/` (FastAPI 0.115+ Asynchronous Engine)
+* **What Belongs Here**:
+  - `src/app/api/v1/endpoints/`: Thin, asynchronous REST route handlers.
+  - `src/app/core/`: Invariant infrastructure ports (database session generators, Redis connection pools, CircuitBreaker decorators).
+  - `src/app/models/`: Declarative SQLAlchemy 2.0 ORM models.
+  - `src/app/schemas/`: Typed Pydantic v2 validation models and `ResponseEnvelope[T]`.
+  - `src/app/services/`: Pure business logic and background job dispatchers.
+  - `tests/`: Asynchronous unit and integration test suite (`pytest`).
+* **🚫 Forbidden Anti-Patterns**:
+  - NEVER use synchronous blocking functions (`requests.get()`, `time.sleep()`, synchronous file I/O) inside `async def` routes.
+  - NEVER return raw untyped Python dictionaries (`dict`). Always use Pydantic models.
+  - NEVER put database query logic or LLM prompts directly inside route handlers (keep handlers thin; delegate to services).
+
+#### 3. `database/` (PostgreSQL 16 ACID Core & Vector Storage)
+* **What Belongs Here**: Supabase Row-Level Security policy definitions (`supabase_rls.sql`), Alembic database schema migrations, and fast synthetic data seeders (`seed_data.py`).
+* **🚫 Forbidden Anti-Patterns**:
+  - NEVER concatenate raw user input into SQL queries (prevents SQL injection).
+  - NEVER disable Supabase Row-Level Security or create permissive `USING (true)` policies.
+  - NEVER store files or binary blobs $>100\text{KB}$ in database columns. Store in S3 and reference the URI.
+  - NEVER use SQLite for a vector hackathon demo.
+
+#### 4. `ai_layer/` (Multi-Agent StateGraph & RAG Retrieval)
+* **What Belongs Here**: LangGraph cyclic state machine supervisor (`langgraph_supervisor.py`), FastMCP isolated tool server (`fastmcp_server.py`), dense + sparse hybrid retriever (`hybrid_retriever.py`), FlashRank neural cross-encoder reranker (`flashrank_reranker.py`), and RAGAS eval harness (`eval_harness.py`).
+* **🚫 Forbidden Anti-Patterns**:
+  - NEVER write unbounded recursive `while True:` loops that call external LLM APIs.
+  - NEVER execute untrusted shell scripts or web scrapers in the primary FastAPI API process thread.
+  - NEVER rely solely on naive cosine distance vector search (always fuse with BM25 keyword matching via RRF).
+  - NEVER allow an AI agent to execute irreversible actions without a human approval gate (`interrupt_before=["human_gate"]`).
+
+#### 5. `infra/` (Containerization & AWS Fargate Cloud)
+* **What Belongs Here**: Multi-stage minimal `Dockerfile` (<180MB), multi-service `docker-compose.yml`, AWS ECS task definition JSON, and cloud deployment scripts (`deploy_aws.sh`).
+* **🚫 Forbidden Anti-Patterns**:
+  - NEVER run Docker containers as the `root` user in production. Always run as non-root `appuser`.
+  - NEVER copy `.env` files with live production secrets into Docker image layers.
+  - NEVER expose unauthenticated Redis or Postgres ports to the public internet (`0.0.0.0/0`).
+
+#### 6. `pitch/` (Presentation Engine & Fail-Safe Stage Demo)
+* **What Belongs Here**: Marp presentation slide source (`pitch.marp.md`), compiled self-contained HTML slides (`presentation.html`), PDF exports, and the live terminal backup runner (`demo.sh`).
+* **🚫 Forbidden Anti-Patterns**:
+  - NEVER wait until Hour 23 to write your pitch deck. Draft slides at Hour 6 and iterate.
+  - NEVER rely solely on live conference stage Wi-Fi without testing the local terminal fail-safe runner `bash pitch/demo.sh`.
+
+---
+
 ## 🚀 End-to-End Execution Guide: From Problem Drop (Hour 0) to Winning Pitch (Hour 24)
 
 This master timeline details how a 5-person squad executes flawlessly across the 24-hour sprint:

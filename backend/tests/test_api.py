@@ -103,3 +103,67 @@ async def test_agent_strategize(async_client):
     assert "Orbit" in data["data"]["mascot_name"]
     assert "teammate_prompts" in data["data"]
     assert "tech_stack_mapping" in data["data"]
+    assert "software_design_pattern" in data["data"]
+
+
+@pytest.mark.asyncio
+async def test_agent_onboard(async_client):
+    res = await async_client.post(
+        "/api/v1/agent/onboard",
+        json={
+            "name": "Sarah",
+            "role": "Backend API & Resilience Lead",
+            "contribution_goal": "Build async streaming SSE routes",
+            "knowledge_level": "Intermediate",
+            "ai_ide": "Antigravity",
+            "active_branch": "feat/backend-api",
+            "problem_statement": "Autonomous Logistics Dispatch",
+        },
+    )
+    assert res.status_code == 200
+    data = res.json()
+    assert data["success"] is True
+    assert "Sarah" in data["data"]["welcome_message"]
+    assert "senior_guidance" in data["data"]
+    assert len(data["data"]["senior_guidance"]["immediate_actions_what_to_do"]) > 0
+    assert len(data["data"]["senior_guidance"]["critical_guardrails_what_not_to_do"]) > 0
+    assert "customized_ai_ide_prompt" in data["data"]
+
+
+@pytest.mark.asyncio
+async def test_agent_senior_advice(async_client):
+    res = await async_client.post(
+        "/api/v1/agent/senior-advice",
+        json={
+            "name": "David",
+            "role": "Database & Vector Search Lead",
+            "active_branch": "feat/database-rls",
+            "contribution_goal": "Setup pgvector HNSW index",
+            "knowledge_level": "Intermediate",
+            "ai_ide": "Cursor",
+            "query": "Should I use raw SQL or SQLAlchemy models?",
+            "code_snippet": "f'SELECT * FROM docs WHERE user = {name}'",
+        },
+    )
+    assert res.status_code == 200
+    data = res.json()
+    assert data["success"] is True
+    assert "advice" in data["data"]
+    assert "code_critique" in data["data"]
+    assert "SQL INJECTION RISK" in data["data"]["code_critique"]
+    assert len(data["data"]["what_not_to_do"]) > 0
+
+
+@pytest.mark.asyncio
+async def test_agent_pattern_decision(async_client):
+    res = await async_client.post(
+        "/api/v1/agent/pattern-decision",
+        json={"problem_statement": "Real-time IoT drone fleet collision avoidance telemetry"},
+    )
+    assert res.status_code == 200
+    data = res.json()
+    assert data["success"] is True
+    assert "Event-Driven" in data["data"]["pattern_name"]
+    assert "why_chosen" in data["data"]
+    assert "why_not_microservices" in data["data"]
+    assert "folder_anatomy_implications" in data["data"]

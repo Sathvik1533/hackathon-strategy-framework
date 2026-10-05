@@ -120,6 +120,24 @@ switch (command) {
     }
     break;
 
+  case 'onboard':
+    banner();
+    run('python3 scripts/senior_companion.py --onboard', 'Launching Senior Orbit Onboarding Wizard');
+    break;
+
+  case 'pair':
+  case 'senior':
+    banner();
+    {
+      const query = process.argv.slice(3).join(' ');
+      if (query) {
+        run(`python3 scripts/senior_companion.py --ask "${query.replace(/"/g, '\\"')}"`, 'Consulting Senior Orbit');
+      } else {
+        run('python3 scripts/senior_companion.py', 'Opening Senior Orbit Principal Engineer Desk');
+      }
+    }
+    break;
+
   case 'help':
   default:
     banner();
@@ -127,6 +145,8 @@ switch (command) {
 \x1b[1mAvailable Commands:\x1b[0m
   \x1b[33mhsf init\x1b[0m        - Bootstrap .env, launch Docker multi-service stack, and seed DB
   \x1b[33mhsf strategize\x1b[0m  - Activate Orbit Mascot Agent to deconstruct problem & generate prompts
+  \x1b[33mhsf onboard\x1b[0m     - Launch interactive Senior Orbit onboarding wizard for teammate
+  \x1b[33mhsf pair\x1b[0m        - Pair with Senior Orbit on your active branch (or ask question: hsf pair "query")
   \x1b[33mhsf pitch\x1b[0m       - Compile Marp Markdown into interactive HTML/PDF pitch slides
   \x1b[33mhsf demo\x1b[0m        - Run animated terminal cURL demo (stage backup if UI lags)
   \x1b[33mhsf eval\x1b[0m        - Run RAGAS 25-case golden dataset accuracy & faithfulness tests
@@ -138,6 +158,7 @@ switch (command) {
   2. cd hackathon-strategy-framework
   3. ./init.sh
   4. hsf strategize "Your Hackathon Problem Statement"
+  5. hsf onboard  (or open http://localhost:8000 and click Senior Orbit in bottom-right)
     `);
     break;
 }
