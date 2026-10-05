@@ -401,24 +401,28 @@ export function RobotSquadOrchestrator() {
             <div className="space-y-3">
               <h4 className="text-sm font-bold text-white">AI & Multi-Agent Cognitive Weaponsmith (Wheeljack)</h4>
               <p className="text-xs text-slate-300">
-                LangGraph cyclic state machines, FastMCP tools protocol over SSE, and FlashRank neural reranking.
+                5-Pillar Autonomous Engine: A2A multi-agent supervisor graph, multi-tiered memory orchestration, hybrid RAG harness, FastMCP tool sandbox, and automated RAGAS evaluations.
               </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
                 <div className="bg-slate-900/60 p-3 rounded-lg border border-emerald-400/40">
-                  <div className="font-bold text-emerald-400">Cyclic LangGraph Supervisor</div>
-                  <div className="text-slate-400 mt-1">Deterministic state machine coordinating specialists with recursion_limit=5.</div>
+                  <div className="font-bold text-emerald-400">1. A2A Multi-Agent System</div>
+                  <div className="text-slate-400 mt-1">LangGraph cyclic StateGraph with supervisor pattern and human-in-the-loop interrupt gate.</div>
                 </div>
                 <div className="bg-slate-900/60 p-3 rounded-lg border border-emerald-400/40">
-                  <div className="font-bold text-emerald-400">FlashRank Neural Reranker</div>
-                  <div className="text-slate-400 mt-1">Sub-20ms TinyBERT cross-encoder boosting candidate precision from 25 to top 5.</div>
+                  <div className="font-bold text-emerald-400">2. Memory & State Orchestrator</div>
+                  <div className="text-slate-400 mt-1">AsyncPostgresSaver thread checkpoints + Redis session cache + persistent team telemetry traces.</div>
                 </div>
                 <div className="bg-slate-900/60 p-3 rounded-lg border border-emerald-400/40">
-                  <div className="font-bold text-emerald-400">FastMCP SSE Tool Server</div>
-                  <div className="text-slate-400 mt-1">Type-safe JSON-RPC over Server-Sent Events exposing tools to Claude and Antigravity.</div>
+                  <div className="font-bold text-emerald-400">3. Hybrid RAG & FlashRank</div>
+                  <div className="text-slate-400 mt-1">pgvector HNSW + BM25 RRF (k=60) fused with sub-20ms FlashRank TinyBERT neural cross-encoder.</div>
                 </div>
                 <div className="bg-slate-900/60 p-3 rounded-lg border border-emerald-400/40">
-                  <div className="font-bold text-emerald-400">Automated RAGAS Eval Gate</div>
-                  <div className="text-slate-400 mt-1">CI test gate enforcing faithfulness &gt;= 0.90 across golden evaluation test cases.</div>
+                  <div className="font-bold text-emerald-400">4. FastMCP Skills & Sandbox</div>
+                  <div className="text-slate-400 mt-1">Isolated Model Context Protocol SSE tool server on port 8001 with dynamic skill synthesizer.</div>
+                </div>
+                <div className="bg-slate-900/60 p-3 rounded-lg border border-emerald-400/40 md:col-span-2 lg:col-span-2">
+                  <div className="font-bold text-emerald-400">5. RAGAS Evals & Security Guardrails</div>
+                  <div className="text-slate-400 mt-1">Automated golden benchmark test suite enforcing Faithfulness &gt;= 0.90 + prompt injection guardrails.</div>
                 </div>
               </div>
             </div>

@@ -746,35 +746,74 @@ class DynamicSquadOrchestrator:
         ai_menu = LayerFeaturesMenu(
             layer_name="AI & Multi-Agent Cognitive Engine",
             executive_summary=(
-                "LangGraph stateful multi-agent supervisor graph coordinating specialist worker nodes, "
-                "FastMCP tool servers over SSE, and FlashRank neural rerankers with RAGAS evaluation."
+                "Comprehensive 5-pillar cognitive architecture: A2A multi-agent supervisor graph, "
+                "multi-tiered memory & state orchestration, hybrid RAG harness with FlashRank neural reranking, "
+                "isolated FastMCP SSE tool sandbox, and automated RAGAS evaluation harness."
             ),
             core_features=[
                 {
-                    "name": "Cyclic LangGraph Supervisor State Machine",
+                    "name": "1. A2A (Agent-to-Agent) Multi-Agent System",
+                    "pillar": "A2A Multi-Agent",
+                    "architecture": "LangGraph Cyclic StateGraph Supervisor Pattern",
                     "nodes": [
-                        "ParserNode",
-                        "RetrieverNode",
-                        "RerankerNode",
-                        "WorkerNode",
-                        "HumanGateNode",
+                        "DomainSupervisorNode (Intent Routing & Task Allocation)",
+                        "DomainSpecialistWorkerNode (Deep Business Logic Synthesis)",
+                        "ComplianceAuditorNode (Guardrail Verification)",
+                        "HumanApprovalGateNode (Explicit Pause Before Irreversible Operations)",
                     ],
-                    "description": "StateGraph with checkpointing that handles complex multi-step reasoning cycles.",
+                    "description": (
+                        "Cyclic state machine enabling autonomous agent-to-agent collaboration, "
+                        "delegation, and consensus with an interrupt_before=['human_gate'] safety gate."
+                    ),
                 },
                 {
-                    "name": "FlashRank Sub-20ms Neural Reranker",
-                    "model": "ms-marco-TinyBERT-L-2-v2",
-                    "description": "Neural cross-encoder reranking 25 retrieved candidates to top 5 in <18ms on CPU.",
+                    "name": "2. Memory & State Orchestration",
+                    "pillar": "Memory & State",
+                    "short_term_memory": "LangGraph AsyncPostgresSaver thread checkpoints",
+                    "session_memory": "Redis 7 sliding-window session cache (TTL 3600s)",
+                    "long_term_memory": "Orbit cognitive team telemetry memory (.hsf/traces.jsonl & .hsf/memory.json)",
+                    "description": (
+                        "Multi-tiered state persistence: zero conversational amnesia across requests, "
+                        "instant reconnect resume over SSE, and cross-session team knowledge compounding."
+                    ),
                 },
                 {
-                    "name": "FastMCP Server Tools",
-                    "protocol": "Model Context Protocol (JSON-RPC over SSE)",
-                    "description": "Exposes database search, calculations, and domain tools to LLMs safely.",
+                    "name": "3. Hybrid RAG Harness & Neural Reranker",
+                    "pillar": "RAG Harness",
+                    "dense_retriever": "pgvector 1536-dim HNSW Cosine Index (<=>)",
+                    "sparse_retriever": "PostgreSQL GIN tsvector BM25 keyword matching",
+                    "fusion_algorithm": "Reciprocal Rank Fusion (RRF k=60)",
+                    "reranker": "FlashRank ms-marco-TinyBERT-L-2-v2 (<18ms cross-encoder on CPU)",
+                    "description": (
+                        "Dense semantic embeddings fused with exact lexical BM25 matching, "
+                        "neural cross-encoder reranked to top 5 chunks with zero external API latency."
+                    ),
                 },
                 {
-                    "name": "Automated RAGAS Evaluation Harness",
-                    "metrics": ["Faithfulness", "Answer Relevancy", "Context Precision"],
-                    "description": "CI test gate verifying output quality and blocking hallucinations.",
+                    "name": "4. FastMCP Skills & Tool Sandbox",
+                    "pillar": "MCP Skills",
+                    "protocol": "Model Context Protocol (JSON-RPC over Server-Sent Events)",
+                    "endpoint": "http://localhost:8001/sse",
+                    "registry": "DynamicSkillRegistry (17 pre-installed skills + on-demand synthesis)",
+                    "description": (
+                        "Runs heavy tools, scrapers, and external connectors inside an isolated sandbox "
+                        "on port 8001 so a tool failure never compromises the primary FastAPI application."
+                    ),
+                },
+                {
+                    "name": "5. Evaluation Harness & Security Guardrails",
+                    "pillar": "Evals & Guardrails",
+                    "eval_framework": "RAGAS 25-case golden benchmark test suite",
+                    "target_metrics": {
+                        "Faithfulness": ">= 0.90",
+                        "Answer Relevancy": ">= 0.88",
+                        "Context Precision": ">= 0.85",
+                    },
+                    "guardrails": "Regex & heuristic prompt injection filter, SQL mutation blockers",
+                    "description": (
+                        "Automated test gate that empirically scores hallucination resistance in CI "
+                        "and produces verified proof metrics for judges on stage."
+                    ),
                 },
             ],
             recommended_libraries=[
@@ -783,6 +822,7 @@ class DynamicSquadOrchestrator:
                 "FastMCP",
                 "FlashRank",
                 "ragas",
+                "pydantic-ai",
             ],
             performance_budget="Total agent reasoning cycle < 1.8s (including rerank & synthesis)",
             security_and_compliance="Input guardrails blocking prompt injection, Human interrupt gate on DB writes",

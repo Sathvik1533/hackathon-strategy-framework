@@ -479,7 +479,7 @@
         { layer: "🎨 Frontend Menu (Mirage)", desc: "Next.js 14 App Router, 5 Visual Aesthetics, SSE token streamer, Human Approval Modal." },
         { layer: "🛡️ Backend Menu (Ironhide)", desc: "FastAPI async routes with ResponseEnvelope[T], Redis distributed SETNX locks, circuit breakers." },
         { layer: "💾 Database Menu (Ratchet)", desc: "PostgreSQL 16, pgvector HNSW cosine index, tsvector BM25 hybrid search, Supabase RLS." },
-        { layer: "🔬 AI Engine Menu (Wheeljack)", desc: "LangGraph supervisor graph, FlashRank neural reranker (<20ms), FastMCP SSE tool server." },
+        { layer: "🔬 AI Engine Menu (Wheeljack)", desc: "5-Pillar Engine: A2A Multi-Agent Supervisor, Multi-Tier Memory (Postgres+Redis), Hybrid RAG (HNSW+BM25), FastMCP SSE Sandbox, and RAGAS Evals." },
         { layer: "🚀 Cloud DevOps Menu (Bumblebee)", desc: "Multi-stage Docker <180MB, AWS ECS Fargate, offline demo.sh presentation fail-safe." }
       ];
       menuContainer.innerHTML = "";

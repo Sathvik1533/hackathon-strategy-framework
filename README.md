@@ -32,6 +32,7 @@ chmod +x init.sh bin/cli.js pitch/generate_pitch.sh pitch/demo.sh infra/deploy_a
 * 📊 **Pitch Deck Engine**: `pitch/presentation.html`
 * 🗺️ **Archify Interactive Visual Architecture**: [docs/architecture/system-architecture.html](docs/architecture/system-architecture.html)
 * 🏆 **Team Advantage & Pitch Guide**: [docs/team-advantages-guide.md](docs/team-advantages-guide.md)
+* ⚡ **Polyglot Superpower Architecture (Zero Collision)**: [docs/architecture/polyglot-zero-collision-guide.md](docs/architecture/polyglot-zero-collision-guide.md)
 
 ---
 
@@ -1463,11 +1464,12 @@ Whenever Orbit evaluates a problem statement, it outputs a customized **Features
 │ • Supabase Row-Level Security: Multi-tenant isolation verified by auth.uid().                │
 │ • Immutable Compliance Audit Trail: Tamper-evident ledger of user operations and agent logs. │
 ├──────────────────────────────────────────────────────────────────────────────────────────────┤
-│ 🔬 4. AI & MULTI-AGENT MENU (Wheeljack 🔬⚡)                                                  │
-│ • Cyclic LangGraph Supervisor: Stateful StateGraph with recursion_limit=5 preventing loops. │
-│ • FlashRank Neural Reranker: TinyBERT cross-encoder (<20ms on CPU) boosting top-5 precision.  │
-│ • FastMCP Tool Server over SSE: Model Context Protocol exposing tools safely to AI agents.   │
-│ • Automated RAGAS Eval Gate: CI test suite scoring Faithfulness (>=0.90) and Context Recall. │
+│ 🔬 4. AI & MULTI-AGENT MENU (Wheeljack 🔬⚡) — 5 CORE COGNITIVE PILLARS                       │
+│ • 1. A2A Multi-Agent System: LangGraph StateGraph supervisor & human interrupt approval gate.│
+│ • 2. Memory & State Orchestration: AsyncPostgresSaver + Redis sliding window + trace memory. │
+│ • 3. Hybrid RAG & FlashRank: HNSW dense + BM25 sparse RRF + sub-20ms neural cross-encoder.   │
+│ • 4. FastMCP Skills & Sandbox: Model Context Protocol over SSE (port 8001) + dynamic registry│
+│ • 5. RAGAS Evals & Guardrails: Automated CI gate (Faithfulness >= 0.90) + prompt injection wall│
 ├──────────────────────────────────────────────────────────────────────────────────────────────┤
 │ 🚀 5. CLOUD DEVOPS & STAGE MENU (Bumblebee 🐝🚀)                                             │
 │ • Multi-Stage Dockerfile: Slim Python 3.11 container under 180MB with non-root appuser.      │

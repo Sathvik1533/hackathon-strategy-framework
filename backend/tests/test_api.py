@@ -287,6 +287,15 @@ async def test_agent_features_menu(async_client):
     assert len(data["backend_menu"]["core_features"]) >= 4
     assert len(data["database_menu"]["core_features"]) >= 3
 
+    # Verify the 5 AI Pillars in ai_agentic_menu
+    assert len(data["ai_agentic_menu"]["core_features"]) == 5
+    ai_features = [f["name"] for f in data["ai_agentic_menu"]["core_features"]]
+    assert any("A2A" in name for name in ai_features)
+    assert any("Memory & State" in name for name in ai_features)
+    assert any("RAG Harness" in name for name in ai_features)
+    assert any("FastMCP" in name for name in ai_features)
+    assert any("Evaluation Harness" in name for name in ai_features)
+
 
 @pytest.mark.asyncio
 async def test_agent_skills_endpoints(async_client):
