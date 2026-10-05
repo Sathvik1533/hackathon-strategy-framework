@@ -89,3 +89,17 @@ async def test_agent_query(async_client):
     data = res.json()
     assert data["success"] is True
     assert data["data"]["retrieval_used"] is True
+
+
+@pytest.mark.asyncio
+async def test_agent_strategize(async_client):
+    res = await async_client.post(
+        "/api/v1/agent/strategize",
+        json={"problem_statement": "AI Healthcare Clinical Assistant"},
+    )
+    assert res.status_code == 200
+    data = res.json()
+    assert data["success"] is True
+    assert "Orbit" in data["data"]["mascot_name"]
+    assert "teammate_prompts" in data["data"]
+    assert "tech_stack_mapping" in data["data"]

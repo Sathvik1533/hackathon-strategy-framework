@@ -14,7 +14,8 @@
     "eval": "node bin/cli.js eval",
     "review": "node bin/cli.js review",
     "diagram": "node bin/cli.js diagram",
-    "archify": "node bin/cli.js archify"
+    "archify": "node bin/cli.js archify",
+    "strategize": "node bin/cli.js strategize"
   },
   "keywords": [
     "hackathon",

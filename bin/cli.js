@@ -111,22 +111,33 @@ switch (command) {
     }
     break;
 
+  case 'strategize':
+    banner();
+    {
+      const problem = process.argv.slice(3).join(' ') || 'Autonomous Enterprise Multi-Agent Intelligence System';
+      console.log(`\x1b[36m🤖 Orbit Mascot Agent analyzing: "${problem}"...\x1b[0m\n`);
+      run(`python3 scripts/mascot_agent.py "${problem.replace(/"/g, '\\"')}"`, 'Executing Orbit Mascot Strategizer');
+    }
+    break;
+
   case 'help':
   default:
     banner();
     console.log(`
 \x1b[1mAvailable Commands:\x1b[0m
-  \x1b[33mhsf init\x1b[0m    - Bootstrap .env, launch Docker multi-service stack, and seed DB
-  \x1b[33mhsf pitch\x1b[0m   - Compile Marp Markdown into interactive HTML/PDF pitch slides
-  \x1b[33mhsf demo\x1b[0m    - Run animated terminal cURL demo (stage backup if UI lags)
-  \x1b[33mhsf eval\x1b[0m    - Run RAGAS 25-case golden dataset accuracy & faithfulness tests
-  \x1b[33mhsf review\x1b[0m  - Run automated PR reviewer agent on latest branch changes
-  \x1b[33mhsf diagram\x1b[0m - Deliver verified Archify full-stack architecture diagram HTML
+  \x1b[33mhsf init\x1b[0m        - Bootstrap .env, launch Docker multi-service stack, and seed DB
+  \x1b[33mhsf strategize\x1b[0m  - Activate Orbit Mascot Agent to deconstruct problem & generate prompts
+  \x1b[33mhsf pitch\x1b[0m       - Compile Marp Markdown into interactive HTML/PDF pitch slides
+  \x1b[33mhsf demo\x1b[0m        - Run animated terminal cURL demo (stage backup if UI lags)
+  \x1b[33mhsf eval\x1b[0m        - Run RAGAS 25-case golden dataset accuracy & faithfulness tests
+  \x1b[33mhsf review\x1b[0m      - Run automated PR reviewer agent on latest branch changes
+  \x1b[33mhsf diagram\x1b[0m     - Deliver verified Archify full-stack architecture diagram HTML
 
 \x1b[1mQuickstart for Teammates:\x1b[0m
   1. git clone https://github.com/Sathvik1533/hackathon-strategy-framework.git
   2. cd hackathon-strategy-framework
   3. ./init.sh
+  4. hsf strategize "Your Hackathon Problem Statement"
     `);
     break;
 }

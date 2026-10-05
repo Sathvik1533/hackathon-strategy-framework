@@ -772,6 +772,179 @@ pitch/
 
 ---
 
+## 🤖 Meet Orbit: The Autonomous Strategy Mascot Agent
+
+```
+       ╭────────────────────────────────────────────────────────╮
+       │  🤖 ORBIT: Autonomous Hackathon Strategy Director      │
+       │  "Give me any problem statement, and I will deconstruct│
+       │   it strictly onto our pre-ready 7-layer stack, select  │
+       │   the exact tools & skills to activate, expose our     │
+       │   competitive moat, and generate copy-paste prompts    │
+       │   for your 5-person squad across Antigravity, Claude,  │
+       │   Cursor, and Hero agents in under 60 seconds."         │
+       ╰────────────────────────────────────────────────────────╯
+```
+
+### 1. What Orbit Does Automatically
+When a hackathon problem statement is announced at Hour 0, teams typically freeze or waste hours arguing over frameworks. **Orbit** eliminates this paralysis by acting as your autonomous strategy director:
+
+1. **Domain Classification**: Analyzes the problem statement and categorizes it into real-world industry domains (e.g., Healthcare & Life Sciences, Fintech & Risk Intelligence, Autonomous Logistics, Cybersecurity, CleanTech).
+2. **Strict Tech Stack Mapping**: Orbit will **never** suggest random third-party tools or exotic frameworks that take hours to configure. It maps the challenge **strictly onto our pre-ready, verified 7 layers**:
+   - **FastAPI 0.115+**: Custom asynchronous domain endpoints & typed Pydantic v2 contracts.
+   - **PostgreSQL 16 + pgvector**: 1536-dim HNSW Cosine Index + TSVECTOR BM25 GIN hybrid indexing.
+   - **Supabase RLS**: Row-Level Security policies isolating tenant data by `auth.uid()`.
+   - **Redis 7 Multi-Pool**: Semantic caching (<10ms), async task pub/sub broker, and distributed idempotency.
+   - **LangGraph Supervisor**: StateGraph cyclic machine with human-in-the-loop approval gates.
+   - **FastMCP SSE Tool Server**: Isolated port 8001 tool runner preventing main process crashes.
+   - **AWS ECS Fargate & Marp**: Sub-180MB Docker containerization and code-rendered pitch slides.
+3. **Skill Activation**: Pinpoints the exact skills from our 17 pre-installed skills (e.g., `pgvector-hybrid-search`, `langgraph-production-patterns`, `fastmcp-tool-server`, `marp-presentation-engine`) required to dominate the category.
+4. **Competitive Moat Formulation**: Generates explicit architectural defenses contrasting why naive competitor approaches will fail against why our team's implementation delivers enterprise-grade reliability.
+5. **Agentic IDE Prompt Generation**: Synthesizes 5 ready-to-run prompts tailored for **Antigravity, Claude, Cursor, and Hero agents** so all 5 squad members can begin parallel execution simultaneously at Minute 5.
+
+### 2. Three Ways to Run Orbit
+
+#### Option A: Terminal CLI (Instant)
+```bash
+# Using the hsf CLI wrapper:
+hsf strategize "Autonomous Drone Delivery Fleet with Real-Time Anti-Collision Telemetry and Airspace Geofencing"
+
+# Or via npm script:
+npm run strategize "Autonomous Drone Delivery Fleet with Real-Time Anti-Collision Telemetry and Airspace Geofencing"
+
+# Or directly via Python:
+python3 scripts/mascot_agent.py "Fintech Fraud Sentinel with Real-Time Graph Analysis and Automated Freeze"
+```
+
+#### Option B: REST API Endpoint (`POST /api/v1/agent/strategize`)
+```bash
+curl -X POST http://localhost:8000/api/v1/agent/strategize \
+  -H "Content-Type: application/json" \
+  -d '{"problem_statement": "Clinical EHR Voice Scribe with Ambient ICD-10 Coding and Drug Interaction Guardrails"}'
+```
+Response includes the complete strategy plan, activated skills, competitive advantages, pitch hook, and the 5 teammate prompts in JSON envelope format.
+
+#### Option C: Interactive Browser Console
+Navigate to [http://localhost:8000](http://localhost:8000). The **Orbit Mascot Strategy Director** panel sits at the top of the console:
+1. Type any problem statement or click one of the quick challenge preset chips (🚁 Drone Delivery, 💳 Fintech Fraud, 🏥 Clinical EHR, 🛡️ Cyber Triage).
+2. Click **"✨ Strategize with Orbit 🤖"**.
+3. View the classified domain badge, winning pitch hook, and competitive moat analysis.
+4. Switch between the 5 role tabs (Lead Architect, Frontend Lead, Backend Lead, AI & Vector Lead, DevOps Lead) and click **"📋 Copy Prompt for AI IDE"** for 1-click clipboard integration into Antigravity, Claude, or Cursor!
+
+---
+
+## 🚀 End-to-End Execution Guide: From Problem Drop (Hour 0) to Winning Pitch (Hour 24)
+
+This master timeline details how a 5-person squad executes flawlessly across the 24-hour sprint:
+
+```mermaid
+flowchart LR
+    H0["Hour 0: Orbit Deconstruct<br/>(hsf strategize)"] --> H1["Hour 0-1: Parallel Boot<br/>(AI IDE Prompts Active)"]
+    H1 --> H8["Hour 1-8: Core Features<br/>(FastAPI, pgvector, FastMCP)"]
+    H8 --> H16["Hour 8-16: Integration<br/>(SSE Feeds, RLS, Redis Cache)"]
+    H16 --> H20["Hour 16-20: Hardening<br/>(Circuit Breakers & RAGAS)"]
+    H20 --> H23["Hour 20-23: Stage Demo<br/>(Marp Slides & demo.sh)"]
+    H23 --> H24["Hour 24: Victory<br/>(Live Pitch & Defense)"]
+```
+
+### Phase 1: Problem Drop & Autonomous Dispatch (Hour 0 – Hour 1)
+* **Minute 0 – 5 (All Hands)**: The hackathon organizers release the problem statements. Run Orbit:
+  ```bash
+  hsf strategize "<Announced Problem Statement>"
+  ```
+* **Minute 5 – 15 (Squad Lead)**: Orbit outputs the domain classification, moat analysis, and the 5 customized teammate prompts. The lead pastes each prompt into Slack/Discord for the respective teammate.
+* **Minute 15 – 30 (All Hands)**: Every teammate opens their Agentic AI IDE (**Antigravity, Cursor, or Claude**), pastes their assigned prompt, and runs `./init.sh`. The entire stack is live locally with zero errors.
+* **Minute 30 – 60 (All Hands)**: Git branch creation. Teammates create feature branches:
+  - `feat/supervisor-graph` (Lead Architect)
+  - `feat/domain-endpoints` (Backend Lead)
+  - `feat/hybrid-vector-schema` (Database Lead)
+  - `feat/realtime-ui-console` (Frontend Lead)
+  - `feat/pitch-and-telemetry` (DevOps & Pitch Lead)
+
+### Phase 2: Core Domain Logic & Data Seeding (Hour 1 – Hour 8)
+* **Backend Lead**: Customizes FastAPI router under `backend/src/app/api/v1/endpoints/`. Adds Pydantic v2 schemas validating request inputs and wrapping responses in `ResponseEnvelope[T]`.
+* **Database Lead**: Populates PostgreSQL tables and adds realistic domain seed data in `database/seed_data.py`. Generates 1536-dim vector embeddings and verifies HNSW index speed ($<10\text{ms}$).
+* **AI Lead**: Adapts `ai_layer/fastmcp_server.py` with 2-3 domain-specific tools (e.g., flight collision simulator, medical dosage checker). Configures LangGraph supervisor state in `ai_layer/langgraph_supervisor.py`.
+* **Frontend Lead**: Enhances `frontend/index.html` and `documents.html` to reflect domain entities (e.g., drone flight cards, medical patient records).
+* **DevOps Lead**: Tests multi-stage Docker build locally (`docker compose up`) and compiles the initial draft of `pitch/pitch.marp.md`.
+
+### Phase 3: Integration & Real-Time Streaming (Hour 8 – Hour 16)
+* **SSE Connection**: Connect the frontend terminal to `/api/v1/jobs/{id}/stream` so long-running LangGraph agent executions stream live step-by-step progress to the UI.
+* **Security Lockdown**: Activate Supabase Row-Level Security policies in `database/supabase_rls.sql`. Verify that user queries are isolated by `auth.uid()`.
+* **Semantic Caching**: Test Redis semantic query cache on repeat queries. Verify response times drop from $1.8\text{s}$ down to $<12\text{ms}$.
+* **Human-in-the-Loop Gate**: Verify that dangerous operations (e.g., drone emergency land, medication prescription change, money transfer freeze) halt at LangGraph's `interrupt_before` node awaiting user confirmation.
+
+### Phase 4: Production Hardening & Evals (Hour 16 – Hour 20)
+* **Circuit Breaker Load Testing**: Verify that if a simulated external service fails, the 3-state Circuit Breaker in `backend/src/app/core/resilience.py` trips to `OPEN` and serves graceful cached fallbacks.
+* **RAGAS Benchmark Harness**: Run `python3 ai_layer/eval_harness.py` against 25 golden test samples. Ensure Faithfulness $>0.92$ and Context Precision $>0.88$.
+* **Automated Code Quality & Security Gate**: Every teammate runs the local PR review agent before merging into `main`:
+  ```bash
+  ruff check --fix . && ruff format .
+  PYTHONPATH=. pytest
+  python3 scripts/review_pr.py
+  ```
+
+### Phase 5: Pitch Deck Mastery & Fail-Safe Rehearsal (Hour 20 – Hour 23)
+* **Compile Pitch Presentation**:
+  ```bash
+  node bin/cli.js pitch
+  ```
+  Generates interactive slide deck in `pitch/presentation.html` and PDF in `pitch/pitch_deck.pdf`.
+* **Rehearse 6-Minute Pitch Formula**: Follow the exact script in [`docs/team-advantages-guide.md`](docs/team-advantages-guide.md):
+  - Minute 0–1: Emotional Hook & Pain Point
+  - Minute 1–2: Live Product Demonstration (Frontend Console + Live SSE Feed)
+  - Minute 2–3: Architecture Breakdown (Mermaid diagram + Archify interactive SVG map)
+  - Minute 3–4: Enterprise Moats (Postgres ACID + Supabase RLS + Circuit Breakers)
+  - Minute 4–5: Benchmark Metrics (RAGAS 94% Faithfulness + <12ms Semantic Cache)
+  - Minute 5–6: Business Model, Unit Economics & Stage Closing
+* **Stage Backup Test**: Run `bash pitch/demo.sh` to ensure that if conference Wi-Fi fails or the browser crashes on stage, the terminal script delivers a complete 30-second live demo with color-coded badges.
+
+### Phase 6: Code Freeze & Stage Victory (Hour 23 – Hour 24)
+* Zero new features. Commit all polish. Push to GitHub `main`.
+* Deliver the presentation with total confidence.
+
+---
+
+## 🥊 Peer Competitor Analysis: Why Rival Teams Fail & How HSF Guarantees Victory
+
+In every major hackathon, competing teams fall victim to identical structural mistakes. The following comparison highlights how HSF exploits these vulnerabilities:
+
+### 1. Side-by-Side Competitive Matrix
+
+| Dimension | Typical Rival Team | Our Team (Armed with HSF) | Why Judges Choose Us |
+| :--- | :--- | :--- | :--- |
+| **Setup & Boot Velocity** | Wastes 8–14 hours configuring Docker, CORS, auth, and database drivers. | Live in 60 seconds (`./init.sh`) with all 7 layers online. | 100% of our energy is focused on high-impact domain logic and polish. |
+| **Agent Execution & Reliability** | Synchronous HTTP calls to OpenAI; crashes on stage with 504 Gateway Timeouts. | Asynchronous Redis task broker with real-time Server-Sent Events (SSE) streaming. | Judges see smooth, non-blocking UI with live terminal logs streaming token-by-token. |
+| **Retrieval Accuracy (RAG)** | Naive vector cosine search retrieving irrelevant chunks; 35%+ hallucination rate. | Hybrid Dense + Sparse RRF ($k=60$) + FlashRank Neural Reranker ($<20\text{ms}$). | Measured RAGAS Faithfulness $>94\%$ proven with golden benchmark dataset. |
+| **Data Security & Privacy** | Plaintext secrets in code, permissive tables with zero authorization. | Supabase Row-Level Security (`auth.uid()`) + read-only LLM database roles. | Enterprise credibility: we pass enterprise security cross-examination. |
+| **Fault Tolerance & Resilience** | A single third-party rate limit or timeout crashes the entire application. | 3-state Circuit Breaker (CLOSED/OPEN/HALF-OPEN) + Exponential Backoff with jitter. | System gracefully serves cached fallbacks if upstream APIs degrade. |
+| **Multi-Agent Orchestration** | Fragile recursive while-loops that enter infinite execution cycles. | Typed LangGraph cyclic StateGraph with human-in-the-loop approval gates. | Deterministic, audited agent actions with explicit human consent on sensitive operations. |
+| **Stage Presentation Delivery** | Rushed Canva slides made 20 minutes before cutoff; panic when Wi-Fi lags. | Code-rendered Marp presentation + terminal backup runner (`pitch/demo.sh`). | Flawless stage delivery with zero dependency on flaky conference Wi-Fi. |
+
+### 2. The 5 Fatal Competitor Traps We Avoid
+
+#### ⚠️ Trap 1: The "Hour 0–8 Scaffold Black Hole"
+* **What Rivals Do**: Four team members spend Friday night arguing about Next.js vs Vite, trying to get Docker Compose to communicate with PostgreSQL, and debugging broken Python virtual environments. By Saturday morning, they haven't written a single line of domain code.
+* **How We Win**: At Minute 1, our entire stack is healthy and communicating. While rivals debug `ConnectionRefusedError`, our team is already ingesting domain datasets.
+
+#### ⚠️ Trap 2: The "504 Gateway Timeout on Stage"
+* **What Rivals Do**: Competitors hook an LLM call directly inside an HTTP `POST` handler. On stage, conference Wi-Fi slows down, the LLM takes 45 seconds to respond, the browser hits an HTTP 504 timeout, and the presenter stares at a blank screen.
+* **How We Win**: Our frontend dispatches jobs asynchronously to Redis in $<15\text{ms}$ and subscribes to an SSE channel. The user sees instant feedback, animated progress bars, and streaming step-by-step logs regardless of network latency.
+
+#### ⚠️ Trap 3: The "Naive Cosine Vector Hallucination"
+* **What Rivals Do**: Competitors dump text into an in-memory vector store like ChromaDB or FAISS. When judges ask for exact keyword queries (e.g., "Patient ID #4829" or "Part number X-99"), vector cosine distance fails completely and returns generic garbage.
+* **How We Win**: We utilize **Reciprocal Rank Fusion (RRF)** in PostgreSQL 16, combining dense pgvector semantic embeddings with sparse `TSVECTOR` BM25 keyword matching, reranked by **FlashRank neural cross-encoders** in $<20\text{ms}$.
+
+#### ⚠️ Trap 4: The "Toy Mock Disqualification"
+* **What Rivals Do**: Judges ask: *"What prevents Patient A from viewing Patient B's records?"* Competitors admit: *"We haven't implemented auth yet, all records are stored in a public JSON file."* The project is instantly disqualified from winning serious corporate tracks.
+* **How We Win**: We present `database/supabase_rls.sql` showing database-enforced Row-Level Security policies tied to `auth.uid()`, paired with read-only database credentials for agent tools.
+
+#### ⚠️ Trap 5: The "Conference Wi-Fi Stage Meltdown"
+* **What Rivals Do**: The Wi-Fi drops 30 seconds before pitch time. The team frantically refreshes their Vercel URL, the page fails to load, and their 3-minute pitch ends in silence.
+* **How We Win**: We run `bash pitch/demo.sh` locally. It executes against local Docker containers, prints clean ASCII terminal banners, simulates live workflows, and demonstrates complete functionality without touching the external internet.
+
+---
+
 ## 🤝 How My Teammates Can Use This Repo
 
 > 🏆 **Full Team Kickoff & Advantage Guide**: Read [`docs/team-advantages-guide.md`](docs/team-advantages-guide.md) for the complete kickoff pitch script, side-by-side comparison tables against competitor teams, and our 6-minute stage presentation formula.

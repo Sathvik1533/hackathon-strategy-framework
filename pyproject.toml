@@ -50,3 +50,4 @@ ignore = ["B008", "BLE001", "E501"]
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["backend/tests"]
+pythonpath = [".", "backend", "backend/src"]
