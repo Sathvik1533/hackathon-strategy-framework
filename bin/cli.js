@@ -126,13 +126,11 @@ switch (command) {
     break;
 
   case 'director':
-  case 'java':
     banner();
     {
       const problem = process.argv.slice(3).join(' ') || 'Autonomous Enterprise Multi-Agent Intelligence System';
-      console.log(`\x1b[36m☕ Launching Java HSF Mascot Director (OpenJDK 17)...\x1b[0m\n`);
-      const javaCmd = `export JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home 2>/dev/null || true; java -cp . ai_layer.java.HSFMascotDirector "${problem.replace(/"/g, '\\"')}"`;
-      run(javaCmd, 'Executing Java Mascot Director Engine');
+      console.log(`\x1b[36m🤖 Launching Orbit Autonomous Python Director...\x1b[0m\n`);
+      run(`python3 ai_layer/mascot_agent.py "${problem.replace(/"/g, '\\"')}"`, 'Executing Orbit Python Director');
     }
     break;
 
@@ -276,7 +274,7 @@ switch (command) {
   \x1b[33mhsf gaps\x1b[0m        - Inspect 5. What Else Are You Missing? The Hackathon Victory Gap Analysis
   \x1b[33mhsf skill\x1b[0m       - List skills or dynamically fetch external skill: hsf skill fetch <name>
   \x1b[33mhsf memory\x1b[0m      - Inspect developer telemetry stream, learned bottlenecks & health index
-  \x1b[33mhsf director\x1b[0m    - Run pure Java OpenJDK 17 Mascot Director engine
+  \x1b[33mhsf director\x1b[0m    - Run pure Python Orbit Mascot Director & Problem Decomposer
   \x1b[33mhsf aesthetic\x1b[0m   - Evaluate and output 5 frontend aesthetic paradigms & CSS tokens
   \x1b[33mhsf pitch\x1b[0m       - Compile Marp Markdown into interactive HTML/PDF pitch slides
   \x1b[33mhsf demo\x1b[0m        - Run animated terminal cURL demo (stage backup if UI lags)

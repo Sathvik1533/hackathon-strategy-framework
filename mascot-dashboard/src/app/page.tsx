@@ -96,9 +96,9 @@ export default function DashboardPage() {
                 </code>
               </div>
               <div className="p-2 bg-[#05080e] rounded border border-[#141b27]">
-                <div className="text-amber-400 font-bold">4. Java Enterprise Director:</div>
+                <div className="text-amber-400 font-bold">4. Autonomous Python Director:</div>
                 <code className="text-slate-300 block mt-0.5">
-                  java -cp ai_layer/java HSFMascotDirector &quot;&lt;problem&gt;&quot;
+                  python3 ai_layer/mascot_agent.py &quot;&lt;problem&gt;&quot;
                 </code>
               </div>
             </div>

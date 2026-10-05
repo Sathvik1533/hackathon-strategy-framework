@@ -902,7 +902,7 @@ flowchart TD
 
 In modern hackathon competitions, **judges evaluate your UI within 90 seconds**. A generic, interchangeable AI-generated SaaS template with pastel purple gradients instantly communicates "we built a toy wrapper."
 
-The Parent Agent (`HSFMascotAgent` in Python and `HSFMascotDirector` in Java) dynamically selects the winning frontend aesthetic based on the domain problem statement, guaranteeing maximum psychological impact and brand memorability:
+The Parent Agent (`HSFMascotAgent` in `ai_layer/mascot_agent.py`) dynamically selects the winning frontend aesthetic based on the domain problem statement, guaranteeing maximum psychological impact and brand memorability:
 
 ```mermaid
 flowchart TD
@@ -1119,35 +1119,31 @@ infra/ and pitch/
 
 ---
 
-## 🤖 Dual-Engine Mascot Director & Real Robotic Dashboard (Java + Python + Next.js)
+## 🤖 Autonomous Python Mascot Director & Real Robotic Dashboard (Python + Next.js)
 
-Orbit operates as a **Senior Principal Robotic Director** sitting beside your team. It is implemented across **two native enterprise engines** with an accompanying **Next.js Motion Dashboard**:
+Orbit operates as a **Senior Principal Robotic Director** sitting beside your team. It is implemented in **100% pure Python** (`ai_layer/mascot_agent.py`) with zero JVM or JDK dependencies, backed by an accompanying **Next.js Motion Dashboard** (`mascot-dashboard/`):
 
 ```mermaid
 flowchart LR
-    Problem["Hackathon Problem Statement"] --> Engines{"Orbit Dual Engines"}
-    Engines -->|Java OpenJDK 17| JavaEngine["HSFMascotDirector.java<br/>(ai_layer/java/)"]
-    Engines -->|Python FastAPI| PyEngine["HSFMascotAgent.py<br/>(ai_layer/)"]
-
-    JavaEngine --> Rationale["Deep Architectural Justification & Essays"]
+    Problem["Hackathon Problem Statement"] --> PyEngine["HSFMascotAgent.py<br/>(ai_layer/mascot_agent.py)"]
+    PyEngine --> Rationale["Deep Architectural Justification & Moat Analysis"]
     PyEngine --> FastAPIRoutes["REST / SSE Endpoints (/api/v1/agent/*)"]
-
+    PyEngine --> SquadPrompts["Autobot Squad Prompts (Antigravity/Claude/Cursor)"]
     FastAPIRoutes --> Dashboard["Next.js Motion Dashboard<br/>(mascot-dashboard/)"]
-    Rationale --> SquadPrompts["5-Person Squad Prompts (Antigravity/Claude/Cursor)"]
 ```
 
-### 1. Java Mascot Director Engine (`ai_layer.java.HSFMascotDirector`)
-Built in pure **Java OpenJDK 17** without external dependencies. Autonomously evaluates problem statements, selects architectural patterns and frontend aesthetic paradigms, and generates deep architectural justification essays and multi-agent squad prompts.
+### 1. Pure Python Mascot Director Engine (`ai_layer/mascot_agent.py`)
+Built in pure **Python 3.11+** without external runtimes. Autonomously evaluates problem statements, selects architectural patterns and frontend aesthetic paradigms, and generates deep architectural justification essays, features menus, and multi-agent squad prompts:
 
 ```bash
-# Execute Java Mascot Director:
-java -cp . ai_layer.java.HSFMascotDirector "Real-time IoT drone fleet collision avoidance telemetry"
-
-# Emit structured JSON output:
-java -cp . ai_layer.java.HSFMascotDirector "AI Healthcare Clinical Diagnostics" --json
+# Execute Python Mascot Director:
+python3 ai_layer/mascot_agent.py "Real-time IoT drone fleet collision avoidance telemetry"
 
 # Launch via unified CLI:
 hsf director "Viral creator economy social shopping for GenZ"
+
+# Deploy Transformers Autobot Squad & Features Menu:
+hsf squad "Automated Clinical Healthcare Diagnostics" --team-size 4
 ```
 
 ### 2. Next.js + Motion Robotic Dashboard (`mascot-dashboard/`)
