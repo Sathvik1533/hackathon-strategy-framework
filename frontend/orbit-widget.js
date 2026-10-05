@@ -100,6 +100,7 @@
           <button type="button" class="orbit-tab" data-tab="tabOnboarding">🤝 Teammate Onboarding</button>
           <button type="button" class="orbit-tab" data-tab="tabDesignPattern">📐 Software Design Pattern</button>
           <button type="button" class="orbit-tab" data-tab="tabFrontendAesthetic">🎨 Frontend Aesthetics</button>
+          <button type="button" class="orbit-tab" data-tab="tabTransformersSquad">🤖 Autobot Squad</button>
         </div>
 
         <!-- Tab 1: Senior Desk -->
@@ -275,6 +276,30 @@
             <!-- Dynamically populated live preview -->
           </div>
         </div>
+
+        <!-- Tab 5: Transformers Robot Squad & Features Menu -->
+        <div id="tabTransformersSquad" class="orbit-tab-content">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
+            <h3 style="font-size:1.05rem; margin:0;">🤖 Transformers Autonomous Autobot Squad</h3>
+            <span class="orbit-chip" style="background:rgba(245,158,11,0.15); color:#f59e0b;">AUTOBOTS ASSEMBLED</span>
+          </div>
+          <p style="font-size:0.86rem; color:#cbd5e1; line-height:1.55; margin-bottom:12px;">
+            Autonomous multi-agent squad dynamically dividing responsibilities across all 5 technical layers so your team wastes zero time.
+          </p>
+
+          <div style="background:#090d15; border:1px solid #1e293b; border-radius:8px; padding:12px; margin-bottom:14px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <span style="font-size:0.8rem; font-family:monospace; color:#94a3b8;">TEAM SIZE CONFIGURED:</span>
+              <span id="widgetTeamSizeDisplay" style="font-size:0.9rem; font-weight:700; color:#00f59b; font-family:monospace;">5 Engineers (Full Pentad)</span>
+            </div>
+            <input type="range" id="widgetTeamSizeSlider" min="1" max="6" value="5" style="width:100%; accent-color:#00f59b; cursor:pointer;" />
+          </div>
+
+          <div id="autobotsCardsContainer" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:10px; margin-bottom:14px;"></div>
+
+          <h4 style="font-size:0.9rem; margin-bottom:8px;">🍱 Universal 5-Layer Features Menu</h4>
+          <div id="widgetFeaturesMenuContainer" style="display:flex; flex-direction:column; gap:8px;"></div>
+        </div>
       </div>
     `;
     document.body.appendChild(drawerOverlay);
@@ -381,6 +406,80 @@
       });
     });
     renderAestheticPreview("industrial-brutalism");
+
+    // Autobot Squad Slider
+    const teamSlider = document.getElementById("widgetTeamSizeSlider");
+    if (teamSlider) {
+      teamSlider.addEventListener("input", (e) => {
+        renderAutobotSquad(parseInt(e.target.value, 10));
+      });
+      renderAutobotSquad(5);
+    }
+  }
+
+  const AUTOBOTS_DATA = [
+    { name: "Orbit Prime 🤖👑", callsign: "Supreme Commander & Architect", layer: "Orchestration & Governance", motto: "Autobots, roll out! Zero wasted minutes, zero technical debt.", skills: "hackathon-speedrun-kit, hallmark" },
+    { name: "Ironhide 🛡️⚡", callsign: "Backend Titan & Resilience Sentinel", layer: "Backend API & Middleware", motto: "My circuits do not break. Throughput stays high, latency stays low.", skills: "fastapi-production-archetype, async-agent-celery-redis" },
+    { name: "Mirage 🎨✨", callsign: "Frontend Hologram Specialist", layer: "Frontend & User Experience", motto: "If the interface does not inspire in 3 seconds, the battle is lost.", skills: "hallmark, context7-docs-fetcher" },
+    { name: "Wheeljack 🔬⚡", callsign: "AI & Multi-Agent Weaponsmith", layer: "AI Layer & Multi-Agent", motto: "Pure engineering brilliance! State graphs with deterministic execution.", skills: "langgraph-production-patterns, fastmcp-tool-server" },
+    { name: "Ratchet 🏥💾", callsign: "Database & Security Guardian", layer: "Database & Storage", motto: "Data integrity is non-negotiable. Not a single byte compromised.", skills: "pgvector-hybrid-search, agent-security-guardrails" },
+    { name: "Bumblebee 🐝🚀", callsign: "Cloud DevOps & Stage Scout", layer: "Cloud DevOps & Presentation", motto: "Fast, nimble, reliable. The live demo will never crash on stage.", skills: "agent-docker-aws-deploy, marp-presentation-engine" }
+  ];
+
+  function renderAutobotSquad(size) {
+    const display = document.getElementById("widgetTeamSizeDisplay");
+    const container = document.getElementById("autobotsCardsContainer");
+    const menuContainer = document.getElementById("widgetFeaturesMenuContainer");
+    if (!container || !display) return;
+
+    const archetypes = {
+      1: "1 Engineer (Solo Pioneer + 6 Autobot Co-Pilots)",
+      2: "2 Engineers (Dynamic Duo: UX Lead + AI/Data Lead)",
+      3: "3 Engineers (Trio Strike Team: Frontend + Backend + AI)",
+      4: "4 Engineers (Core Four: Frontend + Backend + AI + Data/DevOps)",
+      5: "5 Engineers (Full Pentad: 5 Dedicated Leads)",
+      6: "6+ Engineers (Extended League + QA/Evaluation Pod)"
+    };
+    display.textContent = archetypes[size] || `${size} Engineers (Extended Pods)`;
+
+    container.innerHTML = "";
+    AUTOBOTS_DATA.forEach((bot) => {
+      const card = document.createElement("div");
+      card.style.background = "#0c121e";
+      card.style.border = "1px solid #1e293b";
+      card.style.borderRadius = "8px";
+      card.style.padding = "10px";
+      card.style.fontSize = "0.8rem";
+      card.innerHTML = `
+        <div style="font-weight:700; color:#fff; font-size:0.85rem; margin-bottom:2px;">${bot.name}</div>
+        <div style="font-size:0.72rem; color:#94a3b8; margin-bottom:6px;">${bot.callsign}</div>
+        <div style="font-size:0.75rem; color:#38bdf8; font-family:monospace; margin-bottom:6px;">Layer: ${bot.layer}</div>
+        <div style="font-size:0.72rem; font-style:italic; color:#cbd5e1; border-left:2px solid #334155; padding-left:6px; margin-bottom:6px;">"${bot.motto}"</div>
+        <div style="font-size:0.7rem; color:#94a3b8; font-family:monospace;">Skills: ${bot.skills}</div>
+      `;
+      container.appendChild(card);
+    });
+
+    if (menuContainer) {
+      const features = [
+        { layer: "🎨 Frontend Menu (Mirage)", desc: "Next.js 14 App Router, 5 Visual Aesthetics, SSE token streamer, Human Approval Modal." },
+        { layer: "🛡️ Backend Menu (Ironhide)", desc: "FastAPI async routes with ResponseEnvelope[T], Redis distributed SETNX locks, circuit breakers." },
+        { layer: "💾 Database Menu (Ratchet)", desc: "PostgreSQL 16, pgvector HNSW cosine index, tsvector BM25 hybrid search, Supabase RLS." },
+        { layer: "🔬 AI Engine Menu (Wheeljack)", desc: "LangGraph supervisor graph, FlashRank neural reranker (<20ms), FastMCP SSE tool server." },
+        { layer: "🚀 Cloud DevOps Menu (Bumblebee)", desc: "Multi-stage Docker <180MB, AWS ECS Fargate, offline demo.sh presentation fail-safe." }
+      ];
+      menuContainer.innerHTML = "";
+      features.forEach((f) => {
+        const item = document.createElement("div");
+        item.style.padding = "8px 12px";
+        item.style.background = "#080c14";
+        item.style.border = "1px solid #1e293b";
+        item.style.borderRadius = "6px";
+        item.style.fontSize = "0.78rem";
+        item.innerHTML = `<strong style="color:#00f59b; font-family:monospace;">${f.layer}</strong>: <span style="color:#cbd5e1;">${f.desc}</span>`;
+        menuContainer.appendChild(item);
+      });
+    }
   }
 
   function renderAestheticPreview(type) {

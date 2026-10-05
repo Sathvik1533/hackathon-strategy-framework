@@ -225,3 +225,136 @@ async def test_agent_aesthetic_decisions(async_client):
     data_skeuo = res_skeuo.json()["data"]
     assert "Skeuomorphism" in data_skeuo["aesthetic_name"]
     assert "linear-gradient" in data_skeuo["css_design_tokens"]["--surface-metal"]
+
+
+@pytest.mark.asyncio
+async def test_agent_orchestrate_squad(async_client):
+    # Test 1-person Solo Pioneer
+    res1 = await async_client.post(
+        "/api/v1/agent/orchestrate-squad",
+        json={"problem_statement": "Automated Logistics Delivery Drone Routing", "team_size": 1},
+    )
+    assert res1.status_code == 200
+    data1 = res1.json()["data"]
+    assert data1["team_size"] == 1
+    assert "Solo Pioneer" in data1["team_strategy_archetype"]
+    assert len(data1["teammate_assignments"]) == 1
+    assert "Orbit Prime" in data1["teammate_assignments"][0]["companion_robot"]["codename"]
+    assert len(data1["robot_squad"]) == 6
+
+    # Test 3-person Trio Strike Team
+    res3 = await async_client.post(
+        "/api/v1/agent/orchestrate-squad",
+        json={"problem_statement": "Real-time Fraud Detection Payment Gateway", "team_size": 3},
+    )
+    assert res3.status_code == 200
+    data3 = res3.json()["data"]
+    assert data3["team_size"] == 3
+    assert "Trio Strike Team" in data3["team_strategy_archetype"]
+    assert len(data3["teammate_assignments"]) == 3
+    assert data3["features_menu"]["frontend_menu"] is not None
+    assert data3["features_menu"]["backend_menu"] is not None
+
+    # Test 5-person Pentad
+    res5 = await async_client.post(
+        "/api/v1/agent/orchestrate-squad",
+        json={"problem_statement": "AI Healthcare Clinical Trials Engine", "team_size": 5},
+    )
+    assert res5.status_code == 200
+    data5 = res5.json()["data"]
+    assert data5["team_size"] == 5
+    assert len(data5["teammate_assignments"]) == 5
+    assert "Mirage" in data5["teammate_assignments"][0]["companion_robot"]["codename"]
+    assert "Ironhide" in data5["teammate_assignments"][1]["companion_robot"]["codename"]
+    assert "Wheeljack" in data5["teammate_assignments"][2]["companion_robot"]["codename"]
+    assert "Ratchet" in data5["teammate_assignments"][3]["companion_robot"]["codename"]
+    assert "Bumblebee" in data5["teammate_assignments"][4]["companion_robot"]["codename"]
+
+
+@pytest.mark.asyncio
+async def test_agent_features_menu(async_client):
+    res = await async_client.post(
+        "/api/v1/agent/features-menu",
+        json={"problem_statement": "Decentralized Renewable Energy Carbon Credit Trading"},
+    )
+    assert res.status_code == 200
+    data = res.json()["data"]
+    assert "frontend_menu" in data
+    assert "backend_menu" in data
+    assert "database_menu" in data
+    assert "ai_agentic_menu" in data
+    assert "devops_cloud_menu" in data
+    assert len(data["backend_menu"]["core_features"]) >= 4
+    assert len(data["database_menu"]["core_features"]) >= 3
+
+
+@pytest.mark.asyncio
+async def test_agent_skills_endpoints(async_client):
+    # List skills
+    list_res = await async_client.get("/api/v1/agent/skills")
+    assert list_res.status_code == 200
+    list_data = list_res.json()["data"]
+    assert list_data["total_skills"] >= 10
+
+    # Fetch built-in skill
+    fetch_builtin = await async_client.post(
+        "/api/v1/agent/skills/fetch",
+        json={"skill_identifier": "fastapi-production-archetype", "knowledge_level": "Beginner"},
+    )
+    assert fetch_builtin.status_code == 200
+    data_builtin = fetch_builtin.json()["data"]
+    assert data_builtin["skill"]["name"] == "fastapi-production-archetype"
+    assert "shaped_instructions" in data_builtin
+    assert "Step 1:" in data_builtin["shaped_instructions"]
+
+    # Dynamically fetch / synthesize external skill (e.g., temporal-workflows)
+    fetch_external = await async_client.post(
+        "/api/v1/agent/skills/fetch",
+        json={
+            "skill_identifier": "temporal-workflows-orchestration",
+            "target_layer": "Backend Resilience",
+            "knowledge_level": "Advanced",
+        },
+    )
+    assert fetch_external.status_code == 200
+    data_external = fetch_external.json()["data"]
+    assert data_external["skill"]["is_dynamically_acquired"] is True
+    assert "best_practices" in data_external["skill"]
+    assert len(data_external["skill"]["best_practices"]) > 0
+
+
+@pytest.mark.asyncio
+async def test_agent_telemetry_traces_and_memory(async_client):
+    # 1. Log a trace
+    log_res = await async_client.post(
+        "/api/v1/agent/traces/log",
+        json={
+            "teammate_name": "Devin",
+            "role": "Backend Lead",
+            "active_branch": "feat/payment-routes",
+            "action_type": "CODE_REVIEW",
+            "query_or_task": "Reviewed stripe webhook handler with idempotency check",
+            "guidance_rendered": "Confirmed distributed lock prevents duplicate charges",
+            "detected_risks": ["Ensure webhook secret signature is verified"],
+            "outcome_status": "RESOLVED",
+        },
+    )
+    assert log_res.status_code == 200
+    log_data = log_res.json()["data"]
+    assert log_data["teammate_name"] == "Devin"
+    assert "trace_id" in log_data
+
+    # 2. Get recent traces
+    traces_res = await async_client.get("/api/v1/agent/traces?limit=10")
+    assert traces_res.status_code == 200
+    traces_data = traces_res.json()["data"]
+    assert traces_data["total_traces"] >= 1
+    assert any(t["teammate_name"] == "Devin" for t in traces_data["traces"])
+
+    # 3. Get memory summary
+    mem_res = await async_client.get("/api/v1/agent/memory")
+    assert mem_res.status_code == 200
+    mem_data = mem_res.json()["data"]
+    assert "total_interactions" in mem_data
+    assert "system_health_index" in mem_data
+    assert "devin" in mem_data["teammates_tracked"]

@@ -6,6 +6,9 @@ import { AestheticSwitcher, AestheticType } from '@/components/AestheticSwitcher
 import { ArchitecturalDecisionCard } from '@/components/ArchitecturalDecisionCard';
 import { TeammateOnboardingConsole } from '@/components/TeammateOnboardingConsole';
 import { SkillsGrid } from '@/components/SkillsGrid';
+import { RobotSquadOrchestrator } from '@/components/RobotSquadOrchestrator';
+import { SkillFetcherConsole } from '@/components/SkillFetcherConsole';
+import { MemoryTracerConsole } from '@/components/MemoryTracerConsole';
 import { Terminal, Shield, Zap, Sparkles, ExternalLink, Github, BookOpen } from 'lucide-react';
 
 export default function DashboardPage() {
@@ -33,7 +36,7 @@ export default function DashboardPage() {
             </span>
           </div>
           <p className="text-xs text-slate-400 font-mono">
-            Senior Principal Robotic Director • Autonomous Pattern & Aesthetic Decision Engine • 5-Person Squad Orchestration
+            Senior Principal Robotic Director • Transformers Robot Squad • Dynamic Skill Synthesizer • Continuous Learning Tracer
           </p>
         </div>
 
@@ -74,45 +77,61 @@ export default function DashboardPage() {
             </div>
             <div className="space-y-2 text-[11px]">
               <div className="p-2 bg-[#05080e] rounded border border-[#141b27]">
-                <div className="text-[#00f59b] font-bold">1. Java Enterprise Mascot:</div>
+                <div className="text-[#00f59b] font-bold">1. Transformers Squad CLI:</div>
+                <code className="text-slate-300 block mt-0.5">
+                  hsf squad &quot;&lt;problem&gt;&quot; --team-size 3
+                </code>
+              </div>
+              <div className="p-2 bg-[#05080e] rounded border border-[#141b27]">
+                <div className="text-[#00b4d8] font-bold">2. Dynamic Skill Fetcher:</div>
+                <code className="text-slate-300 block mt-0.5">
+                  hsf skill fetch stripe-payments
+                </code>
+              </div>
+              <div className="p-2 bg-[#05080e] rounded border border-[#141b27]">
+                <div className="text-purple-400 font-bold">3. Developer Memory Trace:</div>
+                <code className="text-slate-300 block mt-0.5">
+                  hsf memory
+                </code>
+              </div>
+              <div className="p-2 bg-[#05080e] rounded border border-[#141b27]">
+                <div className="text-amber-400 font-bold">4. Java Enterprise Director:</div>
                 <code className="text-slate-300 block mt-0.5">
                   java -cp ai_layer/java HSFMascotDirector &quot;&lt;problem&gt;&quot;
-                </code>
-              </div>
-              <div className="p-2 bg-[#05080e] rounded border border-[#141b27]">
-                <div className="text-[#00b4d8] font-bold">2. Python FastAPI Mascot:</div>
-                <code className="text-slate-300 block mt-0.5">
-                  python3 scripts/senior_companion.py --onboard
-                </code>
-              </div>
-              <div className="p-2 bg-[#05080e] rounded border border-[#141b27]">
-                <div className="text-amber-400 font-bold">3. Node.js Unified CLI:</div>
-                <code className="text-slate-300 block mt-0.5">
-                  hsf strategize &quot;&lt;problem&gt;&quot;
                 </code>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Right Column: Architectural Decision Engine, Aesthetic Switcher, Onboarding (Cols: 8) */}
+        {/* Right Column: Orchestration, Decisions, Skills, Telemetry (Cols: 8) */}
         <div className="lg:col-span-8 space-y-8">
-          {/* 1. Autonomous Architectural Decision Card */}
+          {/* 1. Transformers Autonomous Robot Squad & Variable Team Orchestrator */}
+          <RobotSquadOrchestrator />
+
+          {/* 2. Autonomous Architectural Decision Card */}
           <ArchitecturalDecisionCard />
 
-          {/* 2. Autonomous Frontend Aesthetic Matrix with Live Previews */}
+          {/* 3. Autonomous Frontend Aesthetic Matrix with Live Previews */}
           <AestheticSwitcher
             currentAesthetic={currentAesthetic}
             onSelectAesthetic={handleAestheticChange}
           />
 
-          {/* 3. Teammate Onboarding & Senior Desk */}
+          {/* 4. Dynamic Skill Registry & External Knowledge Synthesizer */}
+          <SkillFetcherConsole />
+
+          {/* 5. Senior Orbit Continuous Learning & Telemetry Stream */}
+          <MemoryTracerConsole />
+
+          {/* 6. Teammate Onboarding & Senior Desk */}
           <TeammateOnboardingConsole />
 
-          {/* 4. Pre-Installed Skills Matrix */}
+          {/* 7. Pre-Installed Skills Matrix */}
           <SkillsGrid />
         </div>
       </div>
     </main>
   );
 }
+

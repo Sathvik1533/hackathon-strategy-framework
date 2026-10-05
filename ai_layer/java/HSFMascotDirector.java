@@ -72,6 +72,15 @@ public class HSFMascotDirector {
         String seniorProTip
     ) {}
 
+    public record RobotAutobot(
+        String codename,
+        String callsign,
+        String targetLayer,
+        String motto,
+        List<String> coreSkills,
+        List<String> responsibilities
+    ) {}
+
     // --- Core Logic ---
 
     public String inferDomain(String problem) {
@@ -655,12 +664,80 @@ public class HSFMascotDirector {
         return sb.toString();
     }
 
+    public List<RobotAutobot> getAutobotSquad() {
+        return List.of(
+            new RobotAutobot(
+                "Orbit Prime 🤖👑",
+                "Supreme Commander & Master Architect",
+                "Orchestration & Governance",
+                "Autobots, roll out! Zero wasted minutes, zero technical debt.",
+                List.of("hackathon-speedrun-kit", "jev-decision-router", "hallmark"),
+                List.of("Decomposes requirements", "Enforces Hexagonal / Event-Driven patterns", "Watches MVP submission gates")
+            ),
+            new RobotAutobot(
+                "Ironhide 🛡️⚡",
+                "Backend Titan & Resilience Sentinel",
+                "Backend API & Middleware",
+                "My circuits do not break. Throughput stays high, latency stays low.",
+                List.of("fastapi-production-archetype", "async-agent-celery-redis", "llm-gateway-semantic-cache"),
+                List.of("Async FastAPI endpoints", "Redis connection pool & distributed locks", "Circuit breaker fault tolerance")
+            ),
+            new RobotAutobot(
+                "Mirage 🎨✨",
+                "Frontend Hologram Specialist",
+                "Frontend & User Experience",
+                "If the interface does not inspire in 3 seconds, the battle is already lost.",
+                List.of("hallmark", "context7-docs-fetcher"),
+                List.of("Zero layout shift Next.js 14 UI", "Emil Kowalski motion tokens", "5 dynamic visual aesthetics")
+            ),
+            new RobotAutobot(
+                "Wheeljack 🔬⚡",
+                "AI & Multi-Agent Weaponsmith",
+                "AI Layer & Multi-Agent",
+                "Pure engineering brilliance! State graphs with deterministic execution.",
+                List.of("langgraph-production-patterns", "fastmcp-tool-server", "rag-reranking-pipeline", "agent-eval-harness"),
+                List.of("Cyclic LangGraph supervisor", "FastMCP SSE tool server", "FlashRank neural reranker")
+            ),
+            new RobotAutobot(
+                "Ratchet 🏥💾",
+                "Database & Security Guardian",
+                "Database & Storage",
+                "Data integrity is non-negotiable. Not a single byte compromised.",
+                List.of("pgvector-hybrid-search", "agent-security-guardrails"),
+                List.of("PostgreSQL 16 schemas", "pgvector HNSW cosine index", "Supabase Row-Level Security")
+            ),
+            new RobotAutobot(
+                "Bumblebee 🐝🚀",
+                "Cloud DevOps & Stage Scout",
+                "Cloud DevOps & Presentation",
+                "Fast, nimble, reliable. The live demo will never crash on stage.",
+                List.of("agent-docker-aws-deploy", "poetry-python-packaging", "marp-presentation-engine"),
+                List.of("Multi-stage Docker <180MB", "AWS ECS Fargate tasks", "Offline-resilient demo.sh script")
+            )
+        );
+    }
+
     public String generateFullReport(String problem) {
+        return generateFullReport(problem, 5);
+    }
+
+    public String generateFullReport(String problem, int teamSize) {
+        int actualSize = Math.max(1, Math.min(10, teamSize));
         String domain = inferDomain(problem);
         SoftwarePatternDecision pattern = decideSoftwarePattern(problem);
         FrontendAestheticDecision aesthetic = decideFrontendAesthetic(problem);
         Map<String, SquadMemberPrompt> prompts = generateSquadPrompts(problem, domain, pattern, aesthetic);
         String essay = generateArchitecturalEssay(problem, domain, pattern, aesthetic);
+        List<RobotAutobot> bots = getAutobotSquad();
+
+        String strategyArchetype = switch (actualSize) {
+            case 1 -> "Solo Pioneer (Fullstack Developer + Autobot Robot Co-Pilots)";
+            case 2 -> "Dynamic Duo (Product & UX Lead + AI & Data Architect)";
+            case 3 -> "Trio Strike Team (Frontend Lead + Backend Lead + AI & Data Lead)";
+            case 4 -> "Core Four (Frontend Lead + Backend Lead + AI Lead + Data/DevOps Lead)";
+            case 5 -> "Full Pentad (Frontend + Backend + AI + Database + Cloud/DevOps)";
+            default -> "Extended League (" + actualSize + " Engineers + Specialized Pods)";
+        };
 
         StringBuilder sb = new StringBuilder();
         sb.append("# 🤖 Orbit Senior Principal Mascot Director Report\n\n");
@@ -668,10 +745,45 @@ public class HSFMascotDirector {
         sb.append("## 🎯 Problem Statement Analysis\n");
         sb.append("* **Input Statement**: `").append(problem).append("`\n");
         sb.append("* **Domain Classified**: **").append(domain).append("**\n");
+        sb.append("* **Team Size Configured**: **").append(actualSize).append(" Engineers** (`").append(strategyArchetype).append("`)\n");
         sb.append("* **Recommended Architectural Pattern**: **").append(pattern.patternName()).append("**\n");
         sb.append("* **Recommended Frontend Aesthetic**: **").append(aesthetic.aestheticName()).append("**\n\n");
 
         sb.append(essay).append("\n");
+
+        sb.append("## 🤖 Transformers Robot Squad (Autonomous Autobot Companions)\n");
+        sb.append("| Autobot Codename | Tactical Callsign | Target Technical Layer | Core Battle Motto |\n");
+        sb.append("| :--- | :--- | :--- | :--- |\n");
+        for (RobotAutobot b : bots) {
+            sb.append(String.format("| **%s** | %s | `%s` | *\"%s\"* |\n", b.codename(), b.callsign(), b.targetLayer(), b.motto()));
+        }
+        sb.append("\n");
+
+        sb.append("## 🍱 Universal 5-Layer Features Menu\n\n");
+        sb.append("### 1. 🎨 Frontend Menu (Mirage)\n");
+        sb.append("- **Aesthetic**: ").append(aesthetic.aestheticName()).append(" (").append(aesthetic.visualArchetype()).append(")\n");
+        sb.append("- **Core Screens**: Live Mission Control Studio, SSE Progress Token Streamer, Human Approval Gate Modal.\n");
+        sb.append("- **Motion Contract**: Emil Kowalski tokens (`--ease-out: cubic-bezier(0.16, 1, 0.3, 1)`), zero CLS.\n\n");
+
+        sb.append("### 2. 🛡️ Backend Menu (Ironhide)\n");
+        sb.append("- **API Framework**: Asynchronous FastAPI 0.115+ with `ResponseEnvelope[T]`.\n");
+        sb.append("- **Resilience**: Redis distributed SETNX locks, circuit breakers (3 failures -> OPEN, 30s reset).\n");
+        sb.append("- **Endpoints**: Chunked Ingestion, Hybrid RRF Query Retrieval, Real-Time SSE Token Stream.\n\n");
+
+        sb.append("### 3. 💾 Database Menu (Ratchet)\n");
+        sb.append("- **Engine**: PostgreSQL 16 relational tables with Supabase Row-Level Security (RLS).\n");
+        sb.append("- **Vector Indexing**: pgvector 1536-dim HNSW Cosine Index (`m=16, ef_construction=64`) fused with GIN BM25.\n");
+        sb.append("- **Audit Log**: Immutable audit trail logging user actions and agent decisions.\n\n");
+
+        sb.append("### 4. 🔬 AI & Multi-Agent Menu (Wheeljack)\n");
+        sb.append("- **Graph Engine**: Cyclic LangGraph StateGraph with human-in-the-loop review interrupt.\n");
+        sb.append("- **Reranker**: FlashRank TinyBERT cross-encoder (<20ms on CPU, top 5 reranking).\n");
+        sb.append("- **Protocol**: FastMCP Server exposing JSON-RPC over Server-Sent Events.\n\n");
+
+        sb.append("### 5. 🚀 Cloud DevOps Menu (Bumblebee)\n");
+        sb.append("- **Containers**: Multi-stage Docker image (<180MB) running with non-root security.\n");
+        sb.append("- **Serverless Cloud**: AWS ECS Fargate task definitions with CloudWatch logs.\n");
+        sb.append("- **Stage Demo Shield**: Offline `demo.sh` script ensuring flawless presentation even if venue Wi-Fi fails.\n\n");
 
         sb.append("## 🎨 Frontend Design Tokens (").append(aesthetic.aestheticName()).append(")\n\n");
         sb.append("```css\n:root {\n");
@@ -703,10 +815,16 @@ public class HSFMascotDirector {
     }
 
     public String generateJson(String problem) {
+        return generateJson(problem, 5);
+    }
+
+    public String generateJson(String problem, int teamSize) {
+        int actualSize = Math.max(1, Math.min(10, teamSize));
         String domain = inferDomain(problem);
         SoftwarePatternDecision pattern = decideSoftwarePattern(problem);
         FrontendAestheticDecision aesthetic = decideFrontendAesthetic(problem);
         Map<String, SquadMemberPrompt> prompts = generateSquadPrompts(problem, domain, pattern, aesthetic);
+        List<RobotAutobot> bots = getAutobotSquad();
 
         StringBuilder json = new StringBuilder();
         json.append("{\n");
@@ -714,6 +832,7 @@ public class HSFMascotDirector {
         json.append("  \"engine\": \"Java OpenJDK 17\",\n");
         json.append("  \"problem_statement\": \"").append(escapeJson(problem)).append("\",\n");
         json.append("  \"domain\": \"").append(escapeJson(domain)).append("\",\n");
+        json.append("  \"team_size\": ").append(actualSize).append(",\n");
         json.append("  \"software_pattern\": {\n");
         json.append("    \"name\": \"").append(escapeJson(pattern.patternName())).append("\",\n");
         json.append("    \"style\": \"").append(escapeJson(pattern.architecturalStyle())).append("\",\n");
@@ -724,6 +843,16 @@ public class HSFMascotDirector {
         json.append("    \"archetype\": \"").append(escapeJson(aesthetic.visualArchetype())).append("\",\n");
         json.append("    \"why_perfect_fit\": \"").append(escapeJson(aesthetic.whyPerfectFit())).append("\"\n");
         json.append("  },\n");
+        json.append("  \"robot_squad\": [\n");
+        for (int i = 0; i < bots.size(); i++) {
+            RobotAutobot b = bots.get(i);
+            json.append("    {\n");
+            json.append("      \"codename\": \"").append(escapeJson(b.codename())).append("\",\n");
+            json.append("      \"callsign\": \"").append(escapeJson(b.callsign())).append("\",\n");
+            json.append("      \"target_layer\": \"").append(escapeJson(b.targetLayer())).append("\"\n");
+            json.append("    }").append(i < bots.size() - 1 ? "," : "").append("\n");
+        }
+        json.append("  ],\n");
         json.append("  \"teammates\": [\n");
         int count = 0;
         for (Map.Entry<String, SquadMemberPrompt> e : prompts.entrySet()) {
@@ -757,7 +886,7 @@ public class HSFMascotDirector {
 
         if (args.length == 0) {
             String defaultProblem = "AI-Powered Autonomous Healthcare Diagnostics & Clinical RAG";
-            System.out.println(director.generateFullReport(defaultProblem));
+            System.out.println(director.generateFullReport(defaultProblem, 5));
             return;
         }
 
@@ -777,12 +906,25 @@ public class HSFMascotDirector {
         }
 
         String problem = args[0];
-        boolean asJson = args.length > 1 && args[1].equalsIgnoreCase("--json");
+        int teamSize = 5;
+        boolean asJson = false;
+
+        for (int i = 1; i < args.length; i++) {
+            if (args[i].equalsIgnoreCase("--json")) {
+                asJson = true;
+            } else if (args[i].equalsIgnoreCase("--team-size") && i + 1 < args.length) {
+                try {
+                    teamSize = Integer.parseInt(args[i + 1]);
+                    i++;
+                } catch (NumberFormatException ignored) {}
+            }
+        }
 
         if (asJson) {
-            System.out.println(director.generateJson(problem));
+            System.out.println(director.generateJson(problem, teamSize));
         } else {
-            System.out.println(director.generateFullReport(problem));
+            System.out.println(director.generateFullReport(problem, teamSize));
         }
     }
+
 }

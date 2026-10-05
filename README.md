@@ -1295,6 +1295,171 @@ In every major hackathon, competing teams fall victim to identical structural mi
 
 ---
 
+## 🤖 Transformers Autonomous Robot Squad (Autobots)
+### *Multi-Agent Robotic Orchestration, Variable Team Sizing (1–6+), Universal Features Menu & Continuous Learning Memory*
+
+In the *Transformers* cinematic universe, the Autobots deploy specialized cybernetic warriors who work in unified harmony alongside humans to neutralize threats without wasting a single second.
+
+In **HSF**, we replicate this exact vision: **Senior Orbit** leads an autonomous squad of **6 specialized Autobot companions** who partition duties across all 5 technical layers, automatically adjust to any team size from **1 to 6+ engineers**, generate a comprehensive **Features Menu** across every layer, dynamically synthesize missing external skills from GitHub or the web, and continuously learn from developer telemetry traces in `.hsf/traces.jsonl`.
+
+```mermaid
+flowchart TD
+    subgraph ProblemInput["🎯 1. PROBLEM STATEMENT DROP (Hour 0)"]
+        PS["Problem Statement Input (CLI, Web Widget, or API)"]
+        Director["Orbit Prime 🤖👑 (Supreme Commander & Master Architect)"]
+    end
+
+    subgraph SquadPartition["🤖 2. AUTONOMOUS AUTOBOT FLEET ALLOCATION"]
+        Ironhide["Ironhide 🛡️⚡<br/>Backend Titan & Resilience<br/>(FastAPI • Redis • Circuits)"]
+        Mirage["Mirage 🎨✨<br/>Frontend Hologram Specialist<br/>(5 Aesthetics • Next.js • Emil Motion)"]
+        Wheeljack["Wheeljack 🔬⚡<br/>AI & Multi-Agent Weaponsmith<br/>(LangGraph • FastMCP • FlashRank)"]
+        Ratchet["Ratchet 🏥💾<br/>Database & Security Guardian<br/>(Postgres 16 • pgvector • RLS)"]
+        Bumblebee["Bumblebee 🐝🚀<br/>DevOps & Stage Scout<br/>(Docker <180MB • ECS • demo.sh)"]
+    end
+
+    subgraph VariableSizing["👥 3. DYNAMIC TEAM SIZING (1 to 6+ Teammates)"]
+        Size1["1 Person: Solo Pioneer<br/>(Single Dev + 6 Autobot Co-Pilots)"]
+        Size2["2 People: Dynamic Duo<br/>(Product Lead + AI/Data Lead)"]
+        Size3["3 People: Trio Strike Team<br/>(Frontend + Backend + AI)"]
+        Size4["4 People: Core Four<br/>(Frontend + Backend + AI + Data/DevOps)"]
+        Size5["5 People: Full Pentad<br/>(Standard 5 Dedicated Leads)"]
+        Size6["6+ People: Extended League<br/>(Pentad + QA/Eval Pod)"]
+    end
+
+    subgraph FeaturesMenu["🍱 4. UNIVERSAL 5-LAYER FEATURES MENU"]
+        FEMenu["Frontend Menu: Live Studio, SSE Streamer, Human Gate Modal, 5 Aesthetics"]
+        BEMenu["Backend Menu: Async Routes, Redis Locks, Circuit Breakers, ResponseEnvelope"]
+        DBMenu["Database Menu: pgvector HNSW Index, TSVECTOR BM25, Supabase RLS, Audit Logs"]
+        AIMenu["AI Menu: LangGraph Supervisor, FlashRank Reranker, FastMCP Server, RAGAS"]
+        DevMenu["DevOps Menu: Multi-Stage Docker <180MB, AWS ECS Fargate, Offline demo.sh"]
+    end
+
+    subgraph ContinuousLearning["🧠 5. CONTINUOUS LEARNING & TELEMETRY ENGINE"]
+        Tracer[".hsf/traces.jsonl & .hsf/memory.json<br/>Logs Every Pairing Session, Code Review & Guardrail Alert"]
+        LearningLoop["Detects Team-Wide Bottlenecks • Tracks Learning Curves • Recalls Past Context"]
+    end
+
+    PS --> Director
+    Director --> Ironhide
+    Director --> Mirage
+    Director --> Wheeljack
+    Director --> Ratchet
+    Director --> Bumblebee
+
+    Ironhide --> VariableSizing
+    Mirage --> VariableSizing
+    Wheeljack --> VariableSizing
+    Ratchet --> VariableSizing
+    Bumblebee --> VariableSizing
+
+    VariableSizing --> FeaturesMenu
+    FeaturesMenu --> ContinuousLearning
+    ContinuousLearning -.->|Cognitive Memory Feedback| Director
+```
+
+---
+
+### 1. The 6 Specialized Autobot Companions
+
+| Autobot Codename | Tactical Callsign | Target Technical Layer | Core Battle Motto | Assigned Repository Skills |
+| :--- | :--- | :--- | :--- | :--- |
+| **Orbit Prime 🤖👑** | Supreme Commander & Master Architect | Orchestration & Governance | *"Autobots, roll out! Zero wasted minutes, zero technical debt."* | `hackathon-speedrun-kit`, `jev-decision-router`, `hallmark` |
+| **Ironhide 🛡️⚡** | Backend Titan & Resilience Sentinel | Backend API & Middleware | *"My circuits do not break. Throughput stays high, latency stays low."* | `fastapi-production-archetype`, `async-agent-celery-redis`, `llm-gateway-semantic-cache` |
+| **Mirage 🎨✨** | Frontend Hologram Specialist | Frontend UI & User Experience | *"If the interface does not inspire in 3 seconds, the battle is already lost."* | `hallmark`, `context7-docs-fetcher` |
+| **Wheeljack 🔬⚡** | AI & Multi-Agent Weaponsmith | AI Layer & Multi-Agent | *"Pure engineering brilliance! State graphs with deterministic execution."* | `langgraph-production-patterns`, `fastmcp-tool-server`, `rag-reranking-pipeline`, `agent-eval-harness` |
+| **Ratchet 🏥💾** | Database & Security Guardian | Database & Storage | *"Data integrity is non-negotiable. Not a single byte compromised."* | `pgvector-hybrid-search`, `agent-security-guardrails` |
+| **Bumblebee 🐝🚀** | Cloud DevOps & Stage Scout | Cloud DevOps & Presentation | *"Fast, nimble, reliable. The live demo will never crash on stage."* | `agent-docker-aws-deploy`, `poetry-python-packaging`, `marp-presentation-engine` |
+
+---
+
+### 2. Variable Team Sizing Matrix (1 to 6+ Teammates)
+
+Hackathon teams vary from solo hackers to large hackathon leagues. Orbit Prime dynamically adapts the squad delegation formula:
+
+| Team Size | Strategy Archetype | Role Allocations & Companion Pairing | Why This Prevents Failure |
+| :--- | :--- | :--- | :--- |
+| **1 Person** | **Solo Pioneer** | **Single Fullstack Lead** paired with **Orbit Prime** and all 6 Autobots. Pre-built vertical slices from pgvector to UI are generated in single commits. | Prevents solo hackers from getting bogged down in infrastructure. 90% of scaffolding is pre-assembled. |
+| **2 People** | **Dynamic Duo** | **Teammate 1**: Product & UX Lead (Mirage + Ironhide) on `feat/product-ux`<br/>**Teammate 2**: AI, Data & Cloud Architect (Wheeljack + Ratchet + Bumblebee) on `feat/ai-data` | Separates user-facing interface delivery from cognitive multi-agent logic, avoiding git merge friction. |
+| **3 People** | **Trio Strike Team** | **Teammate 1**: Frontend & UX Lead (Mirage) on `feat/frontend-views`<br/>**Teammate 2**: Backend API & Cloud Lead (Ironhide + Bumblebee) on `feat/backend-api-infra`<br/>**Teammate 3**: AI Multi-Agent & Database Lead (Wheeljack + Ratchet) on `feat/ai-agents-data` | High-velocity 3-prong attack covering UI, resilient middleware, and vector search in parallel. |
+| **4 People** | **Core Four** | **Teammate 1**: Frontend Lead (Mirage)<br/>**Teammate 2**: Backend API Lead (Ironhide)<br/>**Teammate 3**: AI Multi-Agent Lead (Wheeljack)<br/>**Teammate 4**: Data & Cloud DevOps Lead (Ratchet + Bumblebee) | Dedicated ownership over every major architectural tier with zero overlapping file modifications. |
+| **5 People** | **Full Pentad** | **Teammate 1**: Frontend Lead (Mirage)<br/>**Teammate 2**: Backend Lead (Ironhide)<br/>**Teammate 3**: AI Lead (Wheeljack)<br/>**Teammate 4**: Database Lead (Ratchet)<br/>**Teammate 5**: Cloud DevOps & Pitch Lead (Bumblebee) | Canonical HSF division. Maximum velocity with each engineer owning one specific Autobot domain. |
+| **6+ People** | **Extended League** | Full Pentad plus **Teammates 6+**: Dedicated QA, Automated RAGAS Evaluation, Load Testing, and Live Pitch Rehearsal Pods. | Allows large teams to build deep benchmark proof, run load tests, and rehearse stage delivery. |
+
+---
+
+### 3. Universal 5-Layer Features Menu
+
+Whenever Orbit evaluates a problem statement, it outputs a customized **Features Menu** across all 5 layers:
+
+```
+┌──────────────────────────────────────────────────────────────────────────────────────────────┐
+│ 🎨 1. FRONTEND MENU (Mirage 🎨✨)                                                            │
+│ • Live Mission Control Studio: High-density dark telemetry feeds, responsive tables, KPI cards.│
+│ • SSE Progress Token Streamer: Non-blocking direct EventSource channel rendering LLM outputs. │
+│ • Human-in-the-Loop Modal: Accessible dialog pausing execution before sensitive actions.      │
+│ • 5-Aesthetic Style Engine: Skeuomorphism, Claymorphism, Glassmorphism, Neo & Industrial.    │
+├──────────────────────────────────────────────────────────────────────────────────────────────┤
+│ 🛡️ 2. BACKEND MENU (Ironhide 🛡️⚡)                                                          │
+│ • Chunked Ingestion API: Multipart upload with SHA-256 deduplication and async worker queue.  │
+│ • Hybrid RRF Query Retrieval: Dense vector cosine similarity + sparse BM25 text rank (k=60). │
+│ • Distributed Idempotency Locks: Redis SETNX lock:idempotency:<key> preventing double-billing. │
+│ • 3-State Circuit Breakers: CLOSED / OPEN / HALF-OPEN with automatic 30s cooldown probe.     │
+├──────────────────────────────────────────────────────────────────────────────────────────────┤
+│ 💾 3. DATABASE MENU (Ratchet 🏥💾)                                                           │
+│ • PostgreSQL 16 ACID Core: Strict foreign keys, atomicity rollback, and WAL persistence.     │
+│ • HNSW Vector Index: 1536-dim embeddings indexed via HNSW (m=16, ef_construction=64) (<12ms).│
+│ • Supabase Row-Level Security: Multi-tenant isolation verified by auth.uid().                │
+│ • Immutable Compliance Audit Trail: Tamper-evident ledger of user operations and agent logs. │
+├──────────────────────────────────────────────────────────────────────────────────────────────┤
+│ 🔬 4. AI & MULTI-AGENT MENU (Wheeljack 🔬⚡)                                                  │
+│ • Cyclic LangGraph Supervisor: Stateful StateGraph with recursion_limit=5 preventing loops. │
+│ • FlashRank Neural Reranker: TinyBERT cross-encoder (<20ms on CPU) boosting top-5 precision.  │
+│ • FastMCP Tool Server over SSE: Model Context Protocol exposing tools safely to AI agents.   │
+│ • Automated RAGAS Eval Gate: CI test suite scoring Faithfulness (>=0.90) and Context Recall. │
+├──────────────────────────────────────────────────────────────────────────────────────────────┤
+│ 🚀 5. CLOUD DEVOPS & STAGE MENU (Bumblebee 🐝🚀)                                             │
+│ • Multi-Stage Dockerfile: Slim Python 3.11 container under 180MB with non-root appuser.      │
+│ • AWS ECS Fargate Serverless: Auto-scaling container definitions with CloudWatch telemetry.   │
+│ • Offline Stage Demo Script (demo.sh): 100% offline mock runner ensuring zero Wi-Fi risk.    │
+│ • Marp Pitch Deck Engine: Markdown-to-slides pipeline (pitch/pitch.marp.md) in HTML/PDF.    │
+└──────────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+### 4. Dynamic External Skill Acquisition (Skill Synthesizer)
+
+If your team asks for a skill, library, or protocol that is not pre-installed in the repository (e.g., `temporal-workflows`, `stripe-payments`, `webrtc-streaming`, `threejs-3d-scenes`), Orbit's **Dynamic Skill Synthesizer** kicks in:
+
+1. **Autonomous Knowledge Retrieval**: Ingests GitHub repository URLs or framework concepts.
+2. **Production Specification Synthesis**: Generates a complete, production-grade `SKILL.md` containing dependencies, architectural best practices, forbidden anti-patterns, and verified code snippets.
+3. **Teammate Level Shaping**: Dynamically tailors guidance based on whether the teammate is **Beginner** (step-by-step scaffolding), **Intermediate** (rapid delivery), or **Senior / Lead** (strict interface contracts).
+
+```bash
+# Dynamically fetch or synthesize any external skill:
+hsf skill fetch stripe-payments
+hsf skill fetch temporal-workflows
+hsf skill fetch webrtc-audio-streaming
+```
+
+---
+
+### 5. Continuous Learning & Developer Telemetry Engine (`.hsf/`)
+
+Senior Orbit does not just give advice once and forget—**it monitors and learns continuously from your team's actual development traces**:
+
+* 📜 **Developer Telemetry Log (`.hsf/traces.jsonl`)**: Every time a teammate onboards, asks for advice, inspects code, or triggers a guardrail alert, a trace record is appended with their active branch, query, and detected risks.
+* 🧠 **Squad Cognitive Memory State (`.hsf/memory.json`)**: Orbit tracks individual developer velocity, calculates a live **System Health Index** (0.0 to 1.0), and flags **recurring team-wide bottlenecks** (e.g., if multiple teammates forget parameterized queries or async I/O).
+* 🔄 **Dynamic Context Recall**: When you consult Senior Orbit, it recalls past hurdles from previous traces:
+  > *"🧠 Context Recall: Teammate Alex has 4 recorded pairing sessions on branch feat/backend-api. Warning: You previously encountered an unhandled 500 error on route /ingest. Ensure you wrap downstream calls in ResponseEnvelope[T]!"*
+
+```bash
+# Inspect Senior Orbit's live memory state, tracked teammates, and learned bottlenecks:
+hsf memory
+```
+
+---
+
 ## 🤝 How My Teammates Can Use This Repo
 
 > 🏆 **Full Team Kickoff & Advantage Guide**: Read [`docs/team-advantages-guide.md`](docs/team-advantages-guide.md) for the complete kickoff pitch script, side-by-side comparison tables against competitor teams, and our 6-minute stage presentation formula.

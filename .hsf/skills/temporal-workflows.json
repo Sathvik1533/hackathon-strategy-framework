@@ -1,0 +1,24 @@
+{
+  "name": "temporal-workflows",
+  "category_layer": "Autonomous Agent Integration",
+  "short_description": "Dynamically synthesized production skill for 'temporal-workflows' configured for HSF.",
+  "target_tech_stack": [
+    "Python 3.11+",
+    "FastAPI",
+    "TypeScript"
+  ],
+  "core_dependencies": [
+    "httpx",
+    "pydantic"
+  ],
+  "best_practices": [
+    "Isolate 'temporal-workflows' integration into a dedicated service adapter.",
+    "Apply exponential backoff retry policies with circuit breaker safety."
+  ],
+  "forbidden_antipatterns": [
+    "Never tightly couple external provider schemas directly into core persistence tables."
+  ],
+  "sample_code_snippet": "# Adapter for temporal-workflows\nasync def execute_temporal-workflows_task(payload: dict):\n    async with httpx.AsyncClient() as client:\n        return await client.post('https://api.external.service', json=payload)",
+  "is_dynamically_acquired": true,
+  "source_origin": "Dynamic GitHub / Web Synthesis"
+}
