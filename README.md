@@ -158,6 +158,198 @@ stateDiagram-v2
 
 ---
 
+## 🔗 Inter-Layer Connectivity Matrix & Connection Protocols
+*(How Every Layer Connects, Authenticates, Streams, and Secures Data)*
+
+In modern production systems, inter-layer connectivity is not just "generic HTTP REST". Every boundary has distinct protocols, data contracts, security boundaries, and failure semantics:
+
+### 🌐 Inter-Layer Connectivity Topology (Mermaid.js)
+```mermaid
+flowchart LR
+    subgraph Browser["CLIENT BROWSER (Frontend)"]
+        UI_REST["Fetch Client (JSON / HTTPS)"]
+        UI_SSE["EventSource (text/event-stream)"]
+        UI_Storage["Presigned URL Client (Direct S3)"]
+    end
+
+    subgraph Gateway["GATEWAY & API (FastAPI)"]
+        Endpoints["REST Routers (/api/v1)"]
+        Streamer["SSE StreamingResponse"]
+        Presigner["S3 Presigned URL Generator"]
+    end
+
+    subgraph DataTier["DATA & STORAGE TIER"]
+        Postgres["PostgreSQL 16 + pgvector (asyncpg)"]
+        RedisTier["Redis 7 (Pub/Sub & Semantic Cache)"]
+        S3Bucket["Amazon S3 Bucket (Object Storage)"]
+    end
+
+    subgraph AITier["AI & AGENTIC TIER"]
+        LangGraphTier["LangGraph Multi-Agent Supervisor"]
+        FastMCPTier["FastMCP SSE Tool Server (Port 8001)"]
+        ExternalLLM["External LLMs (OpenAI / Anthropic HTTPS)"]
+    end
+
+    subgraph CloudInfra["DEPLOYMENT & CLOUD TOPOLOGY"]
+        ALB["AWS Application Load Balancer (Port 443)"]
+        FargateTasks["ECS Fargate Tasks (Port 8000)"]
+        DockerBridge["Docker Compose Bridge Network"]
+    end
+
+    %% Frontend to Backend
+    UI_REST -->|1. HTTP REST / JSON / JWT Bearer| Endpoints
+    %% Backend to Frontend
+    Streamer -->|2. Server-Sent Events / text/event-stream| UI_SSE
+    %% Backend to Database
+    Endpoints -->|3. Async SQLAlchemy 2.0 / TCP 5432| Postgres
+    Endpoints -->|3. Redis Async Connection / TCP 6379| RedisTier
+    %% Frontend to Database Rule
+    UI_REST -.->|4. DIRECT TCP 5432 STRICTLY BLOCKED| Postgres
+    UI_REST -->|4. Optional Supabase PostgREST + RLS auth.uid| Postgres
+    %% Frontend to AI Rule
+    UI_REST -.->|5. DIRECT LLM API KEYS STRICTLY BLOCKED| ExternalLLM
+    %% Backend to AI
+    Endpoints -->|6. In-Process Python Function / 0ms| LangGraphTier
+    LangGraphTier -->|6. HTTP SSE / Tools / Port 8001| FastMCPTier
+    LangGraphTier -->|6. HTTPS REST / Exponential Backoff| ExternalLLM
+    %% Deployment
+    ALB -->|7. Port 8000 / Target Group Health Check| FargateTasks
+    FargateTasks -->|7. VPC Endpoint / SSL / TLS| Postgres
+    UI_Storage -->|7. Direct Upload / Presigned URL >100KB| S3Bucket
+```
+
+---
+
+### 1. Frontend-to-Backend Connection (`Frontend -> Backend`)
+* **Transport Protocol**: HTTP/1.1 and HTTP/2 REST.
+* **Payload Format**: `application/json` validated against Pydantic v2 schemas.
+* **Authentication**: Authorization header with Bearer JWT token (`Authorization: Bearer <jwt-token>`).
+* **Client Implementation**: Modern native JavaScript `fetch()` wrapped with `AbortController` (enforcing a strict 10s request timeout).
+* **CORS Preflight**: FastAPI `CORSMiddleware` handles `OPTIONS` requests and verifies allowed origins, headers, and credentials.
+* **Failure Handling**: Client-side fetch wrapper detects HTTP 429 / 503 / 504 and triggers toast notifications with automatic single-retry fallback.
+* **Code Template (`frontend/app.js`)**:
+  ```javascript
+  const res = await fetch("/api/v1/jobs/render", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
+    body: JSON.stringify({ task_type: "research", payload: { query: "..." } })
+  });
+  const data = await res.json(); // Standardized ResponseEnvelope[T]
+  ```
+
+---
+
+### 2. Backend-to-Frontend Connection (`Backend -> Frontend`)
+* **Transport Protocol**: **Server-Sent Events (SSE)** via `text/event-stream` (preferred over WebSockets for one-directional agent progress and log streaming).
+* **Payload Format**: Standardized SSE chunk: `data: {"percent": 45, "log": "Reranking candidates...", "status": "processing"}\n\n`.
+* **Transport Mechanism**: FastAPI `StreamingResponse(event_generator(), media_type="text/event-stream")`.
+* **Broker Integration**: The background job worker publishes progress updates to a Redis Pub/Sub channel (`channel:jobs:{job_id}`). The FastAPI SSE generator listens to that channel and pushes chunks downstream.
+* **Connection Lifecycle & Reconnects**:
+  * Client connects: `const es = new EventSource('/api/v1/jobs/' + jobId + '/stream');`
+  * When `status === "completed"` or `"failed"`, the client invokes `es.close()` to release the connection.
+  * If the network drops, `EventSource` automatically reconnects; the backend reads the latest snapshot from Redis (`state:jobs:{job_id}`) so reconnecting clients never miss the final result.
+* **Code Template (`backend/src/app/api/v1/endpoints/jobs.py`)**:
+  ```python
+  @router.get("/{job_id}/stream")
+  async def stream_job_events(job_id: str):
+      async def event_generator():
+          redis = get_redis_client()
+          pubsub = redis.pubsub()
+          await pubsub.subscribe(RedisKeyTopology.job_channel(job_id))
+          async for message in pubsub.listen():
+              if message["type"] == "message":
+                  yield f"data: {message['data']}\n\n"
+
+      return StreamingResponse(event_generator(), media_type="text/event-stream")
+  ```
+
+---
+
+### 3. Backend-to-Database Connection (`Backend -> Database`)
+* **Transport Protocol**: Asynchronous PostgreSQL wire protocol over TCP port 5432 using SQLAlchemy 2.0 and `asyncpg`.
+* **Connection Pooling**: Managed via `create_async_engine(DATABASE_URL, pool_size=10, max_overflow=20, pool_pre_ping=True)` during FastAPI lifespan initialization.
+* **Dependency Injection Lifecycle**:
+  * Injected into path operations via `Depends(get_db)`.
+  * Yields an `AsyncSession` per HTTP request.
+  * Auto-rolls back transactions on unhandled exceptions and explicitly releases the session back to the pool in a `finally:` block.
+* **Vector Operations**: Native pgvector operators executed in SQL:
+  * `<=>` : Cosine Distance (1 - Cosine Similarity)
+  * `<->` : Euclidean / L2 Distance
+  * `<#>` : Negative Inner Product
+* **ACID Guarantees**: Read Committed isolation level guarantees transactions never see uncommitted dirty writes from concurrent worker tasks.
+
+---
+
+### 4. Frontend-to-Database Connection (`Frontend -> Database`)
+* 🚨 **CRITICAL PRODUCTION RULE: Direct Database Access from Frontend is STRICTLY FORBIDDEN**:
+  * Never expose PostgreSQL port 5432 to the public internet or connect from browser JavaScript via raw database drivers. Doing so exposes database credentials and leads to total system compromise.
+* 🛡️ **The Allowed Frontend-to-Database Exception (Supabase PostgREST + RLS)**:
+  * If using Supabase for direct client-side reads, the connection operates strictly over **HTTPS PostgREST** using the **Public Anon Key** (`NEXT_PUBLIC_SUPABASE_ANON_KEY`).
+  * Every single table query MUST be governed by **Row-Level Security (RLS)** using `auth.uid() = user_id`. Even with direct client queries, a malicious user cannot access or modify another tenant's records.
+* ⚖️ **When to Route via Backend API vs. Supabase Client**:
+  * **Direct Supabase PostgREST**: Simple user profile reads, public document browsing, and avatar updates.
+  * **FastAPI Backend Route**: AI agent tasks, LLM generation, vector embeddings, external tool invocations, secret API keys, and multi-step workflows.
+
+---
+
+### 5. Frontend-to-AI Layer Connection (`Frontend -> AI Layer`)
+* 🚨 **CRITICAL PRODUCTION RULE: NEVER Call LLM APIs Directly from the Frontend**:
+  * Hardcoding `OPENAI_API_KEY` or `ANTHROPIC_API_KEY` in frontend JavaScript leaks your API keys within minutes. It also bypasses all rate limiting, token spend budgets, and prompt injection guardrails.
+* 🛡️ **The Production Connection Pattern (Gateway Indirection)**:
+  * The Frontend talks **ONLY to the FastAPI Backend Gateway**.
+  * The frontend dispatches a high-level command (`POST /api/v1/jobs/render` or `POST /api/v1/agent/query`).
+  * The Backend handles authentication, rate limiting, prompt sanitization, RAG retrieval, and model invocation, streaming progress back to the frontend via SSE.
+
+---
+
+### 6. Backend-to-AI Layer Connection (`Backend -> AI Layer`)
+* **In-Process Python Boundary (Zero Network Latency)**:
+  * Core agent logic (`ai_layer/langgraph_supervisor.py`, `ai_layer/hybrid_retriever.py`, `ai_layer/flashrank_reranker.py`) runs directly within the FastAPI process or background async worker. In-memory execution incurs **0ms network hop latency**.
+* **External LLM Provider Boundary**:
+  * Communicates with OpenAI, Anthropic, Gemini, or Groq via official async clients (`AsyncOpenAI`, `AsyncAnthropic`) over HTTPS REST / gRPC.
+  * Decorated with `@retry_with_exponential_backoff` to handle transient HTTP 429 rate limits.
+  * Protected by the 3-State `CircuitBreaker` to fail fast during vendor outages.
+  * Cached in Redis via `SemanticCache` (sub-10ms response for identical prompts).
+* **Tool Calling Boundary (FastMCP over SSE)**:
+  * External CLI utilities (FFmpeg, scrapers, sandboxed shell execution) are decoupled into a dedicated FastMCP SSE server on `http://localhost:8001/sse`.
+  * Protects the primary API server from memory leaks or CPU crashes caused by heavy external binaries.
+
+---
+
+### 7. Deployment & Cloud Infrastructure Connections
+* **Public Ingress**: Internet Client ➔ AWS Application Load Balancer (ALB) via HTTPS on Port 443 with ACM TLS termination.
+* **ALB to Container Tasks**: ALB forwards traffic to ECS Fargate tasks on Port 8000 across private subnets, checking container health via `GET /api/v1/health`.
+* **Local Container Networking**: Docker Compose creates an isolated internal bridge network (`hackathon-network`). Containers resolve each other via internal DNS:
+  * API ➔ PostgreSQL: `postgres:5432`
+  * API ➔ Redis: `redis:6379`
+  * API ➔ FastMCP: `fastmcp:8001`
+* **Cloud Database Connection**: ECS tasks connect to Amazon RDS PostgreSQL (or Supabase) via AWS Security Groups restricted strictly to the ECS Task Security Group on port 5432 (or port 6543 for PgBouncer connection pooling).
+* **Object Storage Connectivity (Amazon S3)**:
+  * ECS tasks authenticate to S3 using an **IAM Task Role** (no plaintext access keys).
+  * For file uploads $>100\text{KB}$ (PDFs, videos, datasets), the backend generates a time-limited **Presigned S3 PUT URL**. The frontend uploads directly to S3, bypassing backend memory overhead.
+* **Telemetry & Logging**: Container stdout/stderr streams automatically to Amazon CloudWatch via the `awslogs` log driver.
+
+---
+
+### 📊 Master Inter-Layer Connectivity Reference Table
+
+| Source Layer | Target Layer | Protocol / Transport | Data Format | Auth / Security Mechanism | Endpoint / Port |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Frontend** | **Backend API** | HTTP/1.1 / HTTP/2 REST | JSON | Bearer JWT Token in Header | `POST /api/v1/jobs/render` (Port 8000) |
+| **Backend** | **Frontend** | Server-Sent Events (SSE) | `text/event-stream` | Reconnect Token / Session ID | `GET /api/v1/jobs/{id}/stream` (Port 8000) |
+| **Backend** | **PostgreSQL** | Asyncpg Wire Protocol | SQL Binary / Tuples | DB User + Password / Pooler | TCP Port 5432 (or 6543) |
+| **Backend** | **Redis** | RESP3 Async Protocol | Binary / JSON | Redis Password / Auth Token | TCP Port 6379 |
+| **Backend** | **FastMCP** | Server-Sent Events (SSE) | JSON-RPC 2.0 | Local Loopback / Internal Network | `GET /sse` (Port 8001) |
+| **Backend** | **External LLM** | HTTPS REST / gRPC | JSON | Secret API Key in `.env` | Provider HTTPS API (Port 443) |
+| **Frontend** | **Supabase DB** | HTTPS PostgREST | JSON | Public Anon Key + Supabase RLS | `https://<ref>.supabase.co/rest/v1` |
+| **Frontend** | **Amazon S3** | HTTPS Direct PUT | Binary Stream | S3 Presigned URL (15m expiry) | `https://<bucket>.s3.amazonaws.com` |
+| **AWS ALB** | **ECS Fargate** | HTTP Forwarding | Native HTTP | Target Group Health Check | `GET /api/v1/health` (Port 8000) |
+
+---
+
 ## 📦 The 17 Installed Skills Architectural Box Grid
 
 Every skill available in our environment is mapped to its exact stack layer, responsibilities, and velocity multiplier:
