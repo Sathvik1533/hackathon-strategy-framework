@@ -54,6 +54,17 @@ class SoftwareDesignPatternDecision(BaseModel):
     recommended_team_delegation: Dict[str, str]
 
 
+class FrontendAestheticDecision(BaseModel):
+    aesthetic_name: str
+    visual_archetype: str
+    target_emotions: List[str]
+    why_perfect_fit: str
+    why_not_alternatives: str
+    css_design_tokens: Dict[str, str]
+    tailwind_classes_recipe: Dict[str, str]
+    motion_interaction_rules: List[str]
+
+
 class SeniorEngineerGuidance(BaseModel):
     senior_engineer_name: str = "Senior Orbit 👓🤖"
     role: str
@@ -81,6 +92,7 @@ class OnboardingBriefing(BaseModel):
     welcome_message: str
     personalized_mission: str
     design_pattern_summary: SoftwareDesignPatternDecision
+    frontend_aesthetic: Optional[FrontendAestheticDecision] = None
     senior_guidance: SeniorEngineerGuidance
     customized_ai_ide_prompt: str
     suggested_git_commands: List[str]
@@ -106,6 +118,7 @@ class MascotStrategyPlan(BaseModel):
     skills_activated: List[str]
     tech_stack_mapping: TechStackMapping
     software_design_pattern: Optional[SoftwareDesignPatternDecision] = None
+    frontend_aesthetic: Optional[FrontendAestheticDecision] = None
     teammate_prompts: Dict[str, TeammatePromptBoilerplate]
     stage_pitch_hook: str
     estimated_setup_time_minutes: int = 1
@@ -356,6 +369,7 @@ class HSFMascotAgent:
         )
 
         pattern_decision = self.decide_software_design_pattern(cleaned_problem)
+        aesthetic_decision = self.decide_frontend_aesthetic(cleaned_problem)
 
         return MascotStrategyPlan(
             mascot_name=self.name,
@@ -363,7 +377,8 @@ class HSFMascotAgent:
             domain_classified=detected_domain,
             executive_strategy=(
                 f"Orbit has analyzed '{cleaned_problem}'! We will conquer this domain by mapping its data flows "
-                f"directly into our 7-layer HSF architecture under the '{pattern_decision.pattern_name}' pattern. We will leverage PostgreSQL pgvector for hybrid retrieval, "
+                f"directly into our 7-layer HSF architecture under the '{pattern_decision.pattern_name}' pattern. We will pair it with "
+                f"the '{aesthetic_decision.aesthetic_name}' frontend aesthetic to deliver an unforgettable user experience. We leverage PostgreSQL pgvector for hybrid retrieval, "
                 f"LangGraph for multi-agent reasoning with a human-in-the-loop safety gate, Redis for sub-10ms semantic caching, "
                 f"and present an interactive Archify blueprint backed by verified RAGAS faithfulness metrics."
             ),
@@ -371,6 +386,7 @@ class HSFMascotAgent:
             skills_activated=skills_activated,
             tech_stack_mapping=tech_mapping,
             software_design_pattern=pattern_decision,
+            frontend_aesthetic=aesthetic_decision,
             teammate_prompts=prompts,
             stage_pitch_hook=stage_hook,
             estimated_setup_time_minutes=1,
@@ -527,6 +543,327 @@ class HSFMascotAgent:
                     "Frontend Lead": "Real-time console, SSE log terminal, metrics dashboard.",
                     "DevOps Lead": "Docker build, AWS Fargate task, Marp pitch slides.",
                 },
+            )
+
+    def decide_frontend_aesthetic(self, problem_statement: str) -> FrontendAestheticDecision:
+        """
+        Parent Agent Frontend Design Engine:
+        Evaluates the problem statement and autonomously selects the winning frontend
+        aesthetic paradigm among: Skeuomorphism, Claymorphism, Glassmorphism,
+        Neo-Brutalism, or Industrial Brutalism. Provides exact CSS tokens and motion rules.
+        """
+        p_lower = problem_statement.lower()
+
+        # 1. Skeuomorphism (Modern Tactile Hardware & Analog Instrumentation)
+        if any(
+            w in p_lower
+            for w in [
+                "audio",
+                "music",
+                "synth",
+                "sound",
+                "instrument",
+                "studio",
+                "knob",
+                "dial",
+                "hardware",
+                "controller",
+                "dsp",
+                "analog",
+                "pedal",
+                "mixing",
+                "equalizer",
+            ]
+        ):
+            return FrontendAestheticDecision(
+                aesthetic_name="Skeuomorphism (Modern Tactile Hardware & Analog Instrumentation)",
+                visual_archetype="Tactile Brushed Metal, Embossed Knobs, Recessed Meters & Analog Hardware",
+                target_emotions=[
+                    "Tactile Precision",
+                    "Physical Reliability",
+                    "Crafted Engineering",
+                    "Sensory Familiarity",
+                ],
+                why_perfect_fit=(
+                    "For audio engineering, hardware instrumentation, and DSP controllers, users possess deep muscle memory "
+                    "with physical rotaries, faders, and engraved dials. A modern skeuomorphic interface with brushed titanium "
+                    "surfaces, realistic bevels, and recessed LED indicators bridges physical hardware control with digital AI intelligence."
+                ),
+                why_not_alternatives=(
+                    "Neo-Brutalism lacks the fine analog gradations required for precision dials. "
+                    "Glassmorphism feels too ethereal and floating for high-precision physical switches. "
+                    "Claymorphism looks like a toy and destroys professional studio credibility. "
+                    "Industrial Brutalism is too flat and lacks tactile 3D relief for rotary potentiometers."
+                ),
+                css_design_tokens={
+                    "--bg-canvas": "#121418",
+                    "--surface-metal": "linear-gradient(145deg, #252932, #181a20)",
+                    "--surface-inset": "linear-gradient(145deg, #101216, #1c2027)",
+                    "--border-bevel": "1px solid #363c4a",
+                    "--border-inner-recess": "1px solid #0e1014",
+                    "--shadow-embossed": "inset 1px 1px 2px rgba(255,255,255,0.15), inset -1px -1px 3px rgba(0,0,0,0.8), 4px 8px 16px rgba(0,0,0,0.6)",
+                    "--shadow-pressed": "inset 2px 2px 5px rgba(0,0,0,0.9), inset -1px -1px 2px rgba(255,255,255,0.05)",
+                    "--font-display": "'DIN 1451', 'Eurostile', 'SF Pro Text', sans-serif",
+                    "--font-mono": "'Geist Mono', 'JetBrains Mono', monospace",
+                    "--accent-led": "#ff851b",
+                    "--accent-meter": "#00e5ff",
+                },
+                tailwind_classes_recipe={
+                    "card": "bg-gradient-to-br from-[#252932] to-[#181a20] border border-[#363c4a] rounded-lg shadow-[inset_1px_1px_2px_rgba(255,255,255,0.15),inset_-1px_-1px_3px_rgba(0,0,0,0.8),4px_8px_16px_rgba(0,0,0,0.6)] p-5 text-slate-200",
+                    "button_primary": "bg-gradient-to-br from-[#2f3542] to-[#1f2229] active:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.9)] border border-[#3c4454] rounded font-semibold text-amber-400 active:translate-y-[1px] transition-transform duration-100",
+                    "dial_bezel": "w-16 h-16 rounded-full bg-gradient-to-br from-[#2f333c] to-[#15171c] shadow-[inset_1px_1px_2px_rgba(255,255,255,0.2),2px_4px_8px_rgba(0,0,0,0.7)] flex items-center justify-center",
+                    "status_led": "w-3 h-3 rounded-full bg-amber-500 shadow-[0_0_8px_#ff851b]",
+                },
+                motion_interaction_rules=[
+                    "Animate only transform (translateY/rotate) and opacity.",
+                    "Buttons snap downward by 1.5px on :active with --dur-micro (100ms) cubic-bezier(0.16, 1, 0.3, 1).",
+                    "Rotary dials use continuous pointer-lock or mouse wheel with inertia damping.",
+                    "Status LEDs crossfade opacity without changing element geometry.",
+                ],
+            )
+
+        # 2. Claymorphism (Friendly 3D Volumetric Soft Aesthetic)
+        elif any(
+            w in p_lower
+            for w in [
+                "edu",
+                "child",
+                "kid",
+                "school",
+                "tutor",
+                "learn",
+                "student",
+                "habit",
+                "mental",
+                "wellness",
+                "mindful",
+                "calm",
+                "friendly",
+                "gamif",
+            ]
+        ):
+            return FrontendAestheticDecision(
+                aesthetic_name="Claymorphism (Friendly 3D Volumetric Soft Aesthetic)",
+                visual_archetype="Pillowy Rounded Cards, Dual Inner Inset Shadows & Friendly Pastels",
+                target_emotions=[
+                    "Approachability",
+                    "Warmth",
+                    "Delight",
+                    "Psychological Safety",
+                ],
+                why_perfect_fit=(
+                    "Educational tools, habit trackers, and wellness applications demand psychological safety and zero intimidation. "
+                    "Claymorphism’s soft, puffy 3D cards, inflated pastel surfaces, and rounded pill shapes reduce user anxiety, "
+                    "sparking curiosity and sustained daily engagement."
+                ),
+                why_not_alternatives=(
+                    "Brutalism feels aggressive and hostile for students and young learners. "
+                    "Glassmorphism feels detached, sterile, and overly corporate. "
+                    "Neo-Brutalism’s hard black borders create visual tension incompatible with calm mindfulness. "
+                    "Skeuomorphism creates unnecessary cognitive load with heavy industrial textures."
+                ),
+                css_design_tokens={
+                    "--bg-canvas": "#eef2ff",
+                    "--surface-card": "#ffffff",
+                    "--border-clay": "none",
+                    "--radius-clay": "28px",
+                    "--shadow-clay": "inset 4px 4px 8px rgba(255,255,255,0.9), inset -4px -4px 8px rgba(165,180,252,0.35), 10px 20px 30px rgba(99,102,241,0.12)",
+                    "--shadow-clay-btn": "inset 2px 2px 4px rgba(255,255,255,0.8), inset -2px -2px 4px rgba(79,70,229,0.2), 6px 12px 20px rgba(99,102,241,0.2)",
+                    "--font-display": "'Plus Jakarta Sans', 'Quicksand', 'Fredoka', sans-serif",
+                    "--accent-primary": "#6366f1",
+                    "--accent-secondary": "#ec4899",
+                },
+                tailwind_classes_recipe={
+                    "card": "bg-white rounded-[28px] shadow-[inset_4px_4px_8px_rgba(255,255,255,0.9),inset_-4px_-4px_8px_rgba(165,180,252,0.35),10px_20px_30px_rgba(99,102,241,0.12)] p-6 text-slate-800",
+                    "button_primary": "bg-indigo-500 text-white rounded-full font-bold px-6 py-3 shadow-[inset_2px_2px_4px_rgba(255,255,255,0.8),inset_-2px_-2px_4px_rgba(79,70,229,0.2),6px_12px_20px_rgba(99,102,241,0.25)] hover:scale-[1.03] active:scale-[0.96] transition-transform duration-200",
+                    "badge": "bg-pink-100 text-pink-700 font-semibold px-4 py-1.5 rounded-full shadow-[inset_1px_1px_2px_rgba(255,255,255,0.8)]",
+                    "input": "bg-indigo-50/50 rounded-2xl p-4 shadow-[inset_2px_2px_5px_rgba(165,180,252,0.3)] focus:outline-none focus:ring-2 focus:ring-indigo-400",
+                },
+                motion_interaction_rules=[
+                    "Soft squash-and-stretch on button click: transform: scale(0.96) with --dur-short (200ms) cubic-bezier(0.16, 1, 0.3, 1).",
+                    "Hover lift: transform: translateY(-4px) with subtle expansion of drop shadow blur.",
+                    "Stagger card entrances by 60ms with translateY(12px) spring deceleration.",
+                ],
+            )
+
+        # 3. Glassmorphism (Frosted Precision Glass & Spatial Depth)
+        elif any(
+            w in p_lower
+            for w in [
+                "health",
+                "clinic",
+                "patient",
+                "medic",
+                "doctor",
+                "pharma",
+                "legal",
+                "contract",
+                "compliance",
+                "wealth",
+                "invest",
+                "executive",
+                "luxury",
+                "biotech",
+            ]
+        ):
+            return FrontendAestheticDecision(
+                aesthetic_name="Glassmorphism (Frosted Precision Glass & Spatial Depth)",
+                visual_archetype="Multi-Layered Translucent Glass, Specular Hairline Borders & Deep Frosted Blur",
+                target_emotions=[
+                    "Clinical Trust",
+                    "High-End Authority",
+                    "Sophistication",
+                    "Clarity",
+                ],
+                why_perfect_fit=(
+                    "High-stakes healthcare, legal governance, and executive analytics demand elite trust, authority, and immaculate clarity. "
+                    "Glassmorphism layers multi-tiered translucent glass sheets with frosted backdrop blurs and hairline specular borders, "
+                    "projecting next-generation technological superiority without cluttering mission-critical data tables."
+                ),
+                why_not_alternatives=(
+                    "Neo-Brutalism looks too rebellious, juvenile, and informal for hospital boards or legal compliance audits. "
+                    "Claymorphism looks like a preschool platform and compromises institutional credibility. "
+                    "Industrial Brutalism lacks executive elegance. "
+                    "Skeuomorphism creates heavy visual weight that impedes dense medical or financial data scanning."
+                ),
+                css_design_tokens={
+                    "--bg-canvas": "radial-gradient(ellipse at top, #0f172a 0%, #020617 100%)",
+                    "--surface-glass": "rgba(255, 255, 255, 0.04)",
+                    "--surface-glass-hover": "rgba(255, 255, 255, 0.08)",
+                    "--border-hairline": "1px solid rgba(255, 255, 255, 0.14)",
+                    "--backdrop-blur": "blur(16px) saturate(180%)",
+                    "--shadow-elevation": "0 20px 40px -15px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2)",
+                    "--font-display": "'Inter', 'Geist Sans', system-ui, sans-serif",
+                    "--accent-glow": "#38bdf8",
+                    "--accent-emerald": "#10b981",
+                },
+                tailwind_classes_recipe={
+                    "card": "bg-white/[0.04] backdrop-blur-md border border-white/[0.14] rounded-2xl shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.2)] p-6 text-slate-100",
+                    "button_primary": "bg-sky-500/80 hover:bg-sky-500 backdrop-blur-sm text-white font-medium px-5 py-2.5 rounded-xl border border-sky-400/40 shadow-[0_0_20px_rgba(56,189,248,0.3)] hover:scale-[1.02] active:scale-[0.98] transition-transform duration-150",
+                    "badge": "bg-white/[0.08] backdrop-blur-sm border border-white/20 text-sky-300 px-3 py-1 rounded-full text-xs font-semibold",
+                    "input": "bg-white/[0.03] backdrop-blur-sm border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:border-sky-400 focus:outline-none",
+                },
+                motion_interaction_rules=[
+                    "Floating elevations: hover lifts card with translateY(-3px) and slight border opacity increase from 0.14 to 0.24.",
+                    "Backdrop filter remains static to avoid expensive layout reflows during animations.",
+                    "Animate only transform and opacity via cubic-bezier(0.16, 1, 0.3, 1).",
+                ],
+            )
+
+        # 4. Neo-Brutalism (Bold High-Contrast Pop & Kinetic Energy)
+        elif any(
+            w in p_lower
+            for w in [
+                "consumer",
+                "b2c",
+                "social",
+                "creator",
+                "influencer",
+                "meme",
+                "viral",
+                "retail",
+                "shop",
+                "commerce",
+                "fashion",
+                "crypto",
+                "web3",
+                "nft",
+                "gamers",
+                "genz",
+            ]
+        ):
+            return FrontendAestheticDecision(
+                aesthetic_name="Neo-Brutalism (High-Contrast Bold Pop & Kinetic Playfulness)",
+                visual_archetype="Heavy Black Borders, Hard Offset Shadows (No Blur), Saturated Pop Accents & Unapologetic Typography",
+                target_emotions=[
+                    "Irreverence",
+                    "High Energy",
+                    "Unforgettable Impact",
+                    "Playful Confidence",
+                ],
+                why_perfect_fit=(
+                    "In crowded hackathon demo tracks, 90% of teams present identical muted dark-mode Tailwind SaaS templates. "
+                    "For consumer, creator, and viral Web3 products, Neo-Brutalism cuts through instantly with high-voltage saturated palettes, "
+                    "bold black 3px borders, hard zero-blur offset drop shadows, and unapologetic kinetic charisma that hackathon judges remember."
+                ),
+                why_not_alternatives=(
+                    "Glassmorphism blends into corporate invisibility on a projector screen. "
+                    "Claymorphism is too soft and lacks bold punchy attitude. "
+                    "Industrial Brutalism feels like a server rack rather than an exciting consumer product. "
+                    "Skeuomorphism feels outdated and slows down consumer feature velocity."
+                ),
+                css_design_tokens={
+                    "--bg-canvas": "#fef08a",
+                    "--surface-card": "#ffffff",
+                    "--border-thick": "3px solid #000000",
+                    "--shadow-hard": "4px 4px 0px #000000",
+                    "--shadow-hover": "6px 6px 0px #000000",
+                    "--shadow-active": "1px 1px 0px #000000",
+                    "--radius-neo": "8px",
+                    "--font-display": "'Space Grotesk', 'Cabinet Grotesk', 'Archivo Black', sans-serif",
+                    "--accent-pop-yellow": "#facc15",
+                    "--accent-pop-pink": "#f43f5e",
+                    "--accent-pop-cyan": "#06b6d4",
+                },
+                tailwind_classes_recipe={
+                    "card": "bg-white border-[3px] border-black rounded-lg shadow-[4px_4px_0px_#000000] p-6 text-black",
+                    "button_primary": "bg-[#facc15] text-black font-extrabold border-[3px] border-black rounded-lg px-6 py-3 shadow-[4px_4px_0px_#000000] hover:shadow-[6px_6px_0px_#000000] hover:-translate-x-[2px] hover:-translate-y-[2px] active:shadow-[1px_1px_0px_#000000] active:translate-x-[3px] active:translate-y-[3px] transition-all duration-100",
+                    "badge": "bg-[#f43f5e] text-white font-black border-2 border-black px-3 py-1 rounded shadow-[2px_2px_0px_#000000] uppercase text-xs",
+                    "input": "bg-white border-[3px] border-black rounded-lg p-3 font-medium text-black focus:outline-none focus:bg-yellow-50",
+                },
+                motion_interaction_rules=[
+                    "Zero-lag instantaneous button clicks: translate(3px, 3px) with shadow collapse from 4px to 1px.",
+                    "Hover lift: translate(-2px, -2px) with shadow expanding to 6px 6px 0px #000.",
+                    "Snap transitions strictly under --dur-micro (120ms) using step or snappy cubic-bezier(0.16, 1, 0.3, 1).",
+                ],
+            )
+
+        # 5. Industrial Brutalism (Mission-Critical System Terminal HUD)
+        else:
+            return FrontendAestheticDecision(
+                aesthetic_name="Industrial Brutalism (Mission-Critical System Terminal HUD)",
+                visual_archetype="High-Density Monospace Grid, Obsidian Surfaces, Zero-Decoration Wireframes & Telemetry Status LEDs",
+                target_emotions=[
+                    "Technical Rigor",
+                    "Engineering Dominance",
+                    "Mathematical Certainty",
+                    "Mission-Critical Stability",
+                ],
+                why_perfect_fit=(
+                    "For autonomous AI agents, cloud architectures, real-time telemetry, cybersecurity, and enterprise systems, "
+                    "Industrial Brutalism signals uncompromising engineering mastery. It strips away all frivolous AI-slop decorations "
+                    "in favor of high information density, stark monospace typography, real-time terminal streaming logs, and precision telemetry indicators."
+                ),
+                why_not_alternatives=(
+                    "Neo-Brutalism and Claymorphism look frivolous and unserious for mission-critical infrastructure. "
+                    "Glassmorphism degrades text contrast and slows down terminal log rendering. "
+                    "Skeuomorphism consumes precious screen real estate with decorative bevels instead of high-density logs."
+                ),
+                css_design_tokens={
+                    "--bg-canvas": "#070a0f",
+                    "--surface-terminal": "#0d131f",
+                    "--border-chassis": "1px solid #1c2738",
+                    "--border-accent": "1px solid #00f59b",
+                    "--shadow-raw": "none",
+                    "--radius-zero": "2px",
+                    "--font-mono": "'JetBrains Mono', 'Geist Mono', monospace",
+                    "--font-display": "'Geist Sans', 'Inter', sans-serif",
+                    "--accent-phosphor-green": "#00f59b",
+                    "--accent-telemetry-cyan": "#00b4d8",
+                    "--status-alert-red": "#ef4444",
+                },
+                tailwind_classes_recipe={
+                    "card": "bg-[#0d131f] border border-[#1c2738] rounded-sm p-5 text-slate-200 font-mono",
+                    "button_primary": "bg-[#00f59b] text-[#070a0f] font-bold px-4 py-2 rounded-sm hover:bg-[#00d685] active:translate-y-[1px] transition-transform duration-100 uppercase tracking-wider text-xs",
+                    "badge": "border border-[#00f59b]/40 bg-[#00f59b]/10 text-[#00f59b] px-2.5 py-0.5 rounded-sm text-xs font-mono tracking-widest uppercase",
+                    "terminal_log": "bg-[#05070a] border border-[#141b27] rounded-sm p-4 font-mono text-xs text-emerald-400 overflow-x-auto",
+                },
+                motion_interaction_rules=[
+                    "Animate only transform and opacity.",
+                    "Micro-duration --dur-micro (100ms) for decisive state changes.",
+                    "Live terminal text appends without layout shift using pre-allocated min-height containers.",
+                    "Telemetry gauges update with GPU-composited transform: scaleX() and cubic-bezier(0.16, 1, 0.3, 1).",
+                ],
             )
 
     def get_senior_guidance_for_role(
@@ -760,6 +1097,7 @@ class HSFMascotAgent:
         """
         prob = problem_statement or "Autonomous Enterprise Intelligence"
         pattern = self.decide_software_design_pattern(prob)
+        aesthetic = self.decide_frontend_aesthetic(prob)
         senior = self.get_senior_guidance_for_role(
             profile.role, profile.active_branch, profile.knowledge_level
         )
@@ -767,7 +1105,7 @@ class HSFMascotAgent:
         welcome = (
             f"👋 Welcome aboard, {profile.name}! Senior Orbit 👓🤖 is pairing with you on branch `{profile.active_branch}`. "
             f"Your mission as {profile.role} is vital: '{profile.contribution_goal}'. "
-            f"We are implementing the '{pattern.pattern_name}' pattern. Follow my senior engineering guardrails to build a flawless system!"
+            f"We are implementing the '{pattern.pattern_name}' pattern with '{aesthetic.aesthetic_name}' UI. Follow my senior engineering guardrails to build a flawless system!"
         )
 
         ide_prompt = (
@@ -776,7 +1114,8 @@ class HSFMascotAgent:
             f"### KNOWLEDGE LEVEL: {profile.knowledge_level}\n"
             f"### ACTIVE BRANCH: `{profile.active_branch}`\n"
             f"### CONTRIBUTION GOAL: {profile.contribution_goal}\n"
-            f"### ARCHITECTURAL PATTERN: {pattern.pattern_name}\n\n"
+            f"### ARCHITECTURAL PATTERN: {pattern.pattern_name}\n"
+            f"### FRONTEND AESTHETIC: {aesthetic.aesthetic_name}\n\n"
             f"Instructions for {profile.ai_ide}:\n"
             f"1. You are paired with Senior Orbit. Respect all HSF architecture standards in this repository.\n"
             f"2. Your focus files: {', '.join(senior.recommended_files)}.\n"
@@ -802,6 +1141,7 @@ class HSFMascotAgent:
             welcome_message=welcome,
             personalized_mission=f"Deliver '{profile.contribution_goal}' on branch '{profile.active_branch}' adhering to Senior Orbit's standards.",
             design_pattern_summary=pattern,
+            frontend_aesthetic=aesthetic,
             senior_guidance=senior,
             customized_ai_ide_prompt=ide_prompt,
             suggested_git_commands=git_cmds,
@@ -946,6 +1286,24 @@ class HSFMascotAgent:
                 delegation,
             ) in plan.software_design_pattern.recommended_team_delegation.items():
                 md.append(f"* **{role_name}**: {delegation}")
+            md.append("")
+
+        if plan.frontend_aesthetic:
+            md.append(
+                f"## 🎨 Autonomous Frontend Aesthetic Paradigm: {plan.frontend_aesthetic.aesthetic_name}"
+            )
+            md.append(f"* **Visual Archetype**: {plan.frontend_aesthetic.visual_archetype}")
+            md.append(
+                f"* **Target User Emotions**: {', '.join(plan.frontend_aesthetic.target_emotions)}"
+            )
+            md.append(f"* **Why Perfect Fit**: {plan.frontend_aesthetic.why_perfect_fit}")
+            md.append(f"* **Why Not Alternatives**: {plan.frontend_aesthetic.why_not_alternatives}")
+            md.append("\n### Key CSS Design Tokens:")
+            for token_k, token_v in plan.frontend_aesthetic.css_design_tokens.items():
+                md.append(f"* `{token_k}`: `{token_v}`")
+            md.append("\n### Motion & Interaction Rules (Emil Kowalski + Hallmark):")
+            for rule in plan.frontend_aesthetic.motion_interaction_rules:
+                md.append(f"* {rule}")
             md.append("")
 
         md.append("## 🥊 Competitive Advantage vs. Peer Competitors (Why We Win)")

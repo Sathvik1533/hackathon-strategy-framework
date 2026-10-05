@@ -125,6 +125,26 @@ switch (command) {
     run('python3 scripts/senior_companion.py --onboard', 'Launching Senior Orbit Onboarding Wizard');
     break;
 
+  case 'director':
+  case 'java':
+    banner();
+    {
+      const problem = process.argv.slice(3).join(' ') || 'Autonomous Enterprise Multi-Agent Intelligence System';
+      console.log(`\x1b[36m☕ Launching Java HSF Mascot Director (OpenJDK 17)...\x1b[0m\n`);
+      const javaCmd = `export JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home 2>/dev/null || true; java -cp . ai_layer.java.HSFMascotDirector "${problem.replace(/"/g, '\\"')}"`;
+      run(javaCmd, 'Executing Java Mascot Director Engine');
+    }
+    break;
+
+  case 'aesthetic':
+    banner();
+    {
+      const problem = process.argv.slice(3).join(' ') || 'Autonomous Enterprise Multi-Agent Intelligence System';
+      console.log(`\x1b[36m🎨 Evaluating Frontend Aesthetic Paradigm for: "${problem}"...\x1b[0m\n`);
+      run(`python3 -c 'from ai_layer.mascot_agent import HSFMascotAgent; a = HSFMascotAgent().decide_frontend_aesthetic("""${problem.replace(/"/g, '\\"')}"""); print(f"\\n🎨 Selected Aesthetic: {a.aesthetic_name}\\nArchetype: {a.visual_archetype}\\n\\nWhy Perfect Fit:\\n{a.why_perfect_fit}\\n\\nWhy Not Alternatives:\\n{a.why_not_alternatives}\\n\\nKey CSS Tokens:\\n" + "\\n".join([f"  {k}: {v}" for k, v in a.css_design_tokens.items()]))'`, 'Evaluating Frontend Aesthetic Paradigm');
+    }
+    break;
+
   case 'pair':
   case 'senior':
     banner();

@@ -99,6 +99,7 @@
           <button type="button" class="orbit-tab active" data-tab="tabSeniorDesk">👓 Senior Desk</button>
           <button type="button" class="orbit-tab" data-tab="tabOnboarding">🤝 Teammate Onboarding</button>
           <button type="button" class="orbit-tab" data-tab="tabDesignPattern">📐 Software Design Pattern</button>
+          <button type="button" class="orbit-tab" data-tab="tabFrontendAesthetic">🎨 Frontend Aesthetics</button>
         </div>
 
         <!-- Tab 1: Senior Desk -->
@@ -251,6 +252,29 @@
           <h4 style="font-size:0.9rem; margin-bottom:10px;">🗂️ Project Directory Anatomy & Rules</h4>
           <div id="patternFolderList" style="display:flex; flex-direction:column; gap:8px;"></div>
         </div>
+
+        <!-- Tab 4: Frontend Aesthetics -->
+        <div id="tabFrontendAesthetic" class="orbit-tab-content">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
+            <h3 style="font-size:1.05rem; margin:0;">🎨 Autonomous Frontend Aesthetic Paradigm</h3>
+            <span id="orbitAestheticBadge" class="orbit-chip" style="background:rgba(0,245,155,0.15); color:#00f59b;">INDUSTRIAL BRUTALISM</span>
+          </div>
+          <p id="orbitAestheticWhyFit" style="font-size:0.86rem; color:#cbd5e1; line-height:1.55; margin-bottom:12px;">
+            Autonomous parent agent visual system selection: Matches the problem statement to one of 5 battle-tested frontend paradigms.
+          </p>
+
+          <div class="orbit-aesthetic-grid">
+            <button type="button" class="orbit-aesthetic-btn active" data-aesthetic="industrial-brutalism">Terminal HUD (Industrial)</button>
+            <button type="button" class="orbit-aesthetic-btn" data-aesthetic="neo-brutalism">Neo-Brutalism (Bold Pop)</button>
+            <button type="button" class="orbit-aesthetic-btn" data-aesthetic="glassmorphism">Glassmorphism (Frosted)</button>
+            <button type="button" class="orbit-aesthetic-btn" data-aesthetic="claymorphism">Claymorphism (Soft 3D)</button>
+            <button type="button" class="orbit-aesthetic-btn" data-aesthetic="skeuomorphism">Skeuomorphism (Analog)</button>
+          </div>
+
+          <div id="orbitAestheticPreview" class="orbit-preview-container">
+            <!-- Dynamically populated live preview -->
+          </div>
+        </div>
       </div>
     `;
     document.body.appendChild(drawerOverlay);
@@ -345,6 +369,95 @@
         console.error("Clipboard copy failed:", err);
       }
     });
+
+    // Frontend Aesthetic Preview Switcher
+    const aestheticBtns = document.querySelectorAll(".orbit-aesthetic-btn");
+    aestheticBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        aestheticBtns.forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        const aestheticKey = btn.getAttribute("data-aesthetic");
+        renderAestheticPreview(aestheticKey);
+      });
+    });
+    renderAestheticPreview("industrial-brutalism");
+  }
+
+  function renderAestheticPreview(type) {
+    const previewContainer = document.getElementById("orbitAestheticPreview");
+    if (!previewContainer) return;
+
+    if (type === "industrial-brutalism") {
+      previewContainer.innerHTML = `
+        <div class="orbit-preview-industrialbrutalism">
+          <div style="display:flex; justify-content:space-between; border-bottom:1px solid #1c2738; padding-bottom:6px; margin-bottom:8px;">
+            <span style="color:#00f59b; font-weight:bold; font-size:0.78rem;">🟢 TELEMETRY_STREAM // INDUSTRIAL BRUTALISM</span>
+            <span style="color:#64748b; font-size:0.7rem;">PORT: 8000</span>
+          </div>
+          <p style="font-size:0.78rem; color:#cbd5e1; margin-bottom:10px; font-family:monospace;">
+            Obsidian background (#070a0f), stark monospace grid, 1px chassis borders, and neon phosphor LEDs.
+            Zero-decorative layout shift. Built for mission-critical telemetry & developer tools.
+          </p>
+          <div style="display:flex; gap:8px;">
+            <button type="button" class="orbit-btn" style="background:#00f59b; color:#070a0f; font-weight:bold; font-size:0.72rem; padding:4px 10px; border-radius:2px;">INSPECT NODE</button>
+            <span class="orbit-robotic-badge">P95 &lt; 10MS</span>
+          </div>
+        </div>
+      `;
+    } else if (type === "neo-brutalism") {
+      previewContainer.innerHTML = `
+        <div class="orbit-preview-neobrutalism">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <span style="font-weight:900; font-size:0.85rem; text-transform:uppercase;">🔥 VIRAL CONSUMER APP</span>
+            <span style="background:#f43f5e; color:#fff; font-weight:900; font-size:0.65rem; border:2px solid #000; padding:2px 6px; border-radius:3px;">GEN Z POP</span>
+          </div>
+          <p style="font-size:0.78rem; font-weight:600; color:#000; margin-bottom:10px;">
+            Thick 3px solid black borders, hard 4px offset shadow (no blur), and electric cyber yellow (#facc15).
+            Instantly cuts through generic dark-mode SaaS templates during pitch judging!
+          </p>
+          <button type="button" style="background:#facc15; color:#000; font-weight:900; border:3px solid #000; border-radius:6px; padding:6px 14px; font-size:0.75rem; box-shadow:3px 3px 0px #000; cursor:pointer;">CLAIM INVITE ⚡</button>
+        </div>
+      `;
+    } else if (type === "glassmorphism") {
+      previewContainer.innerHTML = `
+        <div class="orbit-preview-glassmorphism">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <span style="color:#fff; font-weight:600; font-size:0.82rem;">Clinical Decision Intelligence</span>
+            <span style="background:rgba(56,189,248,0.15); color:#38bdf8; border:1px solid rgba(56,189,248,0.3); font-size:0.65rem; padding:2px 8px; border-radius:12px;">SOC 2 / HIPAA</span>
+          </div>
+          <p style="font-size:0.78rem; color:#cbd5e1; margin-bottom:10px; line-height:1.4;">
+            Multi-tiered frosted glass (backdrop-blur: 16px) with hairline specular borders. Projects elite enterprise authority and clinical trustworthiness.
+          </p>
+          <button type="button" class="orbit-btn" style="background:#0284c7; color:#fff; font-size:0.75rem; padding:5px 12px; border-radius:8px;">Examine Trial Data</button>
+        </div>
+      `;
+    } else if (type === "claymorphism") {
+      previewContainer.innerHTML = `
+        <div class="orbit-preview-claymorphism">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <span style="color:#312e81; font-weight:800; font-size:0.85rem;">Math Quest Adventure 🌟</span>
+            <span style="background:#fce7f3; color:#be185d; font-weight:700; font-size:0.68rem; padding:2px 10px; border-radius:12px;">Friendly 3D</span>
+          </div>
+          <p style="font-size:0.78rem; color:#475569; margin-bottom:10px;">
+            Pillowy soft 3D volumetric surfaces (24px radius) with dual inset shadows. Eliminates anxiety for young students and habit builders.
+          </p>
+          <button type="button" style="background:#6366f1; color:#fff; font-weight:700; border:none; border-radius:20px; padding:6px 16px; font-size:0.75rem; box-shadow:inset 2px 2px 4px rgba(255,255,255,0.7), 4px 8px 16px rgba(99,102,241,0.25); cursor:pointer;">Start Quiz</button>
+        </div>
+      `;
+    } else if (type === "skeuomorphism") {
+      previewContainer.innerHTML = `
+        <div class="orbit-preview-skeuomorphism">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; border-bottom:1px solid #2e333e; padding-bottom:4px;">
+            <span style="color:#ffb703; font-weight:bold; font-size:0.78rem; letter-spacing:0.5px;">ANALOG SYNTH MASTER // HARDWARE DSP</span>
+            <span style="color:#00e5ff; font-family:monospace; font-size:0.7rem;">+4.1 dB</span>
+          </div>
+          <p style="font-size:0.78rem; color:#cbd5e1; margin-bottom:10px;">
+            Brushed titanium plates, engraved dials, tactile toggle switches, and warm amber tube LED indicators. Sensory hardware familiarity for audio mixing.
+          </p>
+          <button type="button" style="background:linear-gradient(145deg, #2f3542, #1f2229); color:#ffb703; border:1px solid #3c4454; border-radius:4px; padding:5px 12px; font-size:0.72rem; font-weight:bold; cursor:pointer;">ENGAGE FILTER</button>
+        </div>
+      `;
+    }
   }
 
   async function triggerOnboardApi(profile) {
@@ -426,6 +539,26 @@
         item.innerHTML = `<strong style="color:var(--orbit-accent); font-family:var(--font-mono, monospace);">${folder}</strong>: <span style="color:#cbd5e1;">${desc}</span>`;
         folderList.appendChild(item);
       });
+    }
+
+    // Sync Frontend Aesthetic Tab if present
+    if (data.frontend_aesthetic) {
+      const a = data.frontend_aesthetic;
+      const badge = document.getElementById("orbitAestheticBadge");
+      const whyFit = document.getElementById("orbitAestheticWhyFit");
+      if (badge) badge.textContent = a.aesthetic_name.toUpperCase();
+      if (whyFit) whyFit.textContent = a.why_perfect_fit || "";
+
+      // Match button
+      const keyName = a.aesthetic_name.toLowerCase();
+      let matchedKey = "industrial-brutalism";
+      if (keyName.includes("neo-brutalism")) matchedKey = "neo-brutalism";
+      else if (keyName.includes("glassmorphism")) matchedKey = "glassmorphism";
+      else if (keyName.includes("claymorphism")) matchedKey = "claymorphism";
+      else if (keyName.includes("skeuomorphism")) matchedKey = "skeuomorphism";
+
+      const matchedBtn = document.querySelector(`.orbit-aesthetic-btn[data-aesthetic="${matchedKey}"]`);
+      if (matchedBtn) matchedBtn.click();
     }
 
     // Speech bubble feedback

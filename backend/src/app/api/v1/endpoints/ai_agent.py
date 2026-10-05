@@ -142,3 +142,22 @@ async def decide_software_pattern(req: PatternDecisionRequest):
         data=decision.model_dump(),
         message="Parent Agent Software Design Pattern decision computed successfully",
     )
+
+
+class AestheticDecisionRequest(BaseModel):
+    problem_statement: str
+
+
+@router.post("/aesthetic-decision", response_model=ResponseEnvelope[dict])
+async def decide_frontend_aesthetic(req: AestheticDecisionRequest):
+    """
+    Parent Agent Frontend Aesthetic Decision endpoint: Evaluates problem statement
+    and autonomously selects between Skeuomorphism, Claymorphism, Glassmorphism,
+    Neo-Brutalism, or Industrial Brutalism, returning CSS tokens and motion rules.
+    """
+    mascot = HSFMascotAgent()
+    decision = mascot.decide_frontend_aesthetic(req.problem_statement)
+    return ResponseEnvelope(
+        data=decision.model_dump(),
+        message="Parent Agent Frontend Aesthetic decision computed successfully",
+    )

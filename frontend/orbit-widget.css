@@ -485,3 +485,126 @@
   from { transform: translateY(30px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
+
+/* Motion Tokens (from hallmark/references/motion.md) */
+:root {
+  --orbit-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --orbit-dur-micro: 120ms;
+  --orbit-dur-short: 220ms;
+}
+
+/* Robotic Chassis Details */
+.orbit-robotic-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #0b101b;
+  border: 1px solid #1c2738;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.72rem;
+  color: #00f59b;
+}
+
+.orbit-laser-beam {
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #00f59b, transparent);
+  animation: orbitLaserSweep 2s infinite ease-in-out;
+}
+
+@keyframes orbitLaserSweep {
+  0% { transform: translateY(-8px); opacity: 0.3; }
+  50% { transform: translateY(8px); opacity: 1; }
+  100% { transform: translateY(-8px); opacity: 0.3; }
+}
+
+/* 5 Frontend Aesthetic Preview System Styles */
+.orbit-aesthetic-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 8px;
+  margin: 14px 0;
+}
+
+.orbit-aesthetic-btn {
+  background: #0b101b;
+  border: 1px solid #1c2738;
+  color: #cbd5e1;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  transition: transform var(--orbit-dur-micro) var(--orbit-ease-out), border-color var(--orbit-dur-micro) var(--orbit-ease-out);
+}
+
+.orbit-aesthetic-btn:hover {
+  transform: translateY(-2px);
+  border-color: #00b4d8;
+  color: #fff;
+}
+
+.orbit-aesthetic-btn.active {
+  background: #141d2e;
+  border-color: #00f59b;
+  color: #00f59b;
+  box-shadow: 0 0 12px rgba(0, 245, 155, 0.2);
+}
+
+/* Preview Card Containers */
+.orbit-preview-container {
+  background: #05080e;
+  border: 1px solid #1c2738;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 12px;
+}
+
+.orbit-preview-skeuomorphism {
+  background: linear-gradient(145deg, #252932, #181a20);
+  border: 1px solid #363c4a;
+  border-radius: 8px;
+  box-shadow: inset 1px 1px 2px rgba(255,255,255,0.15), inset -1px -1px 3px rgba(0,0,0,0.8), 4px 8px 16px rgba(0,0,0,0.6);
+  padding: 14px;
+  color: #e2e8f0;
+}
+
+.orbit-preview-claymorphism {
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow: inset 4px 4px 8px rgba(255,255,255,0.9), inset -4px -4px 8px rgba(165,180,252,0.35), 10px 20px 30px rgba(99,102,241,0.12);
+  padding: 16px;
+  color: #1e293b;
+}
+
+.orbit-preview-glassmorphism {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 14px;
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  padding: 16px;
+  color: #f8fafc;
+}
+
+.orbit-preview-neobrutalism {
+  background: #ffffff;
+  border: 3px solid #000000;
+  border-radius: 6px;
+  box-shadow: 4px 4px 0px #000000;
+  padding: 14px;
+  color: #000000;
+}
+
+.orbit-preview-industrialbrutalism {
+  background: #0d131f;
+  border: 1px solid #1c2738;
+  border-radius: 2px;
+  padding: 14px;
+  color: #f1f5f9;
+  font-family: monospace;
+}
+

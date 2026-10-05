@@ -167,3 +167,61 @@ async def test_agent_pattern_decision(async_client):
     assert "why_chosen" in data["data"]
     assert "why_not_microservices" in data["data"]
     assert "folder_anatomy_implications" in data["data"]
+
+
+@pytest.mark.asyncio
+async def test_agent_aesthetic_decisions(async_client):
+    # 1. Industrial Brutalism
+    res_ind = await async_client.post(
+        "/api/v1/agent/aesthetic-decision",
+        json={"problem_statement": "Real-time Kubernetes cloud observability telemetry"},
+    )
+    assert res_ind.status_code == 200
+    data_ind = res_ind.json()["data"]
+    assert "Industrial Brutalism" in data_ind["aesthetic_name"]
+    assert "--bg-canvas" in data_ind["css_design_tokens"]
+    assert "JetBrains Mono" in data_ind["css_design_tokens"]["--font-mono"]
+
+    # 2. Neo-Brutalism
+    res_neo = await async_client.post(
+        "/api/v1/agent/aesthetic-decision",
+        json={"problem_statement": "Viral creator economy social shopping app for GenZ"},
+    )
+    assert res_neo.status_code == 200
+    data_neo = res_neo.json()["data"]
+    assert "Neo-Brutalism" in data_neo["aesthetic_name"]
+    assert "3px solid #000000" in data_neo["css_design_tokens"]["--border-thick"]
+
+    # 3. Glassmorphism
+    res_glass = await async_client.post(
+        "/api/v1/agent/aesthetic-decision",
+        json={
+            "problem_statement": "AI Healthcare Clinical Decision and Patient Diagnosis Assistant"
+        },
+    )
+    assert res_glass.status_code == 200
+    data_glass = res_glass.json()["data"]
+    assert "Glassmorphism" in data_glass["aesthetic_name"]
+    assert "blur(16px)" in data_glass["css_design_tokens"]["--backdrop-blur"]
+
+    # 4. Claymorphism
+    res_clay = await async_client.post(
+        "/api/v1/agent/aesthetic-decision",
+        json={
+            "problem_statement": "Interactive school math tutor and habit tracker for young kids"
+        },
+    )
+    assert res_clay.status_code == 200
+    data_clay = res_clay.json()["data"]
+    assert "Claymorphism" in data_clay["aesthetic_name"]
+    assert "28px" in data_clay["css_design_tokens"]["--radius-clay"]
+
+    # 5. Skeuomorphism
+    res_skeuo = await async_client.post(
+        "/api/v1/agent/aesthetic-decision",
+        json={"problem_statement": "Virtual audio synthesizer pedal board and DSP studio mixer"},
+    )
+    assert res_skeuo.status_code == 200
+    data_skeuo = res_skeuo.json()["data"]
+    assert "Skeuomorphism" in data_skeuo["aesthetic_name"]
+    assert "linear-gradient" in data_skeuo["css_design_tokens"]["--surface-metal"]

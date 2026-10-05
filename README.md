@@ -898,113 +898,288 @@ flowchart TD
 
 ---
 
-## 🗂️ Full Project Directory Anatomy & Rules
+## 🎨 The 5 Frontend Aesthetic Paradigms & Autonomous Decision Engine
 
-The HSF repository follows a strict, high-discipline directory structure. Every directory has an explicit purpose, allowed contents, and strictly forbidden anti-patterns:
+In modern hackathon competitions, **judges evaluate your UI within 90 seconds**. A generic, interchangeable AI-generated SaaS template with pastel purple gradients instantly communicates "we built a toy wrapper."
 
-```
-hackathon-strategy-framework/
-├── frontend/              # High-Density Vanilla SPA & Real-Time Console
-│   ├── index.html         # Agent Execution Console & Orbit Mascot Panel
-│   ├── documents.html     # Document Vault & pgvector Hybrid Search UI
-│   ├── analytics.html     # System Telemetry & Circuit Breaker Status UI
-│   ├── connectivity.html  # Inter-Layer Connectivity Topology & Network Map
-│   ├── style.css          # Design Tokens (Plus Jakarta Sans + JetBrains Mono)
-│   ├── app.js             # SSE EventSource listener & job lifecycle manager
-│   ├── orbit-widget.js    # Senior Orbit Floating Mascot Companion & Onboarding
-│   └── orbit-widget.css   # Mascot Glassmorphism & Desktop Widget Styles
-├── backend/               # Asynchronous API Layer (FastAPI 0.115+)
-│   ├── src/app/
-│   │   ├── api/v1/        # Layered REST Routers & SSE Stream Endpoints
-│   │   ├── core/          # Invariant Ports: Database, Redis Pool, Resilience
-│   │   ├── models/        # SQLAlchemy 2.0 Async PostgreSQL Models
-│   │   ├── schemas/       # Pydantic v2 Request/Response Envelopes
-│   │   └── services/      # Domain Logic Handlers & Redis Job Dispatcher
-│   └── tests/             # Pytest Async Test Suite (11/11 Verified Passing)
-├── database/              # PostgreSQL 16 ACID Core & Vector Store
-│   ├── supabase_rls.sql   # Supabase Row-Level Security Policies (auth.uid())
-│   ├── migrations/        # Alembic Migration Scripts
-│   └── seed_data.py       # Instant 3-Second Synthetic Vector & Entity Seeder
-├── ai_layer/              # Multi-Agent Orchestration & RAG Pipeline
-│   ├── mascot_agent.py    # Orbit Strategy & Senior Engineer Decision Engine
-│   ├── langgraph_supervisor.py # Cyclic Multi-Agent StateGraph with Human Gate
-│   ├── fastmcp_server.py  # Isolated FastMCP SSE Tool Server (Port 8001)
-│   ├── hybrid_retriever.py# Dense pgvector + Sparse BM25 Fusion (RRF k=60)
-│   ├── flashrank_reranker.py # Ultra-Fast Cross-Encoder Neural Reranker (<20ms)
-│   └── eval_harness.py    # RAGAS Golden Dataset Evaluation Harness
-├── infra/                 # Containerization & Cloud Deployment
-│   ├── Dockerfile         # Multi-Stage Minimal Build (<180MB, Non-Root appuser)
-│   ├── docker-compose.yml # Local 4-Service Network (API, Postgres, Redis, FastMCP)
-│   ├── aws-architecture.md# AWS Production Architecture Specification
-│   ├── aws-ecs-task-definition.json # Serverless ECS Fargate Task Definition
-│   └── deploy_aws.sh      # Automated Cloud Deployment Script
-├── pitch/                 # Presentation Engine & Fail-Safe Demo
-│   ├── pitch.marp.md      # Marp Code-Rendered 6-Minute Pitch Deck
-│   ├── presentation.html  # Interactive HTML Slide Deck (Self-Contained)
-│   ├── demo.sh            # Live Terminal Stage Backup Runner (Offline-Ready)
-│   └── generate_pitch.sh  # Automated Slide Compilation Pipeline
-├── scripts/               # Automation & Reviewer Utilities
-│   ├── mascot_agent.py    # Standalone CLI Strategy Decomposer
-│   ├── senior_companion.py# CLI Senior Engineer Companion & Branch Watcher
-│   └── review_pr.py       # Local PR Reviewer Agent & Security Scanner
-├── docs/                  # OpenAPI Specs & Team Guides
-│   ├── openapi.json       # OpenAPI 3.1 Specification Contract
-│   ├── team-advantages-guide.md # Complete Kickoff & Competitor Moat Playbook
-│   └── architecture/      # Interactive Archify SVG Topologies
-└── bin/cli.js             # Unified Developer CLI (`hsf` command)
+The Parent Agent (`HSFMascotAgent` in Python and `HSFMascotDirector` in Java) dynamically selects the winning frontend aesthetic based on the domain problem statement, guaranteeing maximum psychological impact and brand memorability:
+
+```mermaid
+flowchart TD
+    Problem["Problem Statement Ingested"] --> Classifier{"Parent Agent Aesthetic Classifier"}
+    Classifier -->|Developer Tools, Cloud Infra, Observability, Cyber| IB["Industrial Brutalism<br/>(Mission-Critical System Terminal HUD)"]
+    Classifier -->|Consumer B2C, Viral Creator Economy, Web3, Gaming| NB["Neo-Brutalism<br/>(High-Contrast Bold Pop & Kinetic Playfulness)"]
+    Classifier -->|Healthcare Clinical RAG, Legal Governance, Executive AI| GM["Glassmorphism<br/>(Frosted Precision Glass & Spatial Depth)"]
+    Classifier -->|EdTech, Kids Learning, Gamified Habits, Mental Health| CM["Claymorphism<br/>(Friendly 3D Volumetric Soft Aesthetic)"]
+    Classifier -->|Audio Synthesizers, Hardware DSP, Studio Consoles| SK["Skeuomorphism<br/>(Modern Tactile Hardware & Analog Meters)"]
+
+    IB --> DesignTokens["CSS Tokens, Tailwind Recipe, Motion Rules Mapped"]
+    NB --> DesignTokens
+    GM --> DesignTokens
+    CM --> DesignTokens
+    SK --> DesignTokens
 ```
 
-### Granular Directory Responsibilities & Anti-Pattern Rules:
+### 1. Comparative Aesthetic Matrix
 
-#### 1. `frontend/` (Vanilla SPA & Real-Time Console)
-* **What Belongs Here**: High-density HTML views, scoped CSS stylesheets, native JavaScript event handlers, SSE `EventSource` listeners, and the Senior Orbit companion widget.
-* **Allowed Files**: `index.html`, `documents.html`, `analytics.html`, `connectivity.html`, `style.css`, `app.js`, `orbit-widget.js`, `orbit-widget.css`.
-* **🚫 Forbidden Anti-Patterns**:
-  - NEVER introduce a heavy build system (e.g. create-react-app, Vite, Next.js) midway through the sprint. It inflates Docker build time from 30s to 12 minutes and risks container breakage.
-  - NEVER poll backend endpoints with `setInterval()` when SSE is already streaming on `/api/v1/jobs/{id}/stream`.
-  - NEVER hardcode API keys or secret tokens in client-side JavaScript.
+| Aesthetic Paradigm | Visual Archetype | Target Psychological Impact | Ideal Hackathon Problem Domains | Key CSS Design Tokens |
+| :--- | :--- | :--- | :--- | :--- |
+| **Industrial Brutalism** | High-density monospace grid, obsidian surfaces, zero-decoration wireframes, neon phosphor LEDs. | Technical rigor, engineering dominance, mathematical certainty, mission-critical stability. | Cloud observability, cybersecurity, DevOps pipelines, IoT telemetry, AI agent tracing. | `--bg: #070a0f`<br/>`--border: 1px solid #1c2738`<br/>`--accent: #00f59b`<br/>`--font: JetBrains Mono` |
+| **Neo-Brutalism** | Thick 3px solid black borders, hard 4px offset drop shadows (zero blur), saturated cyber pop colors. | High energy, playful confidence, irreverence, unmistakable brand distinctiveness. | B2C consumer apps, creator economy, social shopping, Web3, Gen Z hackathons. | `--bg: #fef08a`<br/>`--border: 3px solid #000`<br/>`--shadow: 4px 4px 0px #000`<br/>`--accent: #facc15` |
+| **Glassmorphism** | Multi-tiered translucent frosted glass sheets (`backdrop-filter: blur(16px)`), specular hairline borders. | Clinical trust, institutional authority, sophistication, clean data clarity. | Healthcare diagnostics, clinical trials, legal contract intelligence, executive wealth. | `--bg: radial-gradient(#0f172a, #020617)`<br/>`--surface: rgba(255,255,255,0.04)`<br/>`--border: 1px solid rgba(255,255,255,0.14)` |
+| **Claymorphism** | Pillowy soft 3D volumetric cards (`border-radius: 28px`), dual inner inset shadows, friendly pastels. | Approachability, warmth, psychological safety, joyful gamified progression. | EdTech, student math tutors, child wellness, habit trackers, calm mindfulness. | `--bg: #eef2ff`<br/>`--radius: 28px`<br/>`--shadow: inset 4px 4px 8px #fff, inset -4px -4px 8px #a5b4fc, 10px 20px 30px rgba(99,102,241,0.12)` |
+| **Skeuomorphism** | Brushed titanium chassis, embossed bevels, debossed LED meters, analog rotary dials, tube glow. | Tactile precision, sensory familiarity, physical reliability, handcrafted mastery. | Audio engineering, digital signal processing (DSP), hardware controllers, studio mixers. | `--bg: #121418`<br/>`--surface: linear-gradient(145deg, #252932, #181a20)`<br/>`--shadow: inset 1px 1px 2px #fff2, inset -1px -1px 3px #000c, 4px 8px 16px #0009` |
 
-#### 2. `backend/` (FastAPI 0.115+ Asynchronous Engine)
-* **What Belongs Here**:
-  - `src/app/api/v1/endpoints/`: Thin, asynchronous REST route handlers.
-  - `src/app/core/`: Invariant infrastructure ports (database session generators, Redis connection pools, CircuitBreaker decorators).
-  - `src/app/models/`: Declarative SQLAlchemy 2.0 ORM models.
-  - `src/app/schemas/`: Typed Pydantic v2 validation models and `ResponseEnvelope[T]`.
-  - `src/app/services/`: Pure business logic and background job dispatchers.
-  - `tests/`: Asynchronous unit and integration test suite (`pytest`).
-* **🚫 Forbidden Anti-Patterns**:
-  - NEVER use synchronous blocking functions (`requests.get()`, `time.sleep()`, synchronous file I/O) inside `async def` routes.
-  - NEVER return raw untyped Python dictionaries (`dict`). Always use Pydantic models.
-  - NEVER put database query logic or LLM prompts directly inside route handlers (keep handlers thin; delegate to services).
+### 2. Deep Paradigm Specifications & Code Recipes
 
-#### 3. `database/` (PostgreSQL 16 ACID Core & Vector Storage)
-* **What Belongs Here**: Supabase Row-Level Security policy definitions (`supabase_rls.sql`), Alembic database schema migrations, and fast synthetic data seeders (`seed_data.py`).
-* **🚫 Forbidden Anti-Patterns**:
-  - NEVER concatenate raw user input into SQL queries (prevents SQL injection).
-  - NEVER disable Supabase Row-Level Security or create permissive `USING (true)` policies.
-  - NEVER store files or binary blobs $>100\text{KB}$ in database columns. Store in S3 and reference the URI.
-  - NEVER use SQLite for a vector hackathon demo.
+#### A. Industrial Brutalism (Mission-Critical System Terminal HUD)
+* **Design Philosophy**: Strips away all decorative AI-slop fluff. Maximizes information density, displays streaming terminal logs in real time, and uses precise telemetry status LEDs.
+* **Tailwind Class Recipe**:
+  - Container Card: `bg-[#0d131f] border border-[#1c2738] rounded-sm p-5 font-mono text-slate-200`
+  - Action Button: `bg-[#00f59b] text-[#070a0f] font-bold px-4 py-2 rounded-sm uppercase tracking-wider text-xs hover:bg-[#00d685] active:translate-y-[1px]`
+  - Telemetry Badge: `border border-[#00f59b]/40 bg-[#00f59b]/10 text-[#00f59b] px-2.5 py-0.5 rounded-sm text-xs font-mono tracking-widest uppercase`
+* **Motion Rules**: `--dur-micro: 100ms`, `cubic-bezier(0.16, 1, 0.3, 1)`. Telemetry gauges animate strictly using GPU-composited `transform: scaleX()`.
 
-#### 4. `ai_layer/` (Multi-Agent StateGraph & RAG Retrieval)
-* **What Belongs Here**: LangGraph cyclic state machine supervisor (`langgraph_supervisor.py`), FastMCP isolated tool server (`fastmcp_server.py`), dense + sparse hybrid retriever (`hybrid_retriever.py`), FlashRank neural cross-encoder reranker (`flashrank_reranker.py`), and RAGAS eval harness (`eval_harness.py`).
-* **🚫 Forbidden Anti-Patterns**:
-  - NEVER write unbounded recursive `while True:` loops that call external LLM APIs.
-  - NEVER execute untrusted shell scripts or web scrapers in the primary FastAPI API process thread.
-  - NEVER rely solely on naive cosine distance vector search (always fuse with BM25 keyword matching via RRF).
-  - NEVER allow an AI agent to execute irreversible actions without a human approval gate (`interrupt_before=["human_gate"]`).
+#### B. Neo-Brutalism (High-Contrast Bold Pop & Kinetic Playfulness)
+* **Design Philosophy**: In a sea of identical dark-mode Tailwind SaaS pitches, Neo-Brutalism explodes off the projector screen. It pairs electric saturated yellow (`#facc15`) and coral pink (`#f43f5e`) with unapologetic black geometry and tactile hard offset drop shadows.
+* **Tailwind Class Recipe**:
+  - Container Card: `bg-white border-[3px] border-black rounded-lg shadow-[4px_4px_0px_#000000] p-6 text-black`
+  - Action Button: `bg-[#facc15] text-black font-extrabold border-[3px] border-black rounded-lg px-6 py-3 shadow-[4px_4px_0px_#000000] hover:shadow-[6px_6px_0px_#000000] hover:-translate-x-[2px] hover:-translate-y-[2px] active:shadow-[1px_1px_0px_#000000] active:translate-x-[3px] active:translate-y-[3px]`
+  - Badge: `bg-[#f43f5e] text-white font-black border-2 border-black px-3 py-1 rounded text-xs uppercase shadow-[2px_2px_0px_#000000]`
+* **Motion Rules**: Zero-lag button clicks with instant physical collapse from 4px offset shadow down to 1px on active press.
 
-#### 5. `infra/` (Containerization & AWS Fargate Cloud)
-* **What Belongs Here**: Multi-stage minimal `Dockerfile` (<180MB), multi-service `docker-compose.yml`, AWS ECS task definition JSON, and cloud deployment scripts (`deploy_aws.sh`).
-* **🚫 Forbidden Anti-Patterns**:
-  - NEVER run Docker containers as the `root` user in production. Always run as non-root `appuser`.
-  - NEVER copy `.env` files with live production secrets into Docker image layers.
-  - NEVER expose unauthenticated Redis or Postgres ports to the public internet (`0.0.0.0/0`).
+#### C. Glassmorphism (Frosted Precision Glass & Spatial Depth)
+* **Design Philosophy**: Uses layered translucency with `backdrop-filter: blur(16px)` and hairline specular highlights to establish hierarchical depth for high-stakes clinical and legal data.
+* **Tailwind Class Recipe**:
+  - Container Card: `bg-white/[0.04] backdrop-blur-md border border-white/[0.14] rounded-2xl shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.2)] p-6 text-slate-100`
+  - Action Button: `bg-sky-500/80 hover:bg-sky-500 backdrop-blur-sm text-white font-medium px-5 py-2.5 rounded-xl border border-sky-400/40 shadow-[0_0_20px_rgba(56,189,248,0.3)] hover:scale-[1.02] active:scale-[0.98]`
+  - Badge: `bg-white/[0.08] backdrop-blur-sm border border-white/20 text-sky-300 px-3 py-1 rounded-full text-xs font-semibold`
+* **Motion Rules**: Floating elevation on hover (`translateY(-3px)`), with backdrop filters kept static to prevent GPU composite re-rasterization.
 
-#### 6. `pitch/` (Presentation Engine & Fail-Safe Stage Demo)
-* **What Belongs Here**: Marp presentation slide source (`pitch.marp.md`), compiled self-contained HTML slides (`presentation.html`), PDF exports, and the live terminal backup runner (`demo.sh`).
-* **🚫 Forbidden Anti-Patterns**:
-  - NEVER wait until Hour 23 to write your pitch deck. Draft slides at Hour 6 and iterate.
-  - NEVER rely solely on live conference stage Wi-Fi without testing the local terminal fail-safe runner `bash pitch/demo.sh`.
+#### D. Claymorphism (Friendly 3D Volumetric Soft Aesthetic)
+* **Design Philosophy**: Uses dual inner inset shadows (`inset 4px 4px 8px #fff, inset -4px -4px 8px #a5b4fc`) to simulate inflated soft clay surfaces. Eliminates intimidation for educational and mental wellness software.
+* **Tailwind Class Recipe**:
+  - Container Card: `bg-white rounded-[28px] shadow-[inset_4px_4px_8px_rgba(255,255,255,0.9),inset_-4px_-4px_8px_rgba(165,180,252,0.35),10px_20px_30px_rgba(99,102,241,0.12)] p-6 text-slate-800`
+  - Action Button: `bg-indigo-500 text-white rounded-full font-bold px-6 py-3 shadow-[inset_2px_2px_4px_rgba(255,255,255,0.8),inset_-2px_-2px_4px_rgba(79,70,229,0.2),6px_12px_20px_rgba(99,102,241,0.25)] hover:scale-[1.03] active:scale-[0.96]`
+* **Motion Rules**: Soft spring squash-and-stretch on click (`scale(0.96)`) using duration `--dur-short: 200ms`.
+
+#### E. Skeuomorphism (Modern Tactile Hardware & Analog Instrumentation)
+* **Design Philosophy**: Bridges physical instrumentation with digital AI intelligence. Metallic gradients, embossed bevels, recessed rotary knobs, and warm amber vacuum-tube indicators.
+* **Tailwind Class Recipe**:
+  - Container Card: `bg-gradient-to-br from-[#252932] to-[#181a20] border border-[#363c4a] rounded-lg shadow-[inset_1px_1px_2px_rgba(255,255,255,0.15),inset_-1px_-1px_3px_rgba(0,0,0,0.8),4px_8px_16px_rgba(0,0,0,0.6)] p-5 text-slate-200`
+  - Rotary Bezel: `w-16 h-16 rounded-full bg-gradient-to-br from-[#2f333c] to-[#15171c] shadow-[inset_1px_1px_2px_rgba(255,255,255,0.2),2px_4px_8px_rgba(0,0,0,0.7)] border border-[#363c4a]`
+* **Motion Rules**: Rotary dials use continuous pointer-lock with inertial damping; switches snap physically with `--dur-micro: 100ms`.
+
+---
+
+## 🗂️ Generally Applicable Production Patterns & Full Project Directory Anatomy
+
+HSF enforces **generally applicable, production-level standard patterns across all layers and tech stacks**. Whether your team uses Vanilla JS, Next.js, FastAPI, Spring Boot, or Go, the architectural boundaries and directory anatomy remain rock-solid.
+
+### Layer 1: Frontend Layer Production Patterns & Directory Anatomy
+
+Applicable to **Vanilla SPA / MPA** and modern **Next.js App Router / React / Vue** applications:
+
+```
+frontend/ (or src/ for Next.js / React projects)
+├── app/ (or pages/)                 # Route handlers, layouts, server-side error boundaries & page metadata
+│   ├── layout.tsx                   # Root shell with global CSS tokens, dark mode provider, and fonts
+│   ├── page.tsx                     # Main live execution console & dashboard
+│   ├── documents/page.tsx           # Document vault & pgvector search view
+│   └── analytics/page.tsx           # Telemetry metrics & circuit breaker dashboard
+├── components/                      # Composable UI components organized by scope
+│   ├── ui/                          # Primitive design system molecules (Button, Input, Card, Badge, Modal)
+│   ├── features/                    # Domain feature widgets (TelemetryStream, VectorSearch, ApprovalModal)
+│   └── layout/                      # Global navigation shells (Header, Sidebar, TerminalDrawer)
+├── hooks/                           # Custom React/JS hooks (useSSEStream, useLocalStorage, useDebounce)
+├── stores/                          # Reactive client state stores (Zustand, Redux, or native event emitters)
+├── lib/                             # Utility helpers, typed fetch wrappers, date/currency formatters
+├── styles/                          # Global CSS design tokens, aesthetic themes, and animation keyframes
+└── types/                           # Strict TypeScript types mirrored directly from OpenAPI 3.1 contracts
+```
+
+#### Granular Frontend Production Rules:
+1. **Server State vs. Client State Separation**: Never store remote API responses in global state without a dedicated cache layer (SWR, React Query, or EventSource listener). UI state (drawer open, active tab) stays in local state.
+2. **Streaming Lifecycle Hygiene**: When consuming Server-Sent Events (`EventSource`), always implement explicit reconnect backoff and close the event stream inside cleanup functions (`componentWillUnmount` / `useEffect` return).
+3. **Zero Layout Shifts (CLS < 0.05)**: Pre-allocate heights and widths for dynamic content and streaming terminal logs using `min-height` or CSS grid skeletons.
+4. **Motion Discipline (Emil Kowalski + Hallmark)**:
+   - Animate ONLY `transform` and `opacity` (GPU-composited). Never animate `height`, `width`, `margin`, or `padding`.
+   - Durations strictly bucketed: `--dur-micro: 120ms` (toggles, clicks), `--dur-short: 220ms` (hovers, drawers), `--dur-long: 420ms` (modals).
+   - Easing: `--ease-out: cubic-bezier(0.16, 1, 0.3, 1)`.
+5. **🚫 Forbidden Frontend Anti-Patterns**:
+   - NEVER introduce a heavy new frontend framework in Hour 18 of a 24h hackathon.
+   - NEVER poll the server with `setInterval()` when SSE is already broadcasting.
+   - NEVER embed API keys, secrets, or database URLs in client bundles.
+
+---
+
+### Layer 2: Backend API Layer Production Patterns & Directory Anatomy
+
+Applicable to **FastAPI**, **Express / NestJS**, **Spring Boot**, and **Go**:
+
+```
+backend/src/app/
+├── api/                             # Presentation Adapter: Inbound REST, SSE, and WebSocket endpoints
+│   ├── v1/endpoints/                # Versioned routers grouped by domain resource
+│   │   ├── auth.py                  # JWT authentication & session verification
+│   │   ├── documents.py             # Multipart upload, chunking, and hybrid search routes
+│   │   ├── ai_agent.py              # LangGraph multi-agent triggers, onboarding, and decisions
+│   │   ├── analytics.py             # Telemetry probes, circuit breaker state, and latency metrics
+│   │   └── health.py                # Deep liveness & vector extension health probe
+│   └── dependencies.py              # Injected route dependencies (get_db, get_redis, get_current_user)
+├── core/                            # Invariant System Ports & Cross-Cutting Infrastructure
+│   ├── config.py                    # Pydantic BaseSettings loading validated .env variables
+│   ├── database.py                  # SQLAlchemy 2.0 async engine, connection pool, and session factory
+│   ├── redis.py                     # Redis 7 connection pool, Pub/Sub channels, and semantic cache
+│   ├── security.py                  # Password hashing (Argon2/bcrypt) and JWT encode/decode
+│   └── resilience.py                # Circuit Breaker, Exponential Backoff, and Idempotency decorators
+├── models/                          # Declarative Persistence Entities (SQLAlchemy 2.0 Async ORM)
+│   ├── document.py                  # Document model with pgvector Vector(1536) and TSVector
+│   └── user.py                      # Multi-tenant user entity with role-based attributes
+├── schemas/                         # Pydantic v2 DTOs (Request validations & ResponseEnvelope[T])
+│   ├── common.py                    # Standardized ResponseEnvelope[T] and PageEnvelope[T]
+│   └── document.py                  # Ingestion, search, and semantic similarity schemas
+├── services/                        # Application Domain Services (orchestrates repositories and external AI)
+│   ├── document_service.py          # Chunking, embedding calculation, and RRF ranking
+│   └── job_dispatcher.py            # Asynchronous job creation and Redis event publishing
+├── repositories/                    # Data Access Layer (SQL queries, vector distance searches)
+├── workers/                         # Asynchronous Background Task Workers (Redis Streams / Celery)
+└── tests/                           # Pytest async test suite with 100% test passing requirement
+```
+
+#### Granular Backend Production Rules:
+1. **The Response Envelope Pattern**: Every JSON response MUST be wrapped in `ResponseEnvelope[T]` (`data`, `success`, `message`, `errors`, `timestamp`). No raw naked dicts.
+2. **Async Event-Loop Safety**: Never call blocking synchronous functions (`time.sleep()`, `requests.get()`, synchronous disk reads) inside `async def` endpoints. Always use `asyncio.sleep()`, `httpx.AsyncClient()`, and `aiofiles`.
+3. **Dependency Injection**: Route handlers must never instantiate database connections or Redis clients directly; always inject via `Depends(get_db)`.
+4. **Resilience Decorators**: All third-party AI provider calls MUST be wrapped in a Circuit Breaker (`failure_threshold=3`, `recovery_timeout=30s`) and Exponential Backoff with jitter.
+5. **🚫 Forbidden Backend Anti-Patterns**:
+   - NEVER write SQL queries directly in route handlers.
+   - NEVER catch `Exception` and silently swallow errors without logging stack traces.
+   - NEVER leave CORS configured with `allow_origins=["*"]` when deploying to production with credentials.
+
+---
+
+### Layer 3: Database & Persistence Layer Production Patterns & Directory Anatomy
+
+Applicable to **PostgreSQL 16**, **pgvector**, **Supabase**, and **Redis**:
+
+```
+database/
+├── migrations/                      # Version-controlled, idempotent DDL schema migrations (Alembic/Flyway)
+│   ├── env.py                       # Migration runner environment configuration
+│   └── versions/                    # Timestamped migration steps
+├── seeds/                           # Synthetic data seed scripts with pre-computed vector embeddings
+│   └── seed_data.py                 # Fast 3-second seeder injecting 50+ domain documents
+├── policies/                        # Supabase Row-Level Security (RLS) SQL policies
+│   └── supabase_rls.sql             # Tenant-isolated access policies based on auth.uid()
+├── functions/                       # Stored procedures, triggers, and custom similarity distance metrics
+└── schema.sql                       # Complete declarative baseline schema definition
+```
+
+#### Granular Database Production Rules:
+1. **HNSW Vector Indexing**: Tables containing $>1,000$ vector embeddings MUST use HNSW indexing (`USING hnsw (embedding vector_cosine_ops) WITH (m = 16, ef_construction = 64)`). Avoid IVFFlat for live hackathon demos due to list-rebuilding overhead.
+2. **Reciprocal Rank Fusion (RRF) Hybrid Search**: Always combine dense semantic similarity (Cosine `<=>`) with sparse lexical matching (`tsvector @@ to_tsquery`) to ensure exact acronyms, IDs, and jargon are never missed by pure vector search.
+3. **Row-Level Security (RLS)**: Enable RLS on every multi-tenant table (`ALTER TABLE ... ENABLE ROW LEVEL SECURITY;`). Always filter by authenticated user ID (`auth.uid()`).
+4. **Connection Pool Discipline**: In containerized environments, enforce maximum pool sizes (10-20 connections) to avoid exhausting PostgreSQL server memory.
+5. **🚫 Forbidden Database Anti-Patterns**:
+   - NEVER concatenate user input into SQL strings (prevents SQL injection).
+   - NEVER store large media files ($>100\text{KB}$) in database columns. Store in S3 and reference the URI.
+   - NEVER run unindexed vector searches during a live stage presentation.
+
+---
+
+### Layer 4: DevOps, Cloud Infrastructure & Pitch Layer Production Anatomy & Rules
+
+Applicable to **Docker**, **Docker Compose**, **AWS ECS on Fargate**, and **Marp**:
+
+```
+infra/ and pitch/
+├── infra/
+│   ├── Dockerfile                   # Multi-stage minimal container build (<180MB, non-root appuser)
+│   ├── docker-compose.yml           # Local multi-service emulation (API, PostgreSQL, Redis, FastMCP)
+│   ├── aws-architecture.md          # Cloud architecture specification and ALB diagram
+│   ├── aws-ecs-task-definition.json # Serverless AWS ECS Fargate task definition
+│   └── deploy_aws.sh                # Automated cloud deployment script
+└── pitch/
+    ├── pitch.marp.md                # Marp Markdown code-rendered 6-minute presentation deck
+    ├── presentation.html            # Standalone interactive HTML slide presentation
+    ├── demo.sh                      # Emergency live stage fail-safe runner (colored terminal cURL)
+    └── generate_pitch.sh            # Automated slide compilation script (runs Marp CLI)
+```
+
+#### Granular DevOps & Pitch Production Rules:
+1. **Multi-Stage Non-Root Containers**: Production Dockerfiles MUST use multi-stage builds (`builder` -> `runner`). Containers MUST execute as non-root `appuser` (UID 10001). Image size MUST remain under 180MB.
+2. **Health Check Probing**: The container must expose `/api/v1/health` verifying database connectivity and pgvector extension status within 200ms.
+3. **Stage Fail-Safe Runner (`pitch/demo.sh`)**: Always have an automated terminal script that executes the core end-to-end user journey in under 30 seconds using colored terminal output. If conference Wi-Fi crashes or a browser extension freezes, switch to this terminal and deliver a flawless demo.
+4. **Marp Code-First Pitch Deck**: Pitch decks belong in version control (`pitch/pitch.marp.md`). Compile to HTML and PDF before going to the presentation hall.
+5. **🚫 Forbidden DevOps Anti-Patterns**:
+   - NEVER run production Docker containers as `root`.
+   - NEVER commit `.env` files with API keys or database passwords to git.
+   - NEVER wait until Hour 23 to write your presentation slides. Draft slides at Hour 6 and iterate.
+
+---
+
+## 🤖 Dual-Engine Mascot Director & Real Robotic Dashboard (Java + Python + Next.js)
+
+Orbit operates as a **Senior Principal Robotic Director** sitting beside your team. It is implemented across **two native enterprise engines** with an accompanying **Next.js Motion Dashboard**:
+
+```mermaid
+flowchart LR
+    Problem["Hackathon Problem Statement"] --> Engines{"Orbit Dual Engines"}
+    Engines -->|Java OpenJDK 17| JavaEngine["HSFMascotDirector.java<br/>(ai_layer/java/)"]
+    Engines -->|Python FastAPI| PyEngine["HSFMascotAgent.py<br/>(ai_layer/)"]
+
+    JavaEngine --> Rationale["Deep Architectural Justification & Essays"]
+    PyEngine --> FastAPIRoutes["REST / SSE Endpoints (/api/v1/agent/*)"]
+
+    FastAPIRoutes --> Dashboard["Next.js Motion Dashboard<br/>(mascot-dashboard/)"]
+    Rationale --> SquadPrompts["5-Person Squad Prompts (Antigravity/Claude/Cursor)"]
+```
+
+### 1. Java Mascot Director Engine (`ai_layer.java.HSFMascotDirector`)
+Built in pure **Java OpenJDK 17** without external dependencies. Autonomously evaluates problem statements, selects architectural patterns and frontend aesthetic paradigms, and generates deep architectural justification essays and multi-agent squad prompts.
+
+```bash
+# Execute Java Mascot Director:
+java -cp . ai_layer.java.HSFMascotDirector "Real-time IoT drone fleet collision avoidance telemetry"
+
+# Emit structured JSON output:
+java -cp . ai_layer.java.HSFMascotDirector "AI Healthcare Clinical Diagnostics" --json
+
+# Launch via unified CLI:
+hsf director "Viral creator economy social shopping for GenZ"
+```
+
+### 2. Next.js + Motion Robotic Dashboard (`mascot-dashboard/`)
+Built with **Next.js 14 App Router**, **Framer Motion**, and **Tailwind CSS**. Derives design tokens directly from `hallmark/references/motion.md` (`cubic-bezier(0.16, 1, 0.3, 1)`, `--dur-micro`, `--dur-short`, GPU-only transforms).
+* **Robotic Mascot Chassis (`RoboticMascotChassis.tsx`)**: Real mechanical titanium chassis with animated laser sensor visor, hydraulic neck pistons, status dials, and telemetry gauges.
+* **Autonomous Aesthetic Switcher (`AestheticSwitcher.tsx`)**: Live interactive previewer for Skeuomorphism, Claymorphism, Glassmorphism, Neo-Brutalism, and Industrial Brutalism.
+* **Senior Principal Desk (`TeammateOnboardingConsole.tsx`)**: Teammate onboarding questionnaire with strict DOs & DON'Ts and 1-click AI IDE prompt generation.
+* **Skills Matrix (`SkillsGrid.tsx`)**: Visual map of all 17 pre-installed skills.
+
+```bash
+# Run the Next.js Robotic Dashboard:
+cd mascot-dashboard
+npm install
+npm run dev
+# Dashboard live at http://localhost:3000
+```
+
+---
+
+## 🏆 What Else Are You Missing? The Hackathon Victory Gap Analysis
+
+Most hackathon teams have great ideas but lose the competition on predictable execution failures. Here is the comprehensive gap analysis of the **7 Fatal Blind Spots** that eliminate 99% of competitors, and how HSF systematically guarantees victory:
+
+| Competitor Blind Spot | Why 99% of Teams Fail | How HSF Eliminates the Risk |
+| :--- | :--- | :--- |
+| **1. Conference Stage Wi-Fi Drop** | Live browser demo freezes because conference venue Wi-Fi is overloaded with 500 laptops. Judges move on. | HSF provides **`pitch/demo.sh`**, an automated offline terminal cURL script that runs entirely on `localhost`, delivering a 30-second live colored demo without internet. |
+| **2. Upstream AI API Rate Limits & Latency** | LLM API provider throttles requests or takes 14 seconds to respond on stage, killing the pitch flow. | HSF provides **sub-10ms Redis Semantic Caching** and **Circuit Breakers**. Repeated queries return instantly in 8ms with zero upstream dependency. |
+| **3. Naive Vector Hallucination** | Competitors use simple cosine distance search without reranking. When judges ask tricky questions, the AI hallucinates. | HSF combines **HNSW vector search with BM25 keyword matching via Reciprocal Rank Fusion (RRF)**, followed by **FlashRank neural cross-encoder reranking** (<20ms). Faithfulness verified $\ge 0.90$ with RAGAS. |
+| **4. Unrestricted Agent Action Hazards** | Competitors let autonomous agents execute database writes or API deletions unchecked, crashing their demo live on stage. | HSF enforces a **LangGraph Human-in-the-Loop Interrupt Gate** (`interrupt_before=["human_gate"]`). Risky actions pause until authorized, demonstrating enterprise maturity. |
+| **5. Last-Minute Docker & Container Breakage** | Teams introduce npm dependencies or change Python versions at Hour 22. Container build fails at Hour 23:45. | HSF provides a **pre-verified multi-stage Docker build (<180MB)** running as non-root `appuser`. The Dockerfile is tested from Minute 0 and never drifts. |
+| **6. The Hour 23 Slide Rush** | Teams spend 23 hours coding and scramble to build slides in Canva 15 minutes before judging, presenting an unpracticed mess. | HSF includes **`pitch/pitch.marp.md`** pre-structured with the 6-minute formula (Hook, Problem, Archify Blueprint, Live Demo, Metrics, ROI). Teams draft slides at Hour 6 and compile to interactive HTML in 2 seconds. |
+| **7. Architecture Diagram Vagueness** | Competitors show hand-drawn boxes with no verified ports, schemas, or protocols. Technical judges grill them on security and scale. | HSF provides **Archify interactive SVG blueprints** and **full Mermaid.js topology maps** displaying exact protocols, port mappings, and RLS policies. |
 
 ---
 
