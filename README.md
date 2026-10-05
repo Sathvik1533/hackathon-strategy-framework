@@ -31,6 +31,7 @@ chmod +x init.sh bin/cli.js pitch/generate_pitch.sh pitch/demo.sh infra/deploy_a
 * ⚡ **Redis Task Broker & Semantic Cache**: `localhost:6379`
 * 📊 **Pitch Deck Engine**: `pitch/presentation.html`
 * 🗺️ **Archify Interactive Visual Architecture**: [docs/architecture/system-architecture.html](docs/architecture/system-architecture.html)
+* 🏆 **Team Advantage & Pitch Guide**: [docs/team-advantages-guide.md](docs/team-advantages-guide.md)
 
 ---
 
@@ -772,6 +773,8 @@ pitch/
 ---
 
 ## 🤝 How My Teammates Can Use This Repo
+
+> 🏆 **Full Team Kickoff & Advantage Guide**: Read [`docs/team-advantages-guide.md`](docs/team-advantages-guide.md) for the complete kickoff pitch script, side-by-side comparison tables against competitor teams, and our 6-minute stage presentation formula.
 
 When collaborating with your teammates using Agentic AI IDEs (**Antigravity, Cursor, Windsurf**), follow this exact guide to divide responsibilities, dynamically customize prompts, and maintain code quality:
 
