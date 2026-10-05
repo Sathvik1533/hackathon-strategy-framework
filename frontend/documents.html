@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hackathon Framework • Document Vault & Vector Search</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-layout">
+    <header class="app-header">
+      <div class="brand">
+        <span class="badge">PGVECTOR HNSW & BM25 HYBRID RETRIEVAL</span>
+        <h1>Hackathon Strategy Framework</h1>
+      </div>
+      <div class="header-actions">
+        <a href="/docs" target="_blank" class="btn btn-secondary">📖 OpenAPI Swagger</a>
+        <a href="/api/v1/health" target="_blank" class="btn btn-secondary">💓 Health Check</a>
+      </div>
+    </header>
+
+    <!-- Global Navigation Bar across all Core Pages -->
+    <nav class="nav-bar">
+      <a href="/index.html" class="nav-item">🚀 Agent Console</a>
+      <a href="/documents.html" class="nav-item active">📄 Document Vault & Vector Search</a>
+      <a href="/analytics.html" class="nav-item">📊 System Telemetry & Evals</a>
+      <a href="/docs" target="_blank" class="nav-item">📜 API Contract (/docs)</a>
+      <a href="/redoc" target="_blank" class="nav-item">📚 ReDoc Specification</a>
+    </nav>
+
+    <main class="main-content">
+      <!-- Left Panel: Ingest Chunk -->
+      <section class="card panel">
+        <h2>📥 Ingest Document Chunk</h2>
+        <p class="subtitle">Index text chunks into PostgreSQL 16 with 1536-dim vector embeddings and GIN full-text index.</p>
+
+        <form id="ingestForm">
+          <div class="form-group">
+            <label for="chunkTitle">Document Title</label>
+            <input type="text" id="chunkTitle" class="input" placeholder="e.g. Distributed Circuit Breaker Specs" required>
+          </div>
+
+          <div class="form-group">
+            <label for="chunkSource">Source Provenance</label>
+            <input type="text" id="chunkSource" class="input" value="manual" placeholder="e.g. handbook.pdf, api_docs.md">
+          </div>
+
+          <div class="form-group">
+            <label for="chunkContent">Text Content</label>
+            <textarea id="chunkContent" class="input textarea" rows="5" placeholder="Enter paragraph or chunk content to embed and index..." required></textarea>
+          </div>
+
+          <button type="submit" id="ingestBtn" class="btn btn-primary" style="width: 100%;">Index Chunk into pgvector</button>
+        </form>
+
+        <div id="ingestNotice" style="margin-top: 14px; font-size: 0.82rem; font-family: var(--font-mono); color: var(--accent-emerald); display: none;"></div>
+      </section>
+
+      <!-- Right Panel: Hybrid Search Tester -->
+      <section class="card panel">
+        <h2>🔍 Hybrid Search & Cross-Encoder Tester</h2>
+        <p class="subtitle">Query indexed documents using Dense Cosine + Sparse BM25 Reciprocal Rank Fusion (RRF).</p>
+
+        <form id="searchForm">
+          <div class="form-group">
+            <label for="searchQuery">Search Query</label>
+            <input type="text" id="searchQuery" class="input" value="FastAPI circuit breaker and resilience" required>
+          </div>
+
+          <div style="display: flex; gap: 16px; margin-bottom: 18px;">
+            <div style="flex: 1;">
+              <label for="topK">Top K Results</label>
+              <input type="number" id="topK" class="input" value="3" min="1" max="10">
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+              <label>
+                <input type="checkbox" id="useRerank" checked style="margin-right: 6px;">
+                FlashRank Cross-Encoder
+              </label>
+            </div>
+          </div>
+
+          <button type="submit" id="searchBtn" class="btn btn-secondary" style="width: 100%;">Execute Hybrid Search</button>
+        </form>
+
+        <div style="margin-top: 24px;">
+          <h3 style="font-size: 0.95rem; margin-bottom: 12px; color: var(--text-muted);">Retrieval Results (<span id="resultCount">0</span> matches)</h3>
+          <div id="searchResultsList" class="doc-list">
+            <div style="color: var(--text-muted); font-size: 0.85rem; font-style: italic;">No search executed yet. Click 'Execute Hybrid Search' above.</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="documents.js"></script>
+</body>
+</html>

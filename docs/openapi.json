@@ -1,0 +1,1054 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Hackathon Strategy Framework API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/v1/health": {
+      "get": {
+        "tags": [
+          "Health"
+        ],
+        "summary": "Health Check",
+        "description": "Health check verifying API, PostgreSQL, and pgvector readiness",
+        "operationId": "health_check_api_v1_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseEnvelope_dict_"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Login",
+        "description": "Simple baseline JWT authentication for hackathon apps",
+        "operationId": "login_api_v1_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLogin"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseEnvelope_Token_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/jobs/render": {
+      "post": {
+        "tags": [
+          "Async Jobs & SSE"
+        ],
+        "summary": "Create Background Job",
+        "description": "Enqueues a long-running agent or media transcode job",
+        "operationId": "create_background_job_api_v1_jobs_render_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseEnvelope_JobResponse_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/jobs/{job_id}/stream": {
+      "get": {
+        "tags": [
+          "Async Jobs & SSE"
+        ],
+        "summary": "Stream Job Progress",
+        "description": "Streams live execution logs to frontend via Server-Sent Events (SSE)",
+        "operationId": "stream_job_progress_api_v1_jobs__job_id__stream_get",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Job Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/agent/query": {
+      "post": {
+        "tags": [
+          "AI Agent"
+        ],
+        "summary": "Execute Agent Query",
+        "description": "Executes grounded agent query. Demonstrates fallback tiering:\nIf use_rag is False, routes directly to fast LLM response without vector search overhead.",
+        "operationId": "execute_agent_query_api_v1_agent_query_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QueryRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseEnvelope_dict_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/documents/": {
+      "get": {
+        "tags": [
+          "Document Vault & Search"
+        ],
+        "summary": "List Documents",
+        "description": "Lists indexed document chunks from PostgreSQL or demo storage.",
+        "operationId": "list_documents_api_v1_documents__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseEnvelope_list_DocumentChunkResponse__"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Document Vault & Search"
+        ],
+        "summary": "Create Document",
+        "description": "Ingests and indexes a new document chunk with vector embedding support.",
+        "operationId": "create_document_api_v1_documents__post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentChunkCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseEnvelope_DocumentChunkResponse_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/documents/search": {
+      "post": {
+        "tags": [
+          "Document Vault & Search"
+        ],
+        "summary": "Search Documents",
+        "description": "Executes hybrid dense + sparse vector search with Reciprocal Rank Fusion (RRF)\nand optional FlashRank cross-encoder reranking.",
+        "operationId": "search_documents_api_v1_documents_search_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentSearchRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseEnvelope_list_DocumentSearchResult__"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/analytics/telemetry": {
+      "get": {
+        "tags": [
+          "System Telemetry & Analytics"
+        ],
+        "summary": "Get System Telemetry",
+        "description": "Returns real-time system metrics, RAGAS evaluation scores, and cache performance.",
+        "operationId": "get_system_telemetry_api_v1_analytics_telemetry_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseEnvelope_SystemTelemetry_"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/analytics/circuit-breakers": {
+      "get": {
+        "tags": [
+          "System Telemetry & Analytics"
+        ],
+        "summary": "Get Circuit Breakers",
+        "description": "Lists current state and health of all downstream circuit breakers.",
+        "operationId": "get_circuit_breakers_api_v1_analytics_circuit_breakers_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseEnvelope_list_CircuitBreakerStatus__"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CircuitBreakerStatus": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "state": {
+            "type": "string",
+            "title": "State",
+            "description": "CLOSED, OPEN, or HALF_OPEN"
+          },
+          "failure_count": {
+            "type": "integer",
+            "title": "Failure Count"
+          },
+          "recovery_timeout_sec": {
+            "type": "number",
+            "title": "Recovery Timeout Sec"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "state",
+          "failure_count",
+          "recovery_timeout_sec"
+        ],
+        "title": "CircuitBreakerStatus"
+      },
+      "DocumentChunkCreate": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 255,
+            "title": "Title",
+            "description": "Document or section title"
+          },
+          "content": {
+            "type": "string",
+            "title": "Content",
+            "description": "Raw text content of the chunk"
+          },
+          "source": {
+            "type": "string",
+            "maxLength": 255,
+            "title": "Source",
+            "description": "Source provenance (e.g., pdf, web, manual)",
+            "default": "manual"
+          },
+          "embedding": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Embedding",
+            "description": "Optional pre-computed 1536-dim embedding vector"
+          }
+        },
+        "type": "object",
+        "required": [
+          "title",
+          "content"
+        ],
+        "title": "DocumentChunkCreate"
+      },
+      "DocumentChunkResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "content": {
+            "type": "string",
+            "title": "Content"
+          },
+          "source": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source",
+            "default": "manual"
+          },
+          "created_at": {
+            "anyOf": [
+              {},
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "content"
+        ],
+        "title": "DocumentChunkResponse"
+      },
+      "DocumentSearchRequest": {
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Query",
+            "description": "Search query string"
+          },
+          "top_k": {
+            "type": "integer",
+            "maximum": 50.0,
+            "minimum": 1.0,
+            "title": "Top K",
+            "description": "Number of results to return",
+            "default": 5
+          },
+          "use_rerank": {
+            "type": "boolean",
+            "title": "Use Rerank",
+            "description": "Whether to apply neural cross-encoder reranking",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "title": "DocumentSearchRequest"
+      },
+      "DocumentSearchResult": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "content": {
+            "type": "string",
+            "title": "Content"
+          },
+          "source": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source"
+          },
+          "score": {
+            "type": "number",
+            "title": "Score"
+          },
+          "rank": {
+            "type": "integer",
+            "title": "Rank"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "content",
+          "score",
+          "rank"
+        ],
+        "title": "DocumentSearchResult"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "JobCreate": {
+        "properties": {
+          "task_type": {
+            "type": "string",
+            "title": "Task Type",
+            "description": "Action type, e.g. 'agent_research', 'video_render', 'data_enrich'"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Payload",
+            "description": "Job parameters and input context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "task_type"
+        ],
+        "title": "JobCreate"
+      },
+      "JobResponse": {
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "title": "Job Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "default": "queued"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "default": "Job successfully enqueued"
+          }
+        },
+        "type": "object",
+        "required": [
+          "job_id"
+        ],
+        "title": "JobResponse"
+      },
+      "QueryRequest": {
+        "properties": {
+          "query": {
+            "type": "string",
+            "title": "Query"
+          },
+          "use_rag": {
+            "type": "boolean",
+            "title": "Use Rag",
+            "default": true
+          },
+          "session_id": {
+            "type": "string",
+            "title": "Session Id",
+            "default": "default-session"
+          }
+        },
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "title": "QueryRequest"
+      },
+      "ResponseEnvelope_DocumentChunkResponse_": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "default": true
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DocumentChunkResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message",
+            "default": "Operation successful"
+          }
+        },
+        "type": "object",
+        "title": "ResponseEnvelope[DocumentChunkResponse]"
+      },
+      "ResponseEnvelope_JobResponse_": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "default": true
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/JobResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message",
+            "default": "Operation successful"
+          }
+        },
+        "type": "object",
+        "title": "ResponseEnvelope[JobResponse]"
+      },
+      "ResponseEnvelope_SystemTelemetry_": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "default": true
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SystemTelemetry"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message",
+            "default": "Operation successful"
+          }
+        },
+        "type": "object",
+        "title": "ResponseEnvelope[SystemTelemetry]"
+      },
+      "ResponseEnvelope_Token_": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "default": true
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Token"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message",
+            "default": "Operation successful"
+          }
+        },
+        "type": "object",
+        "title": "ResponseEnvelope[Token]"
+      },
+      "ResponseEnvelope_dict_": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "default": true
+          },
+          "data": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message",
+            "default": "Operation successful"
+          }
+        },
+        "type": "object",
+        "title": "ResponseEnvelope[dict]"
+      },
+      "ResponseEnvelope_list_CircuitBreakerStatus__": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "default": true
+          },
+          "data": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/CircuitBreakerStatus"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message",
+            "default": "Operation successful"
+          }
+        },
+        "type": "object",
+        "title": "ResponseEnvelope[list[CircuitBreakerStatus]]"
+      },
+      "ResponseEnvelope_list_DocumentChunkResponse__": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "default": true
+          },
+          "data": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/DocumentChunkResponse"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message",
+            "default": "Operation successful"
+          }
+        },
+        "type": "object",
+        "title": "ResponseEnvelope[list[DocumentChunkResponse]]"
+      },
+      "ResponseEnvelope_list_DocumentSearchResult__": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "default": true
+          },
+          "data": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/DocumentSearchResult"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message",
+            "default": "Operation successful"
+          }
+        },
+        "type": "object",
+        "title": "ResponseEnvelope[list[DocumentSearchResult]]"
+      },
+      "SystemTelemetry": {
+        "properties": {
+          "api_version": {
+            "type": "string",
+            "title": "Api Version",
+            "default": "1.0.0"
+          },
+          "uptime_seconds": {
+            "type": "number",
+            "title": "Uptime Seconds",
+            "default": 3600.0
+          },
+          "p95_latency_ms": {
+            "type": "number",
+            "title": "P95 Latency Ms",
+            "description": "P95 latency in milliseconds",
+            "default": 380.0
+          },
+          "p99_latency_ms": {
+            "type": "number",
+            "title": "P99 Latency Ms",
+            "description": "P99 latency in milliseconds",
+            "default": 620.0
+          },
+          "cache_hit_rate": {
+            "type": "number",
+            "title": "Cache Hit Rate",
+            "description": "Semantic cache hit ratio (0.0 to 1.0)",
+            "default": 0.88
+          },
+          "ragas_faithfulness": {
+            "type": "number",
+            "title": "Ragas Faithfulness",
+            "description": "RAGAS Faithfulness evaluation score (0.0 to 1.0)",
+            "default": 0.942
+          },
+          "ragas_answer_relevance": {
+            "type": "number",
+            "title": "Ragas Answer Relevance",
+            "description": "RAGAS Answer Relevance evaluation score",
+            "default": 0.918
+          },
+          "total_jobs_processed": {
+            "type": "integer",
+            "title": "Total Jobs Processed",
+            "default": 142
+          },
+          "active_circuits": {
+            "items": {
+              "$ref": "#/components/schemas/CircuitBreakerStatus"
+            },
+            "type": "array",
+            "title": "Active Circuits",
+            "default": []
+          },
+          "token_budget_used": {
+            "type": "integer",
+            "title": "Token Budget Used",
+            "default": 42500
+          },
+          "token_budget_limit": {
+            "type": "integer",
+            "title": "Token Budget Limit",
+            "default": 250000
+          }
+        },
+        "type": "object",
+        "title": "SystemTelemetry"
+      },
+      "Token": {
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "title": "Access Token"
+          },
+          "token_type": {
+            "type": "string",
+            "title": "Token Type",
+            "default": "bearer"
+          }
+        },
+        "type": "object",
+        "required": [
+          "access_token"
+        ],
+        "title": "Token"
+      },
+      "UserLogin": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$",
+            "title": "Email"
+          },
+          "password": {
+            "type": "string",
+            "title": "Password"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "title": "UserLogin"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

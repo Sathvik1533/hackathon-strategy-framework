@@ -20,55 +20,180 @@ chmod +x init.sh bin/cli.js pitch/generate_pitch.sh pitch/demo.sh infra/deploy_a
 ```
 
 ### What Is Online Instantly:
-* 🌐 **API & Interactive Docs**: [http://localhost:8000/docs](http://localhost:8000/docs)
+* 🌐 **API & Interactive Swagger Docs**: [http://localhost:8000/docs](http://localhost:8000/docs) (OpenAPI 3.1)
+* 📚 **ReDoc Specification**: [http://localhost:8000/redoc](http://localhost:8000/redoc)
 * 💓 **Health & pgvector Check**: [http://localhost:8000/api/v1/health](http://localhost:8000/api/v1/health)
-* 🖥️ **Live Frontend Console**: [http://localhost:8000](http://localhost:8000) (serving `frontend/index.html`)
+* 🖥️ **Live Agent Execution Console**: [http://localhost:8000](http://localhost:8000) (serving `frontend/index.html`)
+* 📄 **Document Vault & Vector Search UI**: [http://localhost:8000/documents.html](http://localhost:8000/documents.html)
+* 📊 **Telemetry & System Metrics UI**: [http://localhost:8000/analytics.html](http://localhost:8000/analytics.html)
 * 🔌 **FastMCP SSE Tool Server**: `http://localhost:8001/sse`
-* 🗄️ **PostgreSQL + pgvector**: `localhost:5432` (pre-seeded with 1536-dim vectors)
+* 🗄️ **PostgreSQL 16 + pgvector**: `localhost:5432` (pre-seeded with 1536-dim vectors)
 * ⚡ **Redis Task Broker & Semantic Cache**: `localhost:6379`
 * 📊 **Pitch Deck Engine**: `pitch/presentation.html`
 
 ---
 
-## 🏗️ Master Full-Stack Architecture Diagram
+## 🏗️ Master Architectural Diagrams (Mermaid.js)
+
+### 1. Full-Stack Component Architecture
+```mermaid
+flowchart TD
+    subgraph Frontend["1. FRONTEND LAYER (Core UI Console)"]
+        UI["Dashboard & Input Forms (index.html, documents.html, analytics.html)"]
+        SSE_Client["SSE Listener (EventSource: /api/v1/jobs/{id}/stream)"]
+        Terminal["Auto-Scrolling Log Terminal"]
+    end
+
+    subgraph Backend["2. BACKEND API LAYER (FastAPI 0.115+)"]
+        Router["API Gateway & Routers (api/v1)"]
+        Envelopes["Pydantic v2 Envelopes (ResponseEnvelope[T])"]
+        JobService["Job Dispatcher & Background Tasks"]
+        OpenAPI["OpenAPI 3.1 Spec (docs/openapi.json)"]
+    end
+
+    subgraph Resilience["3. PRODUCTION RESILIENCE & CACHING"]
+        CircuitBreaker["Circuit Breaker (CLOSED / OPEN / HALF-OPEN)"]
+        Backoff["Exponential Backoff with Full Jitter"]
+        Idempotency["Distributed Idempotency Guard (SETNX)"]
+        SemanticCache["Redis Semantic Query Cache (<10ms)"]
+    end
+
+    subgraph Storage["4. DATABASE & STORAGE LAYER"]
+        PG["PostgreSQL 16 (ACID Relational Core)"]
+        HNSW["pgvector HNSW Cosine Index (1536-dim)"]
+        GIN["TSVECTOR GIN Inverted Index (BM25)"]
+        RLS["Supabase Row-Level Security (auth.uid())"]
+        RedisStore["Redis 7 (Pub/Sub Channels, State, Token Counters)"]
+        S3["Amazon S3 (Blobs > 100KB: PDFs, Models, Videos)"]
+    end
+
+    subgraph AI["5. AI & AGENTIC LAYER"]
+        LangGraph["LangGraph Multi-Agent Supervisor"]
+        HumanGate["Human-in-the-Loop Interrupt Gate"]
+        FastMCP["FastMCP Tool Server (Isolated SSE Tools)"]
+        RRF["Hybrid Retriever (Dense + Sparse Reciprocal Rank Fusion)"]
+        Reranker["FlashRank Cross-Encoder Neural Reranker (<20ms)"]
+        JevRouter["Jev System-1 Fast Decision Router (<150ms)"]
+        Guardrails["Prompt Injection & SQL Mutation Guardrails"]
+        Eval["RAGAS Golden Dataset Evaluation Harness"]
+    end
+
+    subgraph Infra["6. DEPLOYMENT & AWS CLOUD LAYER"]
+        Docker["Multi-Stage Docker (<180MB, Non-Root appuser)"]
+        ALB["AWS Application Load Balancer (HTTPS / Route53)"]
+        Fargate["AWS ECS on Fargate (Serverless Containers)"]
+        ECR["Amazon Elastic Container Registry"]
+        CloudWatch["Amazon CloudWatch Logging & Telemetry"]
+    end
+
+    Frontend -->|HTTP REST / JSON| Router
+    Router --> Envelopes
+    Router --> JobService
+    JobService -->|Pub/Sub Publish| RedisStore
+    RedisStore -->|SSE Stream / Text Event| SSE_Client
+    SSE_Client --> Terminal
+    Router --> Resilience
+    Resilience --> AI
+    AI --> FastMCP
+    AI --> Storage
+    Storage --> PG
+    Storage --> HNSW
+    Storage --> GIN
+    Storage --> RLS
+    Router --> Storage
+    Infra --> Backend
+```
+
+---
+
+### 2. Real-Time Request & SSE Job Execution Flow
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Judge as User / Judge
+    participant UI as Frontend (Console)
+    participant API as FastAPI Gateway
+    participant Redis as Redis (Broker & Cache)
+    participant Agent as LangGraph Supervisor
+    participant DB as PostgreSQL + pgvector
+    participant JudgeReview as Human Reviewer
+
+    Judge->>UI: Submit Workflow Request
+    UI->>API: POST /api/v1/jobs/render
+    API->>Redis: Check Idempotency Lock (SETNX)
+    API->>Redis: Enqueue Job & Initialize State
+    API-->>UI: Return 202 Accepted (job_id)
+    UI->>API: Connect GET /api/v1/jobs/{job_id}/stream (SSE)
+    API->>Redis: Subscribe to channel:jobs:{job_id}
+    loop Execution & Progress Streaming
+        Agent->>DB: Hybrid Dense + Sparse Search (RRF)
+        DB-->>Agent: Top 25 Candidate Chunks
+        Agent->>Agent: FlashRank Rerank to Top 5 (<20ms)
+        Agent->>Redis: Publish Progress (percent, log)
+        Redis-->>UI: SSE Push (Log Event & Progress Bar Update)
+    end
+    opt Destructive / Financial Action
+        Agent->>Agent: Pause at interrupt_before gate
+        Agent-->>JudgeReview: Await Human Approval
+        JudgeReview->>Agent: Approve Execution
+    end
+    Agent->>Redis: Publish Final Result & Completed Status
+    Redis-->>UI: SSE Push (100% Completed & Result Payload)
+    UI-->>Judge: Real-Time Animated Results Displayed
+```
+
+---
+
+### 3. Production Circuit Breaker State Machine
+```mermaid
+stateDiagram-v2
+    [*] --> CLOSED: Initial Startup
+    CLOSED --> OPEN: 5 Consecutive Failures Detected
+    note right of CLOSED: All requests pass to external LLM/API
+    OPEN --> HALF_OPEN: 30-Second Recovery Timeout Elapses
+    note right of OPEN: Fails fast immediately without calling external API
+    HALF_OPEN --> CLOSED: Trial Request Succeeds
+    HALF_OPEN --> OPEN: Trial Request Fails
+```
+
+---
+
+## 📦 The 17 Installed Skills Architectural Box Grid
+
+Every skill available in our environment is mapped to its exact stack layer, responsibilities, and velocity multiplier:
 
 ```
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                                   FRONTEND LAYER                                       │
-│  Native High-Density Console (HTML5/CSS3/Vanilla JS) • Real-Time SSE Log Terminal      │
-│  Metric Summary Cards • Status Badges (ENQUEUEING ➔ STREAMING SSE ➔ COMPLETED)          │
-└───────────────────────────────────────────┬────────────────────────────────────────────┘
-                                            │ HTTP / Server-Sent Events (SSE)
-┌───────────────────────────────────────────▼────────────────────────────────────────────┐
-│                             BACKEND API LAYER (FastAPI)                                │
-│  Lifespan Context Manager • Dependency Injection (get_db) • Pydantic v2 Envelopes     │
-│  JWT Authentication • Global Exception Interceptor • Background Task Dispatcher         │
-└──────────────────────┬─────────────────────────────────────────┬───────────────────────┘
-                       │                                         │
-┌──────────────────────▼─────────────────┐     ┌─────────────────▼───────────────────────┐
-│     DATABASE & STORAGE LAYER           │     │          AI & AGENTIC LAYER             │
-│ • PostgreSQL 16 (Relational ACID)      │     │ • LangGraph Cyclic Supervisor Graph     │
-│ • pgvector 1536-dim HNSW Cosine Index  │     │ • Human-in-the-Loop Interrupt Gate      │
-│ • TSVECTOR GIN Full-Text Index         │     │ • FastMCP Isolated SSE Tool Server      │
-│ • Supabase Row-Level Security (RLS)    │     │ • Hybrid Dense + Sparse Retriever (RRF) │
-│ • Alembic Zero-Downtime Migrations     │     │ • FlashRank Cross-Encoder Reranker      │
-│ • Amazon S3 Object Blob Storage        │     │ • Jev System-1 Fast Decision Router     │
-└──────────────────────┬─────────────────┘     │ • Prompt Injection Defense Guardrails   │
-                       │                       │ • RAGAS Evaluation Test Harness (QA)    │
-                       │                       └─────────────────┬───────────────────────┘
-┌──────────────────────▼─────────────────────────────────────────▼───────────────────────┐
-│                     PRODUCTION RESILIENCE & CACHING LAYER                              │
-│ • Exponential Backoff with Full Jitter • Circuit Breaker (CLOSED / OPEN / HALF-OPEN)    │
-│ • Redis Distributed Idempotency Guard (SETNX) • Sub-10ms Semantic Query Cache           │
-│ • Sliding-Window Rate Limiter • Session Token Budget Counters                          │
-└───────────────────────────────────────────┬────────────────────────────────────────────┘
-                                            │ Containerized Deployment
-┌───────────────────────────────────────────▼────────────────────────────────────────────┐
-│                    DEPLOYMENT & AWS INFRASTRUCTURE LAYER                               │
-│ • Multi-Stage Docker Build (<180MB) • Docker Compose Local Orchestration               │
-│ • AWS ALB (SSL Termination) • AWS ECS on Fargate (Serverless) • Amazon ECR              │
-│ • Amazon S3 (Files >100KB) • Amazon DynamoDB (Key-Value) • CloudWatch Telemetry        │
-└────────────────────────────────────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                  THE 17 INSTALLED SKILLS ARCHITECTURAL MAPPING                                          │
+├──────────────────────────────┬─────────────────────────────────┬───────────────────────────────────────────────────────┤
+│ LAYER / STACK                │ SKILLS ASSIGNED                 │ CORE RESPONSIBILITY & SPEEDUP BENEFIT                 │
+├──────────────────────────────┼─────────────────────────────────┼───────────────────────────────────────────────────────┤
+│ 1. Frontend Layer            │ • hallmark                      │ Anti-AI-slop design constraints, high-density tokens  │
+│                              │ • emil-design-eng               │ Micro-interactions, 150-220ms spring physics, polish   │
+│                              │ • awesome-design-systems        │ Design tokens, accessible forms, responsive layouts   │
+├──────────────────────────────┼─────────────────────────────────┼───────────────────────────────────────────────────────┤
+│ 2. Backend API Layer         │ • fastapi-production-archetype  │ Pydantic v2 validation, lifespan, ResponseEnvelope    │
+│                              │ • async-agent-celery-redis      │ Async background task queues, SSE streaming channels  │
+│                              │ • context7-docs-fetcher         │ Real-time official documentation fetcher via MCP      │
+│                              │ • poetry-python-packaging       │ Clean dependency resolution, lockfile management      │
+├──────────────────────────────┼─────────────────────────────────┼───────────────────────────────────────────────────────┤
+│ 3. Database & Storage Layer  │ • pgvector-hybrid-search        │ HNSW cosine vector index, BM25 text, RRF fusion       │
+│                              │ • hackathon-speedrun-kit        │ 3-second instant synthetic vector dataset generation  │
+├──────────────────────────────┼─────────────────────────────────┼───────────────────────────────────────────────────────┤
+│ 4. AI & Agentic Layer        │ • langgraph-production-patterns │ Cyclic multi-agent graphs, checkpoint persistence     │
+│                              │ • pydantic-ai-workflows         │ Type-safe structured outputs & dependency injection   │
+│                              │ • fastmcp-tool-server           │ Isolated tool execution over Server-Sent Events       │
+│                              │ • jev-decision-router           │ Sub-150ms typed System-1 decision classification      │
+│                              │ • rag-reranking-pipeline        │ FlashRank neural cross-encoder candidate reranking    │
+│                              │ • agent-security-guardrails     │ Prompt injection sanitization, SQL verb blocker       │
+│                              │ • agent-eval-harness            │ 25-case golden dataset runner measuring RAGAS metrics │
+├──────────────────────────────┼─────────────────────────────────┼───────────────────────────────────────────────────────┤
+│ 5. Production Resilience     │ • llm-gateway-semantic-cache    │ Sub-10ms semantic query caching with Redis            │
+├──────────────────────────────┼─────────────────────────────────┼───────────────────────────────────────────────────────┤
+│ 6. DevOps & Cloud Layer      │ • agent-docker-aws-deploy       │ Multi-stage Docker packaging, AWS ECS Fargate spec    │
+├──────────────────────────────┼─────────────────────────────────┼───────────────────────────────────────────────────────┤
+│ 7. Pitch & Presentation      │ • marp-presentation-engine      │ 2-second compilation of Markdown into HTML/PDF slides │
+└──────────────────────────────┴─────────────────────────────────┴───────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -81,18 +206,22 @@ chmod +x init.sh bin/cli.js pitch/generate_pitch.sh pitch/demo.sh infra/deploy_a
 ### 1. FRONTEND LAYER
 
 #### 🧩 Core Components (The 6 Building Blocks):
-1. **Layout Shell & Viewport Container (`frontend/index.html`)**: Responsive header, grid cards, split-pane layout with high visual density.
+1. **Layout Shell & Viewport Container (`frontend/index.html`)**: Responsive header, global navigation bar, grid cards, split-pane layout with high visual density.
 2. **Design System & CSS Token Hierarchy (`frontend/style.css`)**: Dark-mode palette using HSL variables (`--bg-primary: #0a0d14`, `--accent-blue: #3b82f6`, `--accent-emerald: #10b981`), zero layout shifts.
 3. **Reactive SSE Event Consumer (`frontend/app.js`)**: Native browser `EventSource` listening to `/api/v1/jobs/{id}/stream`.
 4. **Animated Terminal & Log Console**: Auto-scrolling terminal window displaying real-time agent execution logs with timestamps.
 5. **State & Progress Indicators**: Dynamic color-coded status badges (`ENQUEUEING`, `STREAMING SSE`, `COMPLETED`, `ERROR`) and an animated progress bar.
 6. **Metric KPI Display Cards**: Real-time performance indicators showing RAGAS Faithfulness, Latency P95, and Cache Hit Rate.
 
-#### 🗂️ Core Structure:
+#### 🗂️ Core Structure & Standard Pages:
 ```
 frontend/
-├── index.html       # Clean semantic DOM structure, no build step required
-├── style.css        # Modular design tokens, typography, terminal styling, keyframes
+├── index.html       # Core Page 1: Agent Execution Console & Live Terminal
+├── documents.html   # Core Page 2: Document Vault, Ingestion & Hybrid Vector Search
+├── documents.js     # Document file upload client and vector similarity results renderer
+├── analytics.html   # Core Page 3: System Telemetry, Circuit Breakers & RAGAS Metrics
+├── analytics.js     # Live polling client for circuit breaker states and eval graphs
+├── style.css        # Modular design tokens, typography, terminal styling, tables, chips
 └── app.js           # Form submission, async fetch client, SSE listener, log stream
 ```
 
@@ -136,7 +265,8 @@ backend/src/app/
 │   └── endpoints/
 │       ├── health.py     # Liveness/readiness probes with DB and pgvector checks
 │       ├── documents.py  # Document upload, chunking, and vector search routes
-│       └── jobs.py       # Async task triggering and real-time SSE stream routes
+│       ├── jobs.py       # Async task triggering and real-time SSE stream routes
+│       └── analytics.py  # Telemetry, circuit breaker state, and eval score endpoints
 ├── models/               # SQLAlchemy 2.0 ORM database entity definitions
 ├── schemas/              # Pydantic v2 request, response, and envelope schemas
 └── services/             # Domain business logic and LangGraph agent coordinators
@@ -149,7 +279,7 @@ backend/src/app/
 * **Resilience & Fault-Tolerance Sub-Layer**: Wraps downstream calls with circuit breakers, retry decorators, and mutex locks.
 
 #### 🎯 The 6D Architectural Breakdown:
-* **WHAT should be there**: A high-performance, asynchronous REST API architecture built on FastAPI, SQLAlchemy 2.0, and Pydantic v2.
+* **WHAT should be there**: A high-performance, asynchronous REST API architecture built on FastAPI, SQLAlchemy 2.0, and Pydantic v2, documented via OpenAPI 3.1.
 * **WHY it should be there**: AI agent calls and complex pipelines can take anywhere from 2 to 30 seconds. Synchronous frameworks block worker threads during these delays, causing request timeouts. FastAPI natively supports non-blocking asynchronous execution.
 * **HOW it should be there**: Organized into clean separation of concerns: `core/`, `api/v1/`, `models/`, `schemas/`, and `services/`.
 * **WHEN it should be there**: Used continuously as the central gateway connecting the client, database, cache, and AI agent graph.
@@ -364,153 +494,218 @@ pitch/
 
 ---
 
-## ⚖️ The Master Architectural Trade-Offs Matrix
+## ⚖️ Standard Production-Level & Tech-Stack Trade-Offs
 
-| Decision Area | Option A | Option B | Selected Strategy & Trade-Off Rationale |
+### Level 1: System-Wide Production-Level Trade-Offs
+
+| Trade-Off Decision | Alternative A | Alternative B | Selected Production Approach & Engineering Rationale |
 | :--- | :--- | :--- | :--- |
-| **Database** | Relational SQL (Postgres 16) | NoSQL (DynamoDB) | **PostgreSQL 16**. Combines relational ACID safety with pgvector HNSW search in one database. Use DynamoDB only if the prompt requires simple, massive key-value lookups. |
-| **API Execution** | Synchronous REST (<500ms) | Async Task Queue + SSE (>1s) | **Split by Latency Budget**. Logins and simple reads are synchronous. Video rendering, LangGraph research, and bulk ingestion use the async queue with live SSE progress streaming. |
-| **Search Retrieval** | Pure Dense Vector Search | Pure Sparse Keyword (BM25) | **Hybrid Search with Reciprocal Rank Fusion (RRF)**. Dense search understands meaning; BM25 matches exact SKU/order IDs. Combining both provides zero-compromise accuracy. |
-| **Model Customization**| LoRA Fine-Tuning | Retrieval-Augmented Generation | **RAG First**. RAG injects fresh facts with citations without retraining. Use LoRA only when you need strict proprietary output formatting or model distillation. |
-| **Cloud Hosting** | AWS ECS on Fargate | AWS Lambda Functions | **ECS Fargate**. Long-running agent loops, SSE streams, and binary tools (FFmpeg) exceed Lambda's execution limits and suffer from cold starts. |
-| **Slide Deck** | PowerPoint / Keynote | Marp Markdown Engine | **Marp**. Version-controlled alongside the code, updates in 2 seconds via CLI, and produces offline-ready HTML and PDF decks. |
+| **Data Consistency vs. Latency** | Strong Consistency (ACID) | Eventual Consistency (NoSQL) | **Strong ACID Relational Core**. Financial transactions, user identities, and chunk-to-document relationships require zero corruption. Read Committed isolation provides the ideal balance of data integrity and throughput. |
+| **Execution Synchronicity** | Synchronous Request-Response | Asynchronous Event-Driven Queue | **Hybrid Latency Partitioning**. Tasks under 500ms (logins, health checks, simple reads) execute synchronously. Operations over 1s (LangGraph multi-step workflows, bulk embeddings, video renders) run via Redis async jobs and stream progress over SSE. |
+| **State Management** | In-Memory Process State | External Distributed Store | **Stateless API Workers + Redis/Postgres State**. Workers can be restarted or horizontally scaled without dropping active user jobs. Agent state checkpoints persist in PostgreSQL (`AsyncPostgresSaver`). |
+| **Architectural Monolith vs. Microservices** | Microservices Architecture | Modular Monolith | **Modular Monolith**. Eliminates cross-service network latency, complex gRPC serialization, and distributed tracing overhead during a 24-hour sprint while preserving clean directory boundaries. |
 
 ---
 
-## 🛠️ How Teammates Should Use This Repo in Agentic IDEs
-*(Antigravity, Cursor, Windsurf)*
+### Level 2: Per-Tech-Stack-Level Trade-Offs
 
-When collaborating in an AI-powered IDE, follow this standardized workflow to maximize speed and maintain codebase integrity:
+| Tech Stack Layer | Option A | Option B | Selected Choice & Rationale |
+| :--- | :--- | :--- | :--- |
+| **Backend Framework** | FastAPI (Async Python) | Flask / Django | **FastAPI**. Native `asyncio` event loop prevents blocking during long agent tool invocations; automated OpenAPI 3.1 schema generation saves hours of client SDK authoring. |
+| **Vector Storage** | Unified PostgreSQL + pgvector | Dedicated Standalone (Pinecone) | **PostgreSQL 16 + pgvector**. Avoids multi-database synchronization bugs, dual query latencies, and separate cloud bills by joining relational rows directly with 1536-dim vector embeddings. |
+| **In-Memory Cache & Broker** | Redis 7 | RabbitMQ / Kafka | **Redis 7**. Redis serves triple duty as a sub-10ms semantic cache, distributed idempotency mutex (`SETNX`), and lightweight Pub/Sub broker for SSE streams without JVM overhead. |
+| **Container Compute** | AWS ECS on Fargate | AWS Lambda Functions | **AWS ECS on Fargate**. Eliminates Lambda's 15-minute timeout ceiling, supports long-lived SSE streaming connections, and avoids cold starts when loading heavy neural reranker models. |
+| **Frontend Architecture** | Native HTML5/CSS3/Vanilla JS | Next.js / React SSR | **Native High-Density Console**. Zero npm compilation failures, no hydration bugs, instant load times, and native browser `EventSource` support for real-time SSE telemetry. |
+| **Pitch Presentation** | Marp Markdown Engine | Google Slides / Canva | **Marp**. Version-controlled directly in Git, compiles to offline HTML/PDF in 2 seconds via CLI, and updates automatically when benchmark numbers change. |
 
-### 1. Antigravity Slash Commands:
+---
+
+### Level 3: Production Patterns Mapped to Problem Statement Archetypes
+
+| Problem Statement Archetype | Recommended Production Pattern | Implementation in This Repo |
+| :--- | :--- | :--- |
+| **"Search & Analyze Private Domain Documents"** | Hybrid Dense + Sparse Retrieval (RRF) with FlashRank Neural Reranker | `ai_layer/hybrid_retriever.py` & `ai_layer/flashrank_reranker.py` |
+| **"Long-Running Multi-Step Autonomous Workflow"** | LangGraph Cyclic State Graph with PostgreSQL Checkpoint Persistence | `ai_layer/langgraph_supervisor.py` & `backend/src/app/services/job_service.py` |
+| **"Mission-Critical Database Writes or Financial Actions"** | Human-in-the-Loop Interrupt Gate (`interrupt_before`) + Redis Mutex Lock | `ai_layer/langgraph_supervisor.py` & `backend/src/app/core/resilience.py` |
+| **"Sub-200ms Intent Classification without LLM Token Cost"** | Jev System-1 Typed Fast Decision Router | `ai_layer/jev_decision_router` |
+| **"Unreliable or Rate-Limited Third-Party APIs"** | 3-State Circuit Breaker (CLOSED/OPEN/HALF-OPEN) + Jittered Backoff | `backend/src/app/core/resilience.py` |
+| **"Multi-Tenant User Data Isolation"** | Supabase Row-Level Security (RLS) Policies on `auth.uid()` | `database/supabase_rls.sql` |
+
+---
+
+## 🤝 How My Teammates Can Use This Repo
+
+When collaborating with your teammates using Agentic AI IDEs (**Antigravity, Cursor, Windsurf**), follow this exact guide to divide responsibilities, dynamically customize prompts, and maintain code quality:
+
+### 1. The Dynamic Teammate Prompt Template
+
+Copy and paste this dynamic prompt into your Agentic AI IDE. Replace the `{{PLACEHOLDERS}}` according to your assigned role and problem statement:
+
+```markdown
+You are acting as the {{TEAMMATE_ROLE}} for our team in this hackathon.
+Our project problem statement is: "{{PROBLEM_STATEMENT}}".
+Your assigned stack layer is: {{TARGET_LAYER}} (Core Pages / Endpoints: {{CORE_PAGES}}).
+The pre-installed skills available for your layer are: {{ASSIGNED_SKILLS}}.
+
+Rules to follow:
+1. Adhere strictly to the Hackathon Strategy Framework architecture in this repository.
+2. Connect to existing endpoints and models in `backend/src/app/` and follow the OpenAPI 3.1 contracts in `docs/openapi.json`.
+3. Verify your work locally before pushing by running:
+   - `ruff check --fix . && ruff format .`
+   - `PYTHONPATH=backend pytest`
+   - `python3 scripts/review_pr.py`
+4. Create a dedicated branch `feat/{{FEATURE_NAME}}` and ensure zero hardcoded secrets or raw SQL interpolations.
+```
+
+---
+
+### 2. Concrete Role-Specific Prompts for Teammates
+
+#### 👤 Teammate 1: Backend & Data Lead
+```markdown
+You are acting as the Backend & Data Lead for our team in this hackathon.
+Our project problem statement is: "AI Medical Research Assistant".
+Your assigned stack layer is: Backend API & PostgreSQL Database (Core Pages: backend/src/app/api/v1/endpoints/documents.py, database/supabase_rls.sql).
+The pre-installed skills available for your layer are: fastapi-production-archetype, pgvector-hybrid-search, async-agent-celery-redis.
+
+Task:
+Implement an async document ingestion endpoint that extracts text from medical research PDFs, generates 1536-dim embeddings, stores them in PostgreSQL with pgvector, and enforces Supabase Row-Level Security (RLS) so users only see their own uploads. Return data using ResponseEnvelope[T].
+```
+
+#### 👤 Teammate 2: AI & Agentic Lead
+```markdown
+You are acting as the AI & Agentic Lead for our team in this hackathon.
+Our project problem statement is: "AI Medical Research Assistant".
+Your assigned stack layer is: AI & Multi-Agent Layer (Core Pages: ai_layer/langgraph_supervisor.py, ai_layer/hybrid_retriever.py).
+The pre-installed skills available for your layer are: langgraph-production-patterns, pydantic-ai-workflows, fastmcp-tool-server, rag-reranking-pipeline, agent-security-guardrails, agent-eval-harness.
+
+Task:
+Build a LangGraph supervisor graph that coordinates a MedicalResearcherNode and a FactCheckerNode. Use our hybrid retriever with Reciprocal Rank Fusion, apply FlashRank reranking, enforce an interrupt_before gate before outputting clinical recommendations, and run eval_harness.py to record RAGAS Faithfulness scores.
+```
+
+#### 👤 Teammate 3: Frontend Lead
+```markdown
+You are acting as the Frontend Lead for our team in this hackathon.
+Our project problem statement is: "AI Medical Research Assistant".
+Your assigned stack layer is: Frontend Console (Core Pages: frontend/index.html, frontend/documents.html, frontend/analytics.html).
+The pre-installed skills available for your layer are: hallmark, emil-design-eng, awesome-design-systems.
+
+Task:
+Connect our documents view in frontend/documents.html to the hybrid vector search endpoint at /api/v1/documents/search. Render real-time candidate cards with similarity badges, hook up the SSE progress stream to our live terminal console, and maintain strict anti-AI-slop typography and dark-mode tokens in frontend/style.css.
+```
+
+#### 👤 Teammate 4: DevOps & Pitch Lead
+```markdown
+You are acting as the DevOps & Pitch Lead for our team in this hackathon.
+Our project problem statement is: "AI Medical Research Assistant".
+Your assigned stack layer is: Deployment & Presentation (Core Pages: infra/Dockerfile, pitch/pitch.marp.md, pitch/demo.sh).
+The pre-installed skills available for your layer are: agent-docker-aws-deploy, marp-presentation-engine, hackathon-speedrun-kit.
+
+Task:
+Compile our pitch deck in pitch/pitch.marp.md into interactive HTML and PDF slides using Marp. Populate the slides with our architecture diagram, RAGAS Faithfulness metrics, and business ROI. Test our stage fail-safe runner in pitch/demo.sh to guarantee a flawless live terminal backup if stage Wi-Fi drops.
+```
+
+---
+
+### 3. Antigravity IDE Slash Commands & Artifacts Protocol
+
 * `/goal`: Launch a long-running, autonomous sprint task (e.g., overnight feature completion) that continues until all validation tests pass.
 * `/plan`: Create an explicit step-by-step breakdown of user stories, database models, and endpoints before writing code.
 * `/boost`: Engage comprehensive architectural analysis, edge-case validation, and security auditing.
 * `/browser`: Test deployed web interfaces, verify API routes, and inspect UI components.
-
-### 2. Antigravity Artifacts (How to Read & Review):
-* **What They Are**: Artifacts are persistent markdown documents generated by the agent (`implementation_plan.md`, `walkthrough.md`, architecture diagrams).
-* **Why Use Them**: They serve as a contract between teammates. Before any agent writes complex code, review the artifact to ensure alignment on database schema and API contracts.
-* **Review Protocol**:
-  1. Inspect the Mermaid flowcharts in the plan artifact to verify data boundaries.
+* **Antigravity Artifacts Review Protocol**:
+  1. Inspect the Mermaid flowcharts in `implementation_plan.md` to verify data boundaries.
   2. Confirm database schemas match `database/supabase_rls.sql` conventions.
-  3. Click the UI confirmation button to allow the agent to execute code generation.
-
-### 3. IDE Context Tags:
-* `@codebase`: Directs the AI model to index local project files, ensuring generated code adheres to existing conventions.
-* `@docs`: Instructs Context7 to fetch up-to-date documentation for libraries without relying on stale training data.
-* `@web`: Performs live web searches to look up API changes or troubleshooting guides.
+  3. Verify `walkthrough.md` contains reproducible terminal evidence before approving branch merges.
 
 ---
 
-### 4. Teammate Role Division & Skill Mapping:
+## 📜 OpenAPI 3.1 Contracts & Standard Tools
 
-```
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│ TEAMMATE 1: BACKEND & DATA LEAD                                                        │
-│ • Focus: Models in `backend/models/`, endpoints in `backend/api/v1/`, migrations.     │
-│ • Skills to Use:                                                                       │
-│   - `fastapi-production-archetype`: Scaffolds endpoints with Pydantic v2 & envelopes.  │
-│   - `sqlalchemy-alembic-ops`: Generates zero-downtime Alembic migrations.              │
-│   - `pgvector-hybrid-search`: Sets up HNSW indexes and RRF hybrid retrieval queries.   │
-│ • Prompt to Agent: "Create an async endpoint for [feature] following our FastAPI       │
-│   archetype, with Pydantic v2 validation, database dependency, and ResponseEnvelope."  │
-├────────────────────────────────────────────────────────────────────────────────────────┤
-│ TEAMMATE 2: AI & AGENTIC LEAD                                                          │
-│ • Focus: State graphs in `ai_layer/`, MCP tools, prompt security, and evals.           │
-│ • Skills to Use:                                                                       │
-│   - `langgraph-production-patterns`: Builds supervisor graphs with approval gates.     │
-│   - `fastmcp-tool-server`: Wraps external software into isolated SSE tools.           │
-│   - `agent-security-guardrails`: Adds prompt injection sanitizers & read-only DB locks.│
-│   - `agent-eval-harness`: Generates 25 golden test cases and measures RAGAS scores.    │
-│ • Prompt to Agent: "Build a LangGraph supervisor graph for [domain] with state         │
-│   persistence and a human approval gate before database writes."                       │
-├────────────────────────────────────────────────────────────────────────────────────────┤
-│ TEAMMATE 3: FRONTEND LEAD                                                              │
-│ • Focus: Dashboard cards, real-time SSE progress streaming, styling, responsiveness.   │
-│ • Skills to Use:                                                                       │
-│   - `hallmark`: Anti-AI-slop design constraints and clean typography.                  │
-│   - `emil-design-eng`: Polished 150-220ms spring physics and micro-interactions.       │
-│   - `awesome-design-systems`: Tokenized design systems and responsive components.      │
-│ • Prompt to Agent: "Design a clean dark-mode dashboard for [feature] that connects     │
-│   to our SSE log stream on /api/v1/jobs/{id}/stream and renders live progress."        │
-├────────────────────────────────────────────────────────────────────────────────────────┤
-│ TEAMMATE 4: DEVOPS & PITCH LEAD                                                        │
-│ • Focus: Docker Compose, AWS ECS Fargate, Marp slide decks, live stage demo rehearsal. │
-│ • Skills to Use:                                                                       │
-│   - `marp-presentation-engine`: Compiles Markdown notes into high-end HTML/PDF slides. │
-│   - `agent-docker-aws-deploy`: Verifies multi-stage Docker builds and AWS ECS specs.   │
-│   - `hackathon-speedrun-kit`: Runs seed data scripts and interactive terminal demos.   │
-│ • Prompt to Agent: "Compile our pitch deck in pitch/pitch.marp.md into HTML and PDF,   │
-│   highlighting our problem, architecture, RAGAS metrics, and live demo."               │
-└────────────────────────────────────────────────────────────────────────────────────────┘
+This framework strictly follows the official [OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification) standards:
+
+* 📄 **OpenAPI 3.1 JSON Contract**: [docs/openapi.json](docs/openapi.json)
+* 📄 **OpenAPI 3.1 YAML Contract**: [docs/openapi.yaml](docs/openapi.yaml)
+* 📖 **Interactive Swagger UI**: [http://localhost:8000/docs](http://localhost:8000/docs)
+* 📚 **ReDoc Documentation**: [http://localhost:8000/redoc](http://localhost:8000/redoc)
+
+### Generating Client SDKs:
+You can automatically generate typed client libraries (TypeScript, Python, Go) directly from our OpenAPI specification using open-source tools:
+```bash
+# Generate TypeScript Fetch client:
+npx @openapitools/openapi-generator-cli generate -i docs/openapi.json -g typescript-fetch -o frontend/src/api-client
 ```
 
 ---
 
-## 🧭 The 17 Installed Skills Master Guide
+## 🌟 How to Maintain a Repository Professionally
+*(Learnings from the Top 10 GitHub Repositories: FastAPI, Supabase, LangGraph, Pydantic)*
 
-Here is the exact playbook for using every pre-installed skill across the framework's layers:
-
-| Skill Name | Target Stack Layer | How Teammates Must Use It | Sample AI Agent Prompt |
-| :--- | :--- | :--- | :--- |
-| **`fastapi-production-archetype`** | Backend API | Generates production-ready FastAPI routes, lifespan managers, and Pydantic envelopes. | *"Generate a new router in api/v1/endpoints/analytics.py using ResponseEnvelope and async DB dependency."* |
-| **`pgvector-hybrid-search`** | Database / Search | Configures HNSW indexes and constructs hybrid cosine + BM25 reciprocal rank fusion queries. | *"Write a hybrid search query matching user query against document_chunks with RRF weighting."* |
-| **`fastmcp-tool-server`** | AI / Tooling | Creates typed Model Context Protocol tool endpoints over HTTP Server-Sent Events. | *"Wrap our FFmpeg audio processing script into an isolated FastMCP SSE tool with typed schema."* |
-| **`langgraph-production-patterns`** | AI / Agents | Scaffolds cyclic state graphs with checkpoint persistence and human approval interrupt gates. | *"Build a multi-agent supervisor graph that coordinates researcher and writer nodes with interrupt_before gates."* |
-| **`agent-security-guardrails`** | AI / Security | Implements prompt injection filters, SQL mutation blockers, and session token budget guards. | *"Add an input guardrail that detects jailbreak patterns and verifies SQL queries are strictly SELECT-only."* |
-| **`agent-eval-harness`** | AI / Testing | Runs automated 25-case golden benchmark suites measuring RAGAS Faithfulness and Answer Relevance. | *"Run the eval harness on our RAG pipeline and output a markdown table of Faithfulness scores for our slides."* |
-| **`async-agent-celery-redis`** | Backend / Queue | Configures asynchronous task queues, Redis Pub/Sub channels, and SSE status streaming. | *"Set up an async job worker that processes document embeddings and broadcasts progress percent over Redis."* |
-| **`rag-reranking-pipeline`** | AI / Retrieval | Implements 2-stage retrieval using FlashRank neural cross-encoders to score candidates in $<20\text{ms}$. | *"Add FlashRank reranking to our retrieval pipeline to narrow top 25 candidate chunks down to the 5 most relevant."* |
-| **`llm-gateway-semantic-cache`** | Production Resilience | Configures embedding-based semantic query caching with Redis to return cached responses in $<10\text{ms}$. | *"Implement semantic caching for our query endpoint with a cosine similarity threshold of 0.95."* |
-| **`agent-docker-aws-deploy`** | Cloud & DevOps | Generates multi-stage Docker builds, verifies non-root users, and updates AWS ECS Fargate task definitions. | *"Audit our Dockerfile for size optimization and generate an AWS ECS Fargate task definition with ALB routing."* |
-| **`context7-docs-fetcher`** | Research & Docs | Fetches current, version-specific library documentation via CLI or MCP tools. | *"Fetch the latest LangGraph 0.2 documentation for AsyncPostgresSaver checkpointer usage."* |
-| **`poetry-python-packaging`** | Packaging & Build | Manages Python dependency resolution, package locking, and clean pyproject.toml definitions. | *"Add flashrank and redis dependencies to pyproject.toml and ensure lockfile consistency."* |
-| **`hackathon-speedrun-kit`** | Rapid Prototyping | Generates instant synthetic seed data and interactive terminal demo scripts. | *"Create a 3-second database seeding script that populates 50 realistic document chunks with embeddings."* |
-| **`marp-presentation-engine`** | Pitch & Presentation | Compiles Markdown presentation notes into high-impact HTML and standalone PDF slide decks. | *"Compile pitch/pitch.marp.md into an HTML slide presentation with dark-mode theme and code highlighting."* |
-| **`jev-decision-router`** | AI / Routing | Deploys low-latency System-1 typed classifiers that route requests without consuming slow LLM tokens. | *"Implement a sub-150ms Jev decision router that classifies incoming user intent into RAG, Math, or General."* |
-| **`pydantic-ai-workflows`** | AI / Workflows | Authors type-safe Python agent workflows with structured outputs and dependency injection. | *"Create a Pydantic AI agent that parses unstructured PDF invoices into an InvoiceModel schema."* |
-| **`hallmark`** | Frontend UI | Enforces anti-AI-slop design constraints, high visual density, clean typography, and muted dark-mode palettes. | *"Refine frontend/index.html to remove generic AI styling, tighten spacing tokens, and add high-contrast badges."* |
+1. **Explicit Architecture Contracts**: Keep OpenAPI contracts (`docs/openapi.json`), database schemas (`database/supabase_rls.sql`), and cloud specs (`infra/aws-architecture.md`) version-controlled.
+2. **Automated Quality Gates**: Enforce zero-lint tolerance via Ruff (`ruff check .`), automated unit tests (`pytest`), and the local PR Reviewer Agent (`python3 scripts/review_pr.py`).
+3. **Continuous Integration (CI)**: Automated GitHub Actions workflow (`.github/workflows/ci.yml`) validates all pull requests on push.
+4. **Structured PR Template**: Use `.github/pull_request_template.md` to require security, testing, and contract checklists before merging.
+5. **Community Governance**: Professional open-source standards included: [LICENSE](LICENSE) (MIT), [CONTRIBUTING.md](CONTRIBUTING.md), and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
 
 ---
 
-## 📚 Curated Index of Top Reference Repositories
+## 📋 Comprehensive Layer-by-Layer Pre-Flight Checklist
 
-All official reference repositories integrated into our architecture:
+Before presenting to hackathon judges or publishing your repository, verify every required item across all stacks:
 
-| Repository | GitHub Link | What It Does in Our Framework |
-| :--- | :--- | :--- |
-| **Marp** | [marp-team/marp](https://github.com/marp-team/marp) | Converts Markdown directly into HTML, PDF, and PPTX pitch decks. |
-| **Context7** | [upstash/context7](https://github.com/upstash/context7) | Real-time version-specific documentation fetcher and MCP server. |
-| **Pydantic AI** | [pydantic/pydantic-ai](https://github.com/pydantic/pydantic-ai) | Type-safe Python agent framework with dependency injection. |
-| **LangGraph** | [langchain-ai/langgraph](https://github.com/langchain-ai/langgraph) | Cyclic multi-agent state graphs with persistence and approval gates. |
-| **FastMCP** | [jlowin/fastmcp](https://github.com/jlowin/fastmcp) | High-level Python SDK for Model Context Protocol servers over SSE. |
-| **FlashRank** | [PrithivirajDamodaran/FlashRank](https://github.com/PrithivirajDamodaran/FlashRank) | Ultra-fast local neural reranker (<20ms) for 2-stage retrieval. |
-| **RAGAS** | [explodinggradients/ragas](https://github.com/explodinggradients/ragas) | Retrieval Augmented Generation evaluation metrics (Faithfulness, Relevance). |
-| **Promptfoo** | [promptfoo/promptfoo](https://github.com/promptfoo/promptfoo) | CLI-based LLM output testing and prompt regression test runner. |
-| **ScrapeGraphAI** | [ScrapeGraphAI/Scrapegraph-ai](https://github.com/ScrapeGraphAI/Scrapegraph-ai) | LLM-powered web scraping pipelines for automated data extraction. |
-| **Archify** | [tt-a1i/archify](https://github.com/tt-a1i/archify) | Generates interactive SVG architecture diagrams from code evidence. |
+### 1. Frontend Layer
+- [ ] Responsive navigation bar linking Agent Console, Document Vault, Telemetry, and API docs.
+- [ ] Active Server-Sent Events (SSE) listener connected to `/api/v1/jobs/{id}/stream`.
+- [ ] Auto-scrolling terminal console outputting real-time agent execution telemetry.
+- [ ] Dynamic color-coded status badges (`ENQUEUEING`, `STREAMING SSE`, `COMPLETED`, `ERROR`).
+- [ ] Metric KPI cards displaying RAGAS Faithfulness, P95 Latency, and Cache Hit Rate.
+- [ ] High visual density, dark-mode CSS tokens, and zero layout shift.
 
----
+### 2. Backend API Layer
+- [ ] Async lifespan manager initializing database pools and Redis connections.
+- [ ] Dependency injection provider (`get_db`) with automatic session rollback and closing.
+- [ ] Pydantic v2 schemas validating all request payloads and response envelopes.
+- [ ] Standardized `ResponseEnvelope[T]` wrapping all successful outputs.
+- [ ] Global exception interceptor catching unhandled errors and returning structured error JSON.
+- [ ] OpenAPI 3.1 specification exported in `docs/openapi.json` and interactive at `/docs`.
 
-## 📋 Hackathon Problem Statement Readiness Checklist
+### 3. Database & Storage Layer
+- [ ] PostgreSQL 16 ACID properties verified (Atomicity, Consistency, Isolation, Durability).
+- [ ] `pgvector` extension active with 1536-dim HNSW Cosine Index (`m=16, ef_construction=64`).
+- [ ] Generated `tsv_content TSVECTOR` column with GIN index for BM25 hybrid matching.
+- [ ] Supabase Row-Level Security (RLS) policies isolating user data by `auth.uid()`.
+- [ ] Read-only database role restricting LLM agents to `SELECT` operations only.
+- [ ] Unified Redis key topology for semantic cache, jobs, locks, and token budgets.
 
-Walk through this checklist the moment your team receives the challenge:
+### 4. AI & Agentic Layer
+- [ ] LangGraph cyclic state machine with supervisor node and `AsyncPostgresSaver` checkpointing.
+- [ ] Human-in-the-Loop interrupt gate configured before sensitive operations.
+- [ ] FastMCP tool server running over SSE on port 8001 with typed tool definitions.
+- [ ] Hybrid dense + sparse retriever combining cosine embeddings and BM25 via RRF ($k=60$).
+- [ ] FlashRank neural cross-encoder reranker scoring candidates in $<20\text{ms}$.
+- [ ] Jev System-1 fast decision router classifying queries in $<150\text{ms}$ without LLM cost.
+- [ ] Prompt injection defense guardrails stripping jailbreak keywords and SQL mutations.
+- [ ] RAGAS evaluation harness validating 25 golden test cases with faithfulness scores $>0.90$.
 
-- [ ] **1. Is this a deterministic calculation or an AI problem?**
-  - If it can be solved with SQL, math, or regex, **do not use an LLM**.
-- [ ] **2. Does the task require private documents or dynamic facts?**
-  - If YES: Activate the RAG pipeline (`ai_layer/hybrid_retriever.py`).
-  - If NO: Use a direct structured prompt (`gpt-4o-mini`).
-- [ ] **3. Will the operation take longer than 1 second?**
-  - If YES: Route through the async job queue (`backend/src/app/api/v1/endpoints/jobs.py`) and stream progress to the frontend via SSE.
-  - If NO: Return the result synchronously.
-- [ ] **4. Can the action cause data corruption or financial loss?**
-  - If YES: Enforce a Human-in-the-Loop interrupt gate (`ai_layer/langgraph_supervisor.py`).
-- [ ] **5. Are external command-line tools needed (FFmpeg, scrapers)?**
-  - If YES: Wrap them in FastMCP over SSE (`ai_layer/fastmcp_server.py`). Never use raw shell calls.
-- [ ] **6. Have we verified quality with real numbers?**
-  - Run the evaluation suite (`python ai_layer/eval_harness.py`) and put the RAGAS Faithfulness score on your pitch slides.
+### 5. Production Resilience Layer
+- [ ] Exponential backoff with full jitter decorating all external third-party API calls.
+- [ ] 3-state Circuit Breaker (CLOSED/OPEN/HALF-OPEN) protecting downstream workers.
+- [ ] Redis distributed idempotency guard (`SETNX`) preventing duplicate task execution.
+- [ ] Sub-10ms semantic query cache returning stored answers for repeat prompts.
+- [ ] Sliding-window rate limiters and session token budgets preventing cost runaway.
+
+### 6. Deployment & Cloud Layer
+- [ ] Multi-stage Dockerfile packaging application into a minimal image ($<180\text{MB}$) as non-root `appuser`.
+- [ ] Docker Compose networking API, PostgreSQL (pgvector), Redis, and FastMCP locally.
+- [ ] AWS Application Load Balancer (ALB) health check passing on `/api/v1/health`.
+- [ ] AWS ECS on Fargate task definition configured for serverless execution.
+- [ ] Amazon S3 bucket configured for object storage of files $>100\text{KB}$.
+
+### 7. Pitch & Presentation Layer
+- [ ] Marp slide presentation compiled into interactive HTML and standalone PDF in `pitch/`.
+- [ ] Slide deck structured with 6-part winning formula: Hook ➔ Problem ➔ Architecture ➔ Demo ➔ Metrics ➔ Impact.
+- [ ] Terminal stage fail-safe runner tested and operational via `bash pitch/demo.sh`.
+- [ ] RAGAS evaluation benchmark metrics and latency improvements displayed on slides.
 
 ---
 
@@ -523,7 +718,6 @@ node bin/cli.js pitch
 # Output standalone PDF presentation:
 marp --pdf pitch/pitch.marp.md -o pitch/pitch_deck.pdf
 ```
-Your slides are already formatted with problem statements, architecture diagrams, evaluation metrics, and live demo steps.
 
 ### 2. Live Stage Backup Runner (`pitch/demo.sh`)
 If Wi-Fi drops or the frontend projector freezes on stage, open your terminal and run:

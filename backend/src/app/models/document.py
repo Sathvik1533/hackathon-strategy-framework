@@ -1,7 +1,18 @@
-from pgvector.sqlalchemy import Vector
 from sqlalchemy import Column, Computed, Index, Integer, String, Text
 from sqlalchemy.dialects.postgresql import TSVECTOR
+from sqlalchemy.types import UserDefinedType
 from src.app.models.base import TimestampedModel
+
+try:
+    from pgvector.sqlalchemy import Vector
+except ImportError:
+
+    class Vector(UserDefinedType):  # type: ignore[no-redef]
+        def __init__(self, dim: int = 1536):
+            self.dim = dim
+
+        def get_col_spec(self, **kw):
+            return f"vector({self.dim})"
 
 
 class DocumentChunk(TimestampedModel):
