@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "a1daba48-efce-4875-9281-7f86e7f748db",
+  "status": "current",
+  "command": "deliver",
+  "type": "architecture",
+  "input": "/Users/k.sathvik/.gemini/antigravity/scratch/hackathon-strategy-framework/.archify/architecture-fullstack-topology-20261005-070500/candidate.json",
+  "output": "/Users/k.sathvik/.gemini/antigravity/scratch/hackathon-strategy-framework/docs/architecture/system-architecture.html",
+  "specification": {
+    "sha256": "927138862384245009b43d350c17db20bec1ddf896f75b681721e73c7e8d86bb",
+    "bytes": 5599
+  },
+  "artifact": {
+    "sha256": "d0fc35a03e61acb289a3dee80eed9df6a00b0a34f9cc6483d2cec80bf56b25e9",
+    "bytes": 768597
+  }
+}

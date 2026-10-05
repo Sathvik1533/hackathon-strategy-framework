@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inter-Layer Connectivity Topology • Hackathon Strategy Framework</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({ startOnLoad: true, theme: 'dark' });</script>
+</head>
+<body>
+  <div class="app-layout">
+    <header class="app-header">
+      <div class="brand">
+        <span class="badge">NETWORK TOPOLOGY & PROTOCOLS</span>
+        <h1>Inter-Layer Connectivity Topology</h1>
+      </div>
+      <div class="header-actions">
+        <a href="/docs/architecture/system-architecture.html" target="_blank" class="btn btn-primary">🗺️ Archify Interactive Explorer</a>
+        <a href="/docs" target="_blank" class="btn btn-secondary">📖 OpenAPI Spec</a>
+        <a href="/api/v1/health" target="_blank" class="btn btn-secondary">💓 Health Probe</a>
+      </div>
+    </header>
+
+    <!-- Global Navigation Bar across all Core Pages -->
+    <nav class="nav-bar">
+      <a href="/index.html" class="nav-item">🚀 Agent Console</a>
+      <a href="/documents.html" class="nav-item">📄 Document Vault</a>
+      <a href="/analytics.html" class="nav-item">📊 Telemetry & Metrics</a>
+      <a href="/connectivity.html" class="nav-item active">🔗 Connectivity Topology</a>
+      <a href="/docs" target="_blank" class="nav-item">📜 API Contract (/docs)</a>
+    </nav>
+
+    <!-- Master Topology Live Status Cards -->
+    <section class="card" style="margin-bottom: 28px;">
+      <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <div>
+          <h2>⚡ Live Connection Status Across All 7 Layers</h2>
+          <p class="subtitle">Managed and monitored in real-time by <code>connectivity-topology-manager.js</code></p>
+        </div>
+        <button id="refreshTopologyBtn" class="btn btn-secondary" onclick="window.topologyManager.probeHealth().then(() => window.topologyManager.renderTopologyUI())">🔄 Refresh Health Probes</button>
+      </div>
+      <div id="topologyCardsContainer" class="grid-2col"></div>
+    </section>
+
+    <!-- Architectural Connection Diagrams Section -->
+    <section class="card" style="margin-bottom: 28px;">
+      <div class="panel-header" style="margin-bottom: 20px;">
+        <h2>📐 Visual Architecture Diagrams for Every Connection</h2>
+        <p class="subtitle">Detailed protocols, request flows, data contracts, and security boundaries</p>
+      </div>
+
+      <!-- Connection 1 & 2 -->
+      <div class="grid-2col" style="margin-bottom: 24px;">
+        <div class="card" style="background: var(--bg-surface); padding: 18px; border-radius: 8px;">
+          <h3 style="font-size: 1rem; color: var(--accent-blue); margin-bottom: 12px;">1. Frontend ➔ Backend (REST / JSON)</h3>
+          <pre class="mermaid">
+flowchart LR
+    Browser["Client Browser"] -->|JSON / Bearer JWT| FetchClient["Native fetch()"]
+    FetchClient -->|AbortController 10s| CORSMiddleware["FastAPI CORS"]
+    CORSMiddleware -->|Validated Pydantic| Router["/api/v1 Endpoints"]
+    Router -->|Generic Envelope| Response["ResponseEnvelope[T]"]
+          </pre>
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 8px;">
+            Enforces strict request timeout via <code>AbortController</code>, Pydantic type validation, and standardized envelope responses.
+          </p>
+        </div>
+
+        <div class="card" style="background: var(--bg-surface); padding: 18px; border-radius: 8px;">
+          <h3 style="font-size: 1rem; color: var(--accent-emerald); margin-bottom: 12px;">2. Backend ➔ Frontend (SSE Streaming)</h3>
+          <pre class="mermaid">
+flowchart LR
+    Worker["Async Job Worker"] -->|publish percent, log| Redis["Redis Pub/Sub"]
+    Redis -->|channel:jobs:id| Streamer["FastAPI SSE Generator"]
+    Streamer -->|text/event-stream| EventSource["Browser EventSource"]
+    EventSource -->|auto-scroll| Terminal["Live Terminal UI"]
+          </pre>
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 8px;">
+            Streams real-time agent execution progress from Redis Pub/Sub directly to the browser terminal with reconnect safety.
+          </p>
+        </div>
+      </div>
+
+      <!-- Connection 3 & 4 -->
+      <div class="grid-2col" style="margin-bottom: 24px;">
+        <div class="card" style="background: var(--bg-surface); padding: 18px; border-radius: 8px;">
+          <h3 style="font-size: 1rem; color: var(--accent-indigo); margin-bottom: 12px;">3. Backend ➔ Database (Postgres + pgvector)</h3>
+          <pre class="mermaid">
+flowchart LR
+    Endpoint["FastAPI Route"] -->|Depends(get_db)| Session["AsyncSession"]
+    Session -->|TCP 5432 / asyncpg| ConnectionPool["SQLAlchemy Pool"]
+    ConnectionPool -->|Cosine Operator <=>| HNSW["pgvector HNSW Index"]
+    ConnectionPool -->|ACID Commit/Rollback| Postgres["PostgreSQL 16"]
+          </pre>
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 8px;">
+            Connection pooling with auto-rollback on error, Read Committed isolation, and native vector distance queries.
+          </p>
+        </div>
+
+        <div class="card" style="background: var(--bg-surface); padding: 18px; border-radius: 8px;">
+          <h3 style="font-size: 1rem; color: var(--accent-amber); margin-bottom: 12px;">4. Frontend ➔ Database (Supabase RLS)</h3>
+          <pre class="mermaid">
+flowchart LR
+    Browser["Browser JS"] -->|HTTPS PostgREST| SupabaseGateway["Supabase API"]
+    SupabaseGateway -->|Verify JWT auth.uid()| RLSPolicies["Row-Level Security"]
+    RLSPolicies -->|Tenant Matches| AllowedData["Return User Chunks"]
+    Browser -.->|TCP 5432 Direct| Blocked["BLOCKED BY FIREWALL"]
+          </pre>
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 8px;">
+            Direct TCP port 5432 is strictly blocked. Client queries pass through PostgREST and are filtered by Row-Level Security.
+          </p>
+        </div>
+      </div>
+
+      <!-- Connection 5 & 6 -->
+      <div class="grid-2col" style="margin-bottom: 24px;">
+        <div class="card" style="background: var(--bg-surface); padding: 18px; border-radius: 8px;">
+          <h3 style="font-size: 1rem; color: var(--accent-rose); margin-bottom: 12px;">5. Frontend ➔ AI Gateway Indirection</h3>
+          <pre class="mermaid">
+flowchart LR
+    Client["Browser Frontend"] -->|POST /jobs/render| BackendAPI["FastAPI Gateway"]
+    BackendAPI -->|Token Bucket| RateLimiter["Redis Token Limiter"]
+    RateLimiter -->|Strip Injections| Guardrails["Prompt Guardrails"]
+    Guardrails -->|Internal Call| AIEngine["LangGraph Multi-Agent"]
+    Client -.->|Direct LLM API Key| Leaked["BLOCKED (Prevents Key Leak)"]
+          </pre>
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 8px;">
+            Frontend never holds LLM API keys. All calls route through backend rate limiters, token budgets, and prompt guardrails.
+          </p>
+        </div>
+
+        <div class="card" style="background: var(--bg-surface); padding: 18px; border-radius: 8px;">
+          <h3 style="font-size: 1rem; color: var(--accent-blue); margin-bottom: 12px;">6. Backend ➔ AI Layer & FastMCP Tools</h3>
+          <pre class="mermaid">
+flowchart LR
+    Supervisor["LangGraph Supervisor"] -->|0ms In-Process| Reranker["FlashRank Neural (<20ms)"]
+    Supervisor -->|HTTP SSE / Port 8001| FastMCP["FastMCP Tool Server"]
+    FastMCP -->|Isolated Subprocess| CLI["CLI / Scraping Sandbox"]
+    Supervisor -->|Backoff + CircuitBreaker| LLM["OpenAI / Anthropic HTTPS"]
+          </pre>
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 8px;">
+            Combines zero-overhead in-memory agent execution with isolated FastMCP SSE subprocesses and circuit-breaker protected LLM calls.
+          </p>
+        </div>
+      </div>
+
+      <!-- Connection 7 -->
+      <div class="card" style="background: var(--bg-surface); padding: 18px; border-radius: 8px;">
+        <h3 style="font-size: 1rem; color: var(--accent-emerald); margin-bottom: 12px;">7. Deployment & Cloud Topology</h3>
+        <pre class="mermaid">
+flowchart LR
+    User["Internet User"] -->|HTTPS Port 443| ALB["AWS Application Load Balancer"]
+    ALB -->|Target Group Health /api/v1/health| Fargate["AWS ECS on Fargate (Port 8000)"]
+    Fargate -->|VPC Peering / Port 5432| RDS["Amazon RDS (Postgres 16)"]
+    Fargate -->|IAM Role Task Credentials| S3["Amazon S3 Bucket (>100KB)"]
+    User -->|Direct PUT via Presigned URL| S3
+        </pre>
+        <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 8px;">
+          Serverless container execution on ECS Fargate behind an Application Load Balancer, with S3 Presigned URLs for direct large-file uploads.
+        </p>
+      </div>
+    </section>
+  </div>
+
+  <script src="connectivity-topology-manager.js"></script>
+</body>
+</html>

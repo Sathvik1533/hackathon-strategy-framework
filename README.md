@@ -30,6 +30,21 @@ chmod +x init.sh bin/cli.js pitch/generate_pitch.sh pitch/demo.sh infra/deploy_a
 * 🗄️ **PostgreSQL 16 + pgvector**: `localhost:5432` (pre-seeded with 1536-dim vectors)
 * ⚡ **Redis Task Broker & Semantic Cache**: `localhost:6379`
 * 📊 **Pitch Deck Engine**: `pitch/presentation.html`
+* 🗺️ **Archify Interactive Visual Architecture**: [docs/architecture/system-architecture.html](docs/architecture/system-architecture.html)
+
+---
+
+### 💡 Explain Like I'm 15: How This Entire System Works
+If you've never built a full-stack AI system before, think of this architecture like a **high-tech futuristic restaurant**:
+
+1. **The Dining Room & Menu ([`frontend/index.html`](frontend/index.html))**: You sit down, pick what you want, and watch an electronic terminal that streams play-by-play cooking updates in real time.
+2. **The Head Waiter ([`backend/src/app/main.py`](backend/src/app/main.py))**: FastAPI takes your order in milliseconds, verifies your ticket (JWT token), and hands it to the kitchen without ever making other customers wait.
+3. **The Kitchen Pantry & Vault ([`database/supabase_rls.sql`](database/supabase_rls.sql))**: PostgreSQL 16 stores every recipe safely. Its Spotify-style vector search (`pgvector`) finds similar recipes in 5ms, while Row-Level Security (RLS) ensures nobody can peek at another customer's order.
+4. **The Whiteboard & Intercom ([`backend/src/app/core/redis.py`](backend/src/app/core/redis.py))**: Redis 7 writes down popular answers for instant 10ms repeats (Semantic Cache) and broadcasts cooking progress to the dining room screen over Server-Sent Events (SSE).
+5. **The Executive Chef ([`ai_layer/langgraph_supervisor.py`](ai_layer/langgraph_supervisor.py))**: LangGraph breaks complex recipes into steps, assigns tasks to specialist cooks, and stops at an approval gate (`interrupt_before`) for human permission before making risky changes.
+6. **The Safety Robot ([`ai_layer/fastmcp_server.py`](ai_layer/fastmcp_server.py))**: FastMCP runs heavy tools (scrapers, shell scripts) inside an isolated glass booth on port 8001 so a tool crash never brings down the main kitchen.
+7. **The Food Truck Container ([`infra/Dockerfile`](infra/Dockerfile))**: Docker packages the whole restaurant into a single lightweight container (<180MB) that runs identically on your laptop or on AWS ECS Fargate in the cloud.
+8. **The Interactive Blueprint ([`docs/architecture/system-architecture.html`](docs/architecture/system-architecture.html))**: Archify visualizes the entire system in an interactive SVG map with dark/light modes, trace motion, and instant PNG/PDF export.
 
 ---
 
@@ -161,176 +176,178 @@ stateDiagram-v2
 ## 🔗 Inter-Layer Connectivity Matrix & Connection Protocols
 *(How Every Layer Connects, Authenticates, Streams, and Secures Data)*
 
-In modern production systems, inter-layer connectivity is not just "generic HTTP REST". Every boundary has distinct protocols, data contracts, security boundaries, and failure semantics:
+In modern production systems, inter-layer connectivity is not just "generic HTTP REST". Every boundary has distinct protocols, data contracts, security boundaries, and failure semantics.
 
-### 🌐 Inter-Layer Connectivity Topology (Mermaid.js)
+### 🎛️ Parent Topology Manager: [`frontend/connectivity-topology-manager.js`](frontend/connectivity-topology-manager.js)
+The single source of truth for connection monitoring is the `ConnectivityTopologyManager` class. It runs inside [Core Page 4 (`frontend/connectivity.html`)](frontend/connectivity.html) and continuously probes `/api/v1/health`, calculates network latency in milliseconds, verifies Supabase RLS security, and updates status chips across all 7 layers in real time.
+* **Plain English Analogy**: Like an **air traffic control radar** that constantly pings all 7 planes in the sky, tracks their speed, and alerts the pilot immediately if any wire or engine flickers.
+
+### 🗺️ Visual Architecture Engine: Archify Interactive Explorer
+We integrated the **Archify** visual architecture engine to compile a verified, interactive standalone SVG/HTML diagram of the entire system:
+* 🌐 **Interactive Diagram View**: [docs/architecture/system-architecture.html](docs/architecture/system-architecture.html)
+* 🚀 **Run via CLI**: `npm run diagram` or `hsf diagram`
+* 💎 **Key Capabilities**: Interactive node inspection, dark/light theme switching, animated packet trace motion, zero layout crossings, and instant PNG/SVG/PDF exports for pitch decks.
+
+---
+
+### 1. Frontend-to-Backend Connection (`Frontend ➔ Backend`)
+> 💡 **Explain Like I'm 15**: Like handing a sealed, stamped letter with your student ID card to the front-desk school receptionist. If the receptionist is too busy, your timer goes off and you try again.
+
 ```mermaid
 flowchart LR
-    subgraph Browser["CLIENT BROWSER (Frontend)"]
-        UI_REST["Fetch Client (JSON / HTTPS)"]
-        UI_SSE["EventSource (text/event-stream)"]
-        UI_Storage["Presigned URL Client (Direct S3)"]
-    end
-
-    subgraph Gateway["GATEWAY & API (FastAPI)"]
-        Endpoints["REST Routers (/api/v1)"]
-        Streamer["SSE StreamingResponse"]
-        Presigner["S3 Presigned URL Generator"]
-    end
-
-    subgraph DataTier["DATA & STORAGE TIER"]
-        Postgres["PostgreSQL 16 + pgvector (asyncpg)"]
-        RedisTier["Redis 7 (Pub/Sub & Semantic Cache)"]
-        S3Bucket["Amazon S3 Bucket (Object Storage)"]
-    end
-
-    subgraph AITier["AI & AGENTIC TIER"]
-        LangGraphTier["LangGraph Multi-Agent Supervisor"]
-        FastMCPTier["FastMCP SSE Tool Server (Port 8001)"]
-        ExternalLLM["External LLMs (OpenAI / Anthropic HTTPS)"]
-    end
-
-    subgraph CloudInfra["DEPLOYMENT & CLOUD TOPOLOGY"]
-        ALB["AWS Application Load Balancer (Port 443)"]
-        FargateTasks["ECS Fargate Tasks (Port 8000)"]
-        DockerBridge["Docker Compose Bridge Network"]
-    end
-
-    %% Frontend to Backend
-    UI_REST -->|1. HTTP REST / JSON / JWT Bearer| Endpoints
-    %% Backend to Frontend
-    Streamer -->|2. Server-Sent Events / text/event-stream| UI_SSE
-    %% Backend to Database
-    Endpoints -->|3. Async SQLAlchemy 2.0 / TCP 5432| Postgres
-    Endpoints -->|3. Redis Async Connection / TCP 6379| RedisTier
-    %% Frontend to Database Rule
-    UI_REST -.->|4. DIRECT TCP 5432 STRICTLY BLOCKED| Postgres
-    UI_REST -->|4. Optional Supabase PostgREST + RLS auth.uid| Postgres
-    %% Frontend to AI Rule
-    UI_REST -.->|5. DIRECT LLM API KEYS STRICTLY BLOCKED| ExternalLLM
-    %% Backend to AI
-    Endpoints -->|6. In-Process Python Function / 0ms| LangGraphTier
-    LangGraphTier -->|6. HTTP SSE / Tools / Port 8001| FastMCPTier
-    LangGraphTier -->|6. HTTPS REST / Exponential Backoff| ExternalLLM
-    %% Deployment
-    ALB -->|7. Port 8000 / Target Group Health Check| FargateTasks
-    FargateTasks -->|7. VPC Endpoint / SSL / TLS| Postgres
-    UI_Storage -->|7. Direct Upload / Presigned URL >100KB| S3Bucket
+    Browser["Client Browser (Vanilla JS)"] -->|1. fetch() POST + Bearer JWT| AbortCtrl["AbortController (10s Timeout)"]
+    AbortCtrl -->|2. HTTP/1.1 or HTTP/2| CORSMw["FastAPI CORSMiddleware"]
+    CORSMw -->|3. Validate JSON Payload| Pydantic["Pydantic v2 Schema"]
+    Pydantic -->|4. Dispatch Handler| Endpoint["/api/v1 Endpoints"]
+    Endpoint -->|5. Standard Envelope| Envelope["ResponseEnvelope[T]"]
 ```
 
----
-
-### 1. Frontend-to-Backend Connection (`Frontend -> Backend`)
-* **Transport Protocol**: HTTP/1.1 and HTTP/2 REST.
-* **Payload Format**: `application/json` validated against Pydantic v2 schemas.
-* **Authentication**: Authorization header with Bearer JWT token (`Authorization: Bearer <jwt-token>`).
-* **Client Implementation**: Modern native JavaScript `fetch()` wrapped with `AbortController` (enforcing a strict 10s request timeout).
-* **CORS Preflight**: FastAPI `CORSMiddleware` handles `OPTIONS` requests and verifies allowed origins, headers, and credentials.
-* **Failure Handling**: Client-side fetch wrapper detects HTTP 429 / 503 / 504 and triggers toast notifications with automatic single-retry fallback.
-* **Code Template (`frontend/app.js`)**:
-  ```javascript
-  const res = await fetch("/api/v1/jobs/render", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`
-    },
-    body: JSON.stringify({ task_type: "research", payload: { query: "..." } })
-  });
-  const data = await res.json(); // Standardized ResponseEnvelope[T]
-  ```
+* **Step-by-Step Process**:
+  1. **User Action**: The client triggers an asynchronous task from the UI console (`frontend/app.js`).
+  2. **Client Dispatch**: The browser issues a `fetch()` call with an attached `AbortController` (enforcing a strict 10s timeout) and an `Authorization: Bearer <jwt-token>` header.
+  3. **Ingress Filtering**: FastAPI `CORSMiddleware` validates allowed origins and headers, preventing unauthorized cross-origin requests.
+  4. **Contract Validation**: Pydantic v2 schemas inspect and parse the incoming JSON payload into typed models. If invalid, it returns `422 Unprocessable Entity` with exact field error pointers.
+  5. **Structured Envelope**: The router processes the request and responds with a standardized `ResponseEnvelope[T]` containing data, status, and request telemetry.
+* **Failure Handling**: If the network times out or drops (HTTP 429 / 503 / 504), the client displays a toast notification and performs an exponential backoff single retry.
+* **Code Reference**: [`frontend/app.js`](frontend/app.js) & [`backend/src/app/api/v1/endpoints/jobs.py`](backend/src/app/api/v1/endpoints/jobs.py)
 
 ---
 
-### 2. Backend-to-Frontend Connection (`Backend -> Frontend`)
-* **Transport Protocol**: **Server-Sent Events (SSE)** via `text/event-stream` (preferred over WebSockets for one-directional agent progress and log streaming).
-* **Payload Format**: Standardized SSE chunk: `data: {"percent": 45, "log": "Reranking candidates...", "status": "processing"}\n\n`.
-* **Transport Mechanism**: FastAPI `StreamingResponse(event_generator(), media_type="text/event-stream")`.
-* **Broker Integration**: The background job worker publishes progress updates to a Redis Pub/Sub channel (`channel:jobs:{job_id}`). The FastAPI SSE generator listens to that channel and pushes chunks downstream.
-* **Connection Lifecycle & Reconnects**:
-  * Client connects: `const es = new EventSource('/api/v1/jobs/' + jobId + '/stream');`
-  * When `status === "completed"` or `"failed"`, the client invokes `es.close()` to release the connection.
-  * If the network drops, `EventSource` automatically reconnects; the backend reads the latest snapshot from Redis (`state:jobs:{job_id}`) so reconnecting clients never miss the final result.
-* **Code Template (`backend/src/app/api/v1/endpoints/jobs.py`)**:
-  ```python
-  @router.get("/{job_id}/stream")
-  async def stream_job_events(job_id: str):
-      async def event_generator():
-          redis = get_redis_client()
-          pubsub = redis.pubsub()
-          await pubsub.subscribe(RedisKeyTopology.job_channel(job_id))
-          async for message in pubsub.listen():
-              if message["type"] == "message":
-                  yield f"data: {message['data']}\n\n"
+### 2. Backend-to-Frontend Connection (`Backend ➔ Frontend` via SSE)
+> 💡 **Explain Like I'm 15**: Like a live radio station streaming play-by-play commentary directly into your headphones. If you go through a tunnel and lose signal, the radio reconnects automatically and catches you up.
 
-      return StreamingResponse(event_generator(), media_type="text/event-stream")
-  ```
+```mermaid
+flowchart LR
+    Worker["Async Agent Worker"] -->|1. Publish Progress & Log| RedisChannel["Redis Pub/Sub (channel:jobs:id)"]
+    RedisChannel -->|2. Async listen()| SSEGen["FastAPI StreamingResponse"]
+    SSEGen -->|3. text/event-stream Chunks| HTTPSocket["Persistent HTTP Stream (:8000)"]
+    HTTPSocket -->|4. Native onmessage| EventSrc["Browser EventSource Client"]
+    EventSrc -->|5. Auto-Scroll Telemetry| TermUI["Live Terminal UI View"]
+    EventSrc -.->|Auto-Reconnect on Drop| RedisSnapshot["Redis Snapshot (state:jobs:id)"]
+```
+
+* **Step-by-Step Process**:
+  1. **Background Job Progress**: The background worker executes agent steps and publishes progress chunks (`{"percent": 45, "log": "..."}`) to Redis Pub/Sub (`channel:jobs:{job_id}`).
+  2. **SSE Streaming Generator**: FastAPI endpoint `GET /api/v1/jobs/{job_id}/stream` yields an open `StreamingResponse(media_type="text/event-stream")`.
+  3. **Browser Reception**: The browser connects via `const es = new EventSource('/api/v1/jobs/' + jobId + '/stream');`.
+  4. **Terminal Animation**: Incoming chunks trigger the browser `onmessage` handler, auto-scrolling the live dark-mode execution console.
+  5. **Completion & Cleanup**: When status equals `"completed"`, the client invokes `es.close()` to release the connection socket cleanly.
+* **Failure Handling & Reconnects**: If the network connection drops, `EventSource` automatically reconnects; the backend reads the latest snapshot from Redis (`state:jobs:{job_id}`) so reconnecting clients never miss the final output.
+* **Code Reference**: [`backend/src/app/api/v1/endpoints/jobs.py`](backend/src/app/api/v1/endpoints/jobs.py) & [`frontend/app.js`](frontend/app.js)
 
 ---
 
-### 3. Backend-to-Database Connection (`Backend -> Database`)
-* **Transport Protocol**: Asynchronous PostgreSQL wire protocol over TCP port 5432 using SQLAlchemy 2.0 and `asyncpg`.
-* **Connection Pooling**: Managed via `create_async_engine(DATABASE_URL, pool_size=10, max_overflow=20, pool_pre_ping=True)` during FastAPI lifespan initialization.
-* **Dependency Injection Lifecycle**:
-  * Injected into path operations via `Depends(get_db)`.
-  * Yields an `AsyncSession` per HTTP request.
-  * Auto-rolls back transactions on unhandled exceptions and explicitly releases the session back to the pool in a `finally:` block.
-* **Vector Operations**: Native pgvector operators executed in SQL:
-  * `<=>` : Cosine Distance (1 - Cosine Similarity)
-  * `<->` : Euclidean / L2 Distance
-  * `<#>` : Negative Inner Product
-* **ACID Guarantees**: Read Committed isolation level guarantees transactions never see uncommitted dirty writes from concurrent worker tasks.
+### 3. Backend-to-Database Connection (`Backend ➔ PostgreSQL + pgvector`)
+> 💡 **Explain Like I'm 15**: Like a super-smart librarian who can find books by exact ISBN number OR find books that "feel like Harry Potter" in 5 milliseconds, while locking the bookshelf so two people never fight over the same book.
+
+```mermaid
+flowchart LR
+    Route["FastAPI Route Handler"] -->|1. Depends(get_db)| Session["AsyncSession Lifecycle"]
+    Session -->|2. Connection Checkout| AsyncPool["SQLAlchemy asyncpg Pool (size=10, max=20)"]
+    AsyncPool -->|3. TCP Port 5432 / SSL| PG16["PostgreSQL 16 Database"]
+    PG16 -->|4. Cosine Operator <=>| HNSW["1536-dim HNSW Vector Index"]
+    PG16 -->|4. GIN Index on tsv_content| BM25["Full-Text BM25 Index"]
+    PG16 -->|5. Commit or Rollback| Session
+    Session -->|6. Release Connection| AsyncPool
+```
+
+* **Step-by-Step Process**:
+  1. **Dependency Injection**: Route handlers request a database session via `db: AsyncSession = Depends(get_db)`.
+  2. **Connection Checkout**: SQLAlchemy borrows an active connection from the `asyncpg` pool (`pool_size=10, max_overflow=20, pool_pre_ping=True`).
+  3. **SQL & Vector Execution**: Queries execute against PostgreSQL 16 over TCP port 5432 using native binary wire protocol. Vector searches use the `<=>` cosine distance operator against the HNSW index (`m=16, ef_construction=64`).
+  4. **Transactional Safety (ACID)**: Read Committed isolation guarantees no dirty uncommitted reads. Chunk insertions and embedding updates commit together or roll back completely.
+  5. **Pool Release**: A `finally:` block in `get_db` automatically rolls back unhandled errors and returns the connection to the pool.
+* **Code Reference**: [`backend/src/app/core/database.py`](backend/src/app/core/database.py) & [`backend/src/app/models/document.py`](backend/src/app/models/document.py)
 
 ---
 
-### 4. Frontend-to-Database Connection (`Frontend -> Database`)
-* 🚨 **CRITICAL PRODUCTION RULE: Direct Database Access from Frontend is STRICTLY FORBIDDEN**:
-  * Never expose PostgreSQL port 5432 to the public internet or connect from browser JavaScript via raw database drivers. Doing so exposes database credentials and leads to total system compromise.
-* 🛡️ **The Allowed Frontend-to-Database Exception (Supabase PostgREST + RLS)**:
-  * If using Supabase for direct client-side reads, the connection operates strictly over **HTTPS PostgREST** using the **Public Anon Key** (`NEXT_PUBLIC_SUPABASE_ANON_KEY`).
-  * Every single table query MUST be governed by **Row-Level Security (RLS)** using `auth.uid() = user_id`. Even with direct client queries, a malicious user cannot access or modify another tenant's records.
-* ⚖️ **When to Route via Backend API vs. Supabase Client**:
-  * **Direct Supabase PostgREST**: Simple user profile reads, public document browsing, and avatar updates.
-  * **FastAPI Backend Route**: AI agent tasks, LLM generation, vector embeddings, external tool invocations, secret API keys, and multi-step workflows.
+### 4. Frontend-to-Database Connection (`Frontend ➔ Supabase PostgREST` vs. Direct TCP 5432 Blocked)
+> 💡 **Explain Like I'm 15**: You can never walk into the bank vault with a crowbar (Direct TCP blocked); you can only talk to the teller behind bulletproof glass who checks your ID before giving you your own bank statement (PostgREST + RLS).
+
+```mermaid
+flowchart LR
+    ClientBrowser["Client Browser (JS Client)"] -->|1. HTTPS Request + Anon Key| PostgREST["Supabase PostgREST Gateway"]
+    PostgREST -->|2. Extract JWT auth.uid()| RLSPolicies["PostgreSQL Row-Level Security (RLS)"]
+    RLSPolicies -->|3. Match auth.uid() == user_id| AllowedRows["Authorized Rows Returned"]
+    ClientBrowser -.->|Direct TCP Port 5432| FirewallBlock["BLOCKED BY FIREWALL (Zero Raw DB Access)"]
+```
+
+* **Step-by-Step Process**:
+  1. **Firewall Rule**: Direct TCP access to port 5432 from the internet is **100% blocked**. Browser JavaScript cannot connect directly via raw database drivers.
+  2. **PostgREST HTTPS API**: Direct client queries travel over HTTPS to Supabase PostgREST using the public anonymous key (`NEXT_PUBLIC_SUPABASE_ANON_KEY`).
+  3. **Row-Level Security Enforcement**: The database executes security policies defined in [`database/supabase_rls.sql`](database/supabase_rls.sql). Every query automatically appends `WHERE auth.uid() = user_id`.
+  4. **Multi-Tenant Protection**: Even if a malicious user alters client JavaScript to request another tenant's rows, PostgreSQL returns an empty set.
+* **Code Reference**: [`database/supabase_rls.sql`](database/supabase_rls.sql)
 
 ---
 
-### 5. Frontend-to-AI Layer Connection (`Frontend -> AI Layer`)
-* 🚨 **CRITICAL PRODUCTION RULE: NEVER Call LLM APIs Directly from the Frontend**:
-  * Hardcoding `OPENAI_API_KEY` or `ANTHROPIC_API_KEY` in frontend JavaScript leaks your API keys within minutes. It also bypasses all rate limiting, token spend budgets, and prompt injection guardrails.
-* 🛡️ **The Production Connection Pattern (Gateway Indirection)**:
-  * The Frontend talks **ONLY to the FastAPI Backend Gateway**.
-  * The frontend dispatches a high-level command (`POST /api/v1/jobs/render` or `POST /api/v1/agent/query`).
-  * The Backend handles authentication, rate limiting, prompt sanitization, RAG retrieval, and model invocation, streaming progress back to the frontend via SSE.
+### 5. Frontend-to-AI Layer Connection (`Frontend ➔ AI Gateway Indirection`)
+> 💡 **Explain Like I'm 15**: You never hand your credit card to strangers on the sidewalk; you tell the waiter what you want, and the restaurant pays the food supplier from its own secure corporate account.
+
+```mermaid
+flowchart LR
+    BrowserUI["Frontend Console UI"] -->|1. POST /api/v1/jobs/render (No LLM Key)| APIGateway["FastAPI Backend Gateway"]
+    APIGateway -->|2. Check Sliding Window| RedisRate["Redis Rate Limiter & Token Budget"]
+    RedisRate -->|3. Sanitize User Input| Guardrails["Prompt Injection Guardrails"]
+    Guardrails -->|4. Dispatch with Internal Key| LLMService["Backend AI Coordinator"]
+    BrowserUI -.->|Direct LLM API Call with Secret Key| LeakBlocked["STRICTLY FORBIDDEN (Prevents Key Theft)"]
+```
+
+* **Step-by-Step Process**:
+  1. **Zero Client Keys**: Frontend code never possesses `OPENAI_API_KEY` or `ANTHROPIC_API_KEY`.
+  2. **Gateway Ingress**: The frontend dispatches a high-level command to the backend API (`POST /api/v1/jobs/render`).
+  3. **Rate Limiting & Token Budget**: Redis checks sliding-window IP limits and user session token quotas to prevent runaway spending.
+  4. **Input Sanitization**: Guardrails strip prompt injection patterns (jailbreaks, role overrides) and block destructive SQL verbs.
+  5. **Server-Side Execution**: The backend securely injects internal environment keys and dispatches requests to the AI coordinator.
+* **Code Reference**: [`ai_layer/guardrails.py`](ai_layer/guardrails.py) & [`backend/src/app/core/resilience.py`](backend/src/app/core/resilience.py)
 
 ---
 
-### 6. Backend-to-AI Layer Connection (`Backend -> AI Layer`)
-* **In-Process Python Boundary (Zero Network Latency)**:
-  * Core agent logic (`ai_layer/langgraph_supervisor.py`, `ai_layer/hybrid_retriever.py`, `ai_layer/flashrank_reranker.py`) runs directly within the FastAPI process or background async worker. In-memory execution incurs **0ms network hop latency**.
-* **External LLM Provider Boundary**:
-  * Communicates with OpenAI, Anthropic, Gemini, or Groq via official async clients (`AsyncOpenAI`, `AsyncAnthropic`) over HTTPS REST / gRPC.
-  * Decorated with `@retry_with_exponential_backoff` to handle transient HTTP 429 rate limits.
-  * Protected by the 3-State `CircuitBreaker` to fail fast during vendor outages.
-  * Cached in Redis via `SemanticCache` (sub-10ms response for identical prompts).
-* **Tool Calling Boundary (FastMCP over SSE)**:
-  * External CLI utilities (FFmpeg, scrapers, sandboxed shell execution) are decoupled into a dedicated FastMCP SSE server on `http://localhost:8001/sse`.
-  * Protects the primary API server from memory leaks or CPU crashes caused by heavy external binaries.
+### 6. Backend-to-AI Layer & FastMCP Connection (`Backend ➔ LangGraph + FastMCP + External LLM`)
+> 💡 **Explain Like I'm 15**: An orchestra conductor (LangGraph) leads the musicians, hands dangerous power tools to a robot inside a soundproof booth (FastMCP), and consults a professor (LLM) with a fuse box (Circuit Breaker) in case the power surges.
+
+```mermaid
+flowchart LR
+    Supervisor["LangGraph Multi-Agent Supervisor"] -->|1. In-Process (0ms)| HybridRetriever["Hybrid Retriever (pgvector + BM25)"]
+    HybridRetriever -->|2. Neural Reranking (<20ms)| FlashRank["FlashRank Cross-Encoder"]
+    Supervisor -->|3. HTTP SSE / JSON-RPC :8001| FastMCP["FastMCP Tool Server (Isolated Sandbox)"]
+    FastMCP -->|4. Execute Tool| SafeSubprocess["Subprocess / Scraper Sandbox"]
+    Supervisor -->|5. Backoff + Circuit Breaker| ExternalAPI["OpenAI / Anthropic HTTPS API"]
+    ExternalAPI -->|6. Sub-10ms Lookup| SemanticCache["Redis Semantic Response Cache"]
+```
+
+* **Step-by-Step Process**:
+  1. **In-Process Coordination (0ms hop)**: LangGraph supervisor, hybrid retrieval, and FlashRank cross-encoder reranking execute directly in the Python runtime with zero network overhead.
+  2. **Isolated Tool Invocation**: Heavy or risky tools (web scrapers, shell commands) run in a dedicated FastMCP container on port 8001 communicating via Server-Sent Events (SSE) and JSON-RPC 2.0.
+  3. **Resilient LLM Dispatch**: Calls to external models are wrapped with `@retry_with_exponential_backoff` with full jitter:
+     $$\text{delay} = \min(60, \text{uniform}(0, 1.0 \times 2^{\text{attempt}}))$$
+  4. **Circuit Breaker Protection**: If the external LLM fails 5 consecutive times, the 3-state Circuit Breaker trips to `OPEN`, failing fast immediately for 30s to preserve system resources.
+  5. **Semantic Cache**: Successful responses are hashed and stored in Redis (`cache:semantic:<hash>`) for $<10\text{ms}$ retrieval on repeat queries.
+* **Code Reference**: [`ai_layer/langgraph_supervisor.py`](ai_layer/langgraph_supervisor.py) & [`ai_layer/fastmcp_server.py`](ai_layer/fastmcp_server.py)
 
 ---
 
-### 7. Deployment & Cloud Infrastructure Connections
-* **Public Ingress**: Internet Client ➔ AWS Application Load Balancer (ALB) via HTTPS on Port 443 with ACM TLS termination.
-* **ALB to Container Tasks**: ALB forwards traffic to ECS Fargate tasks on Port 8000 across private subnets, checking container health via `GET /api/v1/health`.
-* **Local Container Networking**: Docker Compose creates an isolated internal bridge network (`hackathon-network`). Containers resolve each other via internal DNS:
-  * API ➔ PostgreSQL: `postgres:5432`
-  * API ➔ Redis: `redis:6379`
-  * API ➔ FastMCP: `fastmcp:8001`
-* **Cloud Database Connection**: ECS tasks connect to Amazon RDS PostgreSQL (or Supabase) via AWS Security Groups restricted strictly to the ECS Task Security Group on port 5432 (or port 6543 for PgBouncer connection pooling).
-* **Object Storage Connectivity (Amazon S3)**:
-  * ECS tasks authenticate to S3 using an **IAM Task Role** (no plaintext access keys).
-  * For file uploads $>100\text{KB}$ (PDFs, videos, datasets), the backend generates a time-limited **Presigned S3 PUT URL**. The frontend uploads directly to S3, bypassing backend memory overhead.
-* **Telemetry & Logging**: Container stdout/stderr streams automatically to Amazon CloudWatch via the `awslogs` log driver.
+### 7. Deployment & Cloud Infrastructure Connections (`ALB ➔ ECS Fargate ➔ RDS + S3`)
+> 💡 **Explain Like I'm 15**: An airport security gate (ALB) directs passengers to self-driving shuttle buses (Fargate containers) that store heavy luggage in a secure cargo warehouse (Amazon S3) using single-use digital baggage claim tickets (Presigned URLs).
+
+```mermaid
+flowchart LR
+    PublicClient["Public Internet Client"] -->|1. HTTPS Port 443 (ACM TLS)| ALB["AWS Application Load Balancer"]
+    ALB -->|2. Forward to Target Group Port 8000| Fargate["AWS ECS Fargate Task (Docker Container)"]
+    Fargate -->|3. Check Health via /api/v1/health| ALB
+    Fargate -->|4. Private Subnet TCP 5432| RDS["Amazon RDS PostgreSQL (pgvector)"]
+    Fargate -->|5. IAM Task Role Auth| S3Bucket["Amazon S3 Storage Bucket"]
+    Fargate -->|6. Return Presigned PUT URL| PublicClient
+    PublicClient -->|7. Direct Binary Upload (>100KB)| S3Bucket
+```
+
+* **Step-by-Step Process**:
+  1. **Public TLS Ingress**: Client traffic terminates at AWS ALB on HTTPS port 443 with automated AWS Certificate Manager (ACM) certificates.
+  2. **Target Group Health Check**: ALB forwards requests across private subnets to ECS Fargate tasks on port 8000, continuously probing `/api/v1/health`.
+  3. **Database VPC Peering**: ECS containers connect to Amazon RDS PostgreSQL over private subnet security groups on port 5432 with TLS encryption.
+  4. **Direct S3 Uploads (>100KB)**: For large files (PDFs, images, datasets), the backend generates a short-lived Presigned S3 PUT URL. The browser uploads directly to Amazon S3, preventing backend RAM bottlenecks.
+  5. **Zero Hardcoded Secrets**: ECS containers authenticate to AWS resources via AWS IAM Task Roles without storing credentials in code or Git.
+* **Code Reference**: [`infra/aws-architecture.md`](infra/aws-architecture.md) & [`infra/Dockerfile`](infra/Dockerfile)
 
 ---
 
@@ -350,43 +367,72 @@ flowchart LR
 
 ---
 
-## 📦 The 17 Installed Skills Architectural Box Grid
+## 📦 The Complete Skills Ecosystem: End-to-End Pipeline Mapping
+*(Mapped in Chronological Order from Project Genesis to Live Stage Pitch)*
 
-Every skill available in our environment is mapped to its exact stack layer, responsibilities, and velocity multiplier:
+Every skill in our environment is linked directly to its implementation and ordered by the exact pipeline phase in which it is used:
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                  THE 17 INSTALLED SKILLS ARCHITECTURAL MAPPING                                          │
-├──────────────────────────────┬─────────────────────────────────┬───────────────────────────────────────────────────────┤
-│ LAYER / STACK                │ SKILLS ASSIGNED                 │ CORE RESPONSIBILITY & SPEEDUP BENEFIT                 │
-├──────────────────────────────┼─────────────────────────────────┼───────────────────────────────────────────────────────┤
-│ 1. Frontend Layer            │ • hallmark                      │ Anti-AI-slop design constraints, high-density tokens  │
-│                              │ • emil-design-eng               │ Micro-interactions, 150-220ms spring physics, polish   │
-│                              │ • awesome-design-systems        │ Design tokens, accessible forms, responsive layouts   │
-├──────────────────────────────┼─────────────────────────────────┼───────────────────────────────────────────────────────┤
-│ 2. Backend API Layer         │ • fastapi-production-archetype  │ Pydantic v2 validation, lifespan, ResponseEnvelope    │
-│                              │ • async-agent-celery-redis      │ Async background task queues, SSE streaming channels  │
-│                              │ • context7-docs-fetcher         │ Real-time official documentation fetcher via MCP      │
-│                              │ • poetry-python-packaging       │ Clean dependency resolution, lockfile management      │
-├──────────────────────────────┼─────────────────────────────────┼───────────────────────────────────────────────────────┤
-│ 3. Database & Storage Layer  │ • pgvector-hybrid-search        │ HNSW cosine vector index, BM25 text, RRF fusion       │
-│                              │ • hackathon-speedrun-kit        │ 3-second instant synthetic vector dataset generation  │
-├──────────────────────────────┼─────────────────────────────────┼───────────────────────────────────────────────────────┤
-│ 4. AI & Agentic Layer        │ • langgraph-production-patterns │ Cyclic multi-agent graphs, checkpoint persistence     │
-│                              │ • pydantic-ai-workflows         │ Type-safe structured outputs & dependency injection   │
-│                              │ • fastmcp-tool-server           │ Isolated tool execution over Server-Sent Events       │
-│                              │ • jev-decision-router           │ Sub-150ms typed System-1 decision classification      │
-│                              │ • rag-reranking-pipeline        │ FlashRank neural cross-encoder candidate reranking    │
-│                              │ • agent-security-guardrails     │ Prompt injection sanitization, SQL verb blocker       │
-│                              │ • agent-eval-harness            │ 25-case golden dataset runner measuring RAGAS metrics │
-├──────────────────────────────┼─────────────────────────────────┼───────────────────────────────────────────────────────┤
-│ 5. Production Resilience     │ • llm-gateway-semantic-cache    │ Sub-10ms semantic query caching with Redis            │
-├──────────────────────────────┼─────────────────────────────────┼───────────────────────────────────────────────────────┤
-│ 6. DevOps & Cloud Layer      │ • agent-docker-aws-deploy       │ Multi-stage Docker packaging, AWS ECS Fargate spec    │
-├──────────────────────────────┼─────────────────────────────────┼───────────────────────────────────────────────────────┤
-│ 7. Pitch & Presentation      │ • marp-presentation-engine      │ 2-second compilation of Markdown into HTML/PDF slides │
-└──────────────────────────────┴─────────────────────────────────┴───────────────────────────────────────────────────────┘
+│                              THE COMPLETE SKILLS ECOSYSTEM CHRONOLOGICAL PIPELINE                                      │
+├─────────┬──────────────────────────────┬───────────────────────────────┬───────────────────────────────────────────────┤
+│ PHASE   │ LIFECYCLE DOMAIN             │ SKILL NAME & LINK             │ 15-YEAR-OLD EXPLANATION & SUPERPOWER          │
+├─────────┼──────────────────────────────┼───────────────────────────────┼───────────────────────────────────────────────┤
+│ Phase 1 │ Project Blueprint & Genesis  │ • hackathon-speedrun-kit      │ Instant 3s project skeleton; skip 14h setup.  │
+│         │ Packaging & Dependencies     │ • poetry-python-packaging     │ Locks Python packages so it never breaks.     │
+│         │ Live Official Documentation  │ • context7-docs-fetcher       │ Pulls latest official docs; zero hallucinated │
+│         │                              │                               │ APIs.                                         │
+├─────────┼──────────────────────────────┼───────────────────────────────┼───────────────────────────────────────────────┤
+│ Phase 2 │ Interactive Architecture Map │ • archify                     │ Generates interactive SVG architecture maps.  │
+│         │ High-Density Design System   │ • hallmark                    │ Anti-AI-slop design; clean dark-mode tokens.  │
+│         │ Micro-Interactions & Polish  │ • emil-design-eng             │ Smooth 150-220ms spring physics animations.   │
+│         │ Accessible Component System  │ • awesome-design-systems      │ Battle-tested cards, badges, and forms.       │
+├─────────┼──────────────────────────────┼───────────────────────────────┼───────────────────────────────────────────────┤
+│ Phase 3 │ Async API Gateway            │ • fastapi-production-archetype│ Non-blocking server handling 100s of requests.│
+│         │ Real-Time Streaming & Jobs   │ • async-agent-celery-redis    │ Streams live progress chunks over SSE.        │
+├─────────┼──────────────────────────────┼───────────────────────────────┼───────────────────────────────────────────────┤
+│ Phase 4 │ Spotify-Style Vector Search  │ • pgvector-hybrid-search      │ Sub-10ms vector cosine + BM25 hybrid search.  │
+│         │ Database Bouncer & Isolation │ • supabase-rls                │ Row-Level Security isolating multi-tenant rows│
+├─────────┼──────────────────────────────┼───────────────────────────────┼───────────────────────────────────────────────┤
+│ Phase 5 │ Team Captain Agent Graph     │ • langgraph-production-patterns Cyclic state machine with human approval gate.│
+│         │ Type-Safe Model Outputs      │ • pydantic-ai-workflows       │ Forces LLMs to output strict, validated JSON. │
+│         │ Safe Tool Execution Sandbox  │ • fastmcp-tool-server         │ Gives agents sandboxed tools on port 8001.    │
+│         │ Instant Intent Classifier    │ • jev-decision-router         │ Routes queries in <150ms with zero LLM cost.  │
+├─────────┼──────────────────────────────┼───────────────────────────────┼───────────────────────────────────────────────┤
+│ Phase 6 │ Neural Accuracy Double-Check │ • rag-reranking-pipeline      │ FlashRank cross-encoder finds top 5 in <20ms. │
+│         │ Sub-10ms Repeat Memory       │ • llm-gateway-semantic-cache  │ Caches prompt answers and prevents duplicates.│
+│         │ Jailbreak & Injection Shield │ • agent-security-guardrails   │ Strips trick prompts and blocks malicious SQL.│
+├─────────┼──────────────────────────────┼───────────────────────────────┼───────────────────────────────────────────────┤
+│ Phase 7 │ Mathematical Accuracy Proof  │ • agent-eval-harness          │ 25-case golden dataset scoring RAGAS metrics. │
+├─────────┼──────────────────────────────┼───────────────────────────────┼───────────────────────────────────────────────┤
+│ Phase 8 │ Serverless Container Cloud   │ • agent-docker-aws-deploy     │ Multi-stage Docker build to AWS ECS Fargate.  │
+├─────────┼──────────────────────────────┼───────────────────────────────┼───────────────────────────────────────────────┤
+│ Phase 9 │ Instant Pitch Presentation   │ • marp-presentation-engine    │ 2-second Markdown to HTML/PDF pitch deck with │
+│         │ Live Stage Fail-Safe Runner  │                               │ emergency terminal demo script backup.        │
+└─────────┴──────────────────────────────┴───────────────────────────────┴───────────────────────────────────────────────┘
 ```
+
+#### Detailed Skill Reference Directory (With Direct Repository Links):
+1. **[`hackathon-speedrun-kit`](init.sh)**: Automates Docker container boots, environment verification, and database migrations in 60 seconds.
+2. **[`poetry-python-packaging`](pyproject.toml)**: Generates reproducible lockfiles, ensuring flawless execution across team member laptops.
+3. **[`context7-docs-fetcher`](backend/src/app/main.py)**: Directly inspects official documentation to prevent agent hallucination of deprecation APIs.
+4. **[`archify`](docs/architecture/system-architecture.html)**: Generates and validates interactive standalone SVG architecture diagrams with dark/light themes and trace motion.
+5. **[`hallmark`](frontend/style.css)**: Eliminates generic AI design cliches, enforcing 4px grid rhythm, high-contrast dark palette, and clear visual hierarchy.
+6. **[`emil-design-eng`](frontend/style.css)**: Implements Emil Kowalski-inspired UI polish, tactile button states, and zero layout shift.
+7. **[`awesome-design-systems`](frontend/style.css)**: Comprehensive token catalog for typography, elevation, status badges, and cards.
+8. **[`fastapi-production-archetype`](backend/src/app/main.py)**: Complete production template featuring async lifespan management, Pydantic v2 schemas, and standardized `ResponseEnvelope[T]`.
+9. **[`async-agent-celery-redis`](backend/src/app/core/redis.py)**: Asynchronous job queue, Redis Pub/Sub progress routing, and SSE broadcast generator.
+10. **[`pgvector-hybrid-search`](database/supabase_rls.sql)**: Combines dense HNSW cosine embeddings and sparse BM25 text search via Reciprocal Rank Fusion ($k=60$).
+11. **[`langgraph-production-patterns`](ai_layer/langgraph_supervisor.py)**: Multi-agent cyclic state machine with PostgreSQL checkpoint persistence and human approval gates.
+12. **[`pydantic-ai-workflows`](ai_layer/langgraph_supervisor.py)**: Typed validation models guaranteeing LLMs adhere strictly to JSON contracts.
+13. **[`fastmcp-tool-server`](ai_layer/fastmcp_server.py)**: Model Context Protocol server exposing isolated tools over Server-Sent Events on port 8001.
+14. **[`jev-decision-router`](ai_layer/jev_decision_router)**: Ultra-fast typed classifier routing queries in $<150\text{ms}$ without spending LLM tokens.
+15. **[`rag-reranking-pipeline`](ai_layer/flashrank_reranker.py)**: Local neural cross-encoder reranking 25 candidate chunks down to the top 5 in $<20\text{ms}$.
+16. **[`llm-gateway-semantic-cache`](backend/src/app/core/resilience.py)**: Sub-10ms Redis query cache returning stored answers for repeat prompts and distributed `SETNX` mutex locks.
+17. **[`agent-security-guardrails`](ai_layer/guardrails.py)**: Real-time prompt sanitizer stripping jailbreak phrases and blocking unauthorized SQL verbs.
+18. **[`agent-eval-harness`](ai_layer/eval_harness.py)**: Automated evaluation runner executing 25 golden test cases to score RAGAS Faithfulness and Answer Relevance.
+19. **[`agent-docker-aws-deploy`](infra/Dockerfile)**: Multi-stage Docker packaging ($<180\text{MB}$ non-root `appuser`) and production AWS ECS Fargate task definitions.
+20. **[`marp-presentation-engine`](pitch/pitch.marp.md)**: Markdown presentation compiler generating HTML and PDF slides with a scripted terminal demo fallback ([`pitch/demo.sh`](pitch/demo.sh)).
 
 ---
 

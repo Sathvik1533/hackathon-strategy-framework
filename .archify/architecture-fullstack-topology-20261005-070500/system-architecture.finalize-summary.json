@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "ok": false,
+  "command": "finalize",
+  "status": "fail",
+  "type": "architecture",
+  "quality": "showcase",
+  "specification": {
+    "path": "/Users/k.sathvik/.gemini/antigravity/scratch/hackathon-strategy-framework/.archify/architecture-fullstack-topology-20261005-070500/candidate.json",
+    "sha256": "927138862384245009b43d350c17db20bec1ddf896f75b681721e73c7e8d86bb",
+    "bytes": 5599
+  },
+  "artifact": {
+    "path": "/Users/k.sathvik/.gemini/antigravity/scratch/hackathon-strategy-framework/.archify/architecture-fullstack-topology-20261005-070500/system-architecture.html",
+    "sha256": "d0fc35a03e61acb289a3dee80eed9df6a00b0a34f9cc6483d2cec80bf56b25e9",
+    "bytes": 768597
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "fail"
+  },
+  "failedStage": "browser-check",
+  "diagnostics": [
+    {
+      "code": "viewer/browser-check-runtime",
+      "severity": "error",
+      "message": "browser-check could not complete its Chrome inspection.",
+      "subject": {
+        "artifact": "/Users/k.sathvik/.gemini/antigravity/scratch/hackathon-strategy-framework/.archify/architecture-fullstack-topology-20261005-070500/system-architecture.html"
+      },
+      "evidence": {
+        "reason": "Chrome DevTools read pipe failed: stream ended\nChrome process: still running.\nChrome stderr:\n[1005/070601.473071:ERROR:third_party/crashpad/crashpad/util/mac/xattr.cc:41] getxattr size org.chromium.crashpad.database.initialized on file /Users/k.sathvik/Library/Application Support/Google/Chrome/Crashpad: Operation not permitted (1)\n[1005/070601.474774:ERROR:third_party/crashpad/crashpad/util/mac/xattr.cc:41] getxattr size com.googlecode.crashpad.initialized on file /Users/k.sathvik/Library/Application Support/Google/Chrome/Crashpad: Operation not permitted (1)\n[1005/070601.474831:ERROR:third_party/crashpad/crashpad/util/mac/xattr.cc:66] setxattr org.chromium.crashpad.database.initialized on file /Users/k.sathvik/Library/Application Support/Google/Chrome/Crashpad: Operation not permitted (1)\n[1005/070601.475950:ERROR:third_party/crashpad/crashpad/util/file/file_io.cc:103] ReadExactly: expected 8, observed 0\n[1005/070601.477496:ERROR:third_party/crashpad/crashpad/util/mac/xattr.cc:41] getxattr size org.chromium.crashpad.database.initialized on file /Users/k.sathvik/Library/Application Support/Google/Chrome/Crashpad: Operation not permitted (1)\n[1005/070601.477576:ERROR:third_party/crashpad/crashpad/util/mac/xattr.cc:41] getxattr size com.googlecode.crashpad.initialized on file /Users/k.sathvik/Library/Application Support/Google/Chrome/Crashpad: Operation not permitted (1)\n[1005/070601.477633:ERROR:third_party/crashpad/crashpad/util/mac/xattr.cc:66] setxattr org.chromium.crashpad.database.initialized on file /Users/k.sathvik/Library/Application Support/Google/Chrome/Crashpad: Operation not permitted (1)\n[9881:862575:1005/070602.012734:FATAL:base/apple/mach_port_rendezvous_mac.cc:159] Check failed: kr == KERN_SUCCESS. bootstrap_check_in com.google.Chrome.MachPortRendezvousServer.9881: Permission denied (1100)\nChrome transport: Node v25.8.1, libuv 1.52.1, darwin; pid=9881, exitCode=null, signalCode=null.\nChrome read pipe: readable=false, ended=true, destroyed=false, receivedBytes=0, messages=0, bufferedBytes=0.\nChrome write pipe: writable=true, ended=false, destroyed=false, completedWrites=1, writtenBytes=50, bufferedBytes=0."
+      },
+      "supportedFixes": [
+        "resolve the reported Chrome inspection error, then rerun browser-check"
+      ]
+    }
+  ],
+  "diagnosticSummary": {
+    "total": 1,
+    "shown": 1,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "/Users/k.sathvik/.gemini/antigravity/scratch/hackathon-strategy-framework/.archify/architecture-fullstack-topology-20261005-070500/system-architecture.finalize.json",
+    "summaryReceipt": "/Users/k.sathvik/.gemini/antigravity/scratch/hackathon-strategy-framework/.archify/architecture-fullstack-topology-20261005-070500/system-architecture.finalize-summary.json",
+    "browserCheckReceipt": "/Users/k.sathvik/.gemini/antigravity/scratch/hackathon-strategy-framework/.archify/architecture-fullstack-topology-20261005-070500/system-architecture.browser-check.json"
+  },
+  "update": {
+    "status": "unavailable",
+    "installedVersion": null,
+    "availableVersion": null,
+    "releaseNotes": null,
+    "checkedAt": null,
+    "source": null,
+    "noticeRequired": false,
+    "noticeText": null,
+    "reason": "check-failed"
+  },
+  "visualReview": "not-requested",
+  "durationMs": 9517
+}

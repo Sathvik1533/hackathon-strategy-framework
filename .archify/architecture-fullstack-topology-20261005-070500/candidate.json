@@ -1,0 +1,168 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Hackathon Strategy Framework Full-Stack Architecture",
+    "output": ".archify/architecture-fullstack-topology-20261005-070500/system-architecture.html",
+    "quality_profile": "showcase",
+    "animation": "trace",
+    "repository": {
+      "url": "https://github.com/Sathvik1533/hackathon-strategy-framework",
+      "revision": "3bb12f6422de090de97a1e692e56fd6e81655022",
+      "provider": "github",
+      "link_mode": "web"
+    }
+  },
+  "components": [
+    {
+      "id": "client",
+      "type": "frontend",
+      "label": "Frontend Console",
+      "sublabel": "Vanilla JS / SSE :8000",
+      "tag": "EventSource",
+      "pos": [50, 260],
+      "size": [130, 60],
+      "sources": [{ "path": "frontend/index.html", "line": 1 }]
+    },
+    {
+      "id": "alb",
+      "type": "cloud",
+      "label": "AWS Load Balancer",
+      "sublabel": "ALB HTTPS :443",
+      "tag": "TLS Termination",
+      "pos": [250, 260],
+      "size": [130, 60],
+      "sources": [{ "path": "infra/aws-architecture.md", "line": 1 }]
+    },
+    {
+      "id": "redis",
+      "type": "database",
+      "label": "Redis 7 Broker",
+      "sublabel": "Cache / PubSub :6379",
+      "tag": "SETNX Mutex",
+      "pos": [450, 110],
+      "size": [130, 60],
+      "sources": [{ "path": "backend/src/app/core/redis.py", "line": 1 }]
+    },
+    {
+      "id": "api",
+      "type": "backend",
+      "label": "FastAPI Gateway",
+      "sublabel": "ASGI Engine :8000",
+      "tag": "Async Lifespan",
+      "pos": [450, 260],
+      "size": [130, 60],
+      "sources": [{ "path": "backend/src/app/main.py", "line": 1 }]
+    },
+    {
+      "id": "s3",
+      "type": "cloud",
+      "label": "Amazon S3 Bucket",
+      "sublabel": "Object Storage",
+      "tag": ">100KB Blobs",
+      "pos": [450, 420],
+      "size": [130, 60],
+      "sources": [{ "path": "infra/aws-architecture.md", "line": 35 }]
+    },
+    {
+      "id": "agent",
+      "type": "backend",
+      "label": "LangGraph Agent",
+      "sublabel": "Multi-Agent Graph",
+      "tag": "PostgresSaver",
+      "pos": [660, 110],
+      "size": [130, 60],
+      "sources": [{ "path": "ai_layer/langgraph_supervisor.py", "line": 1 }]
+    },
+    {
+      "id": "db",
+      "type": "database",
+      "label": "PostgreSQL 16",
+      "sublabel": "pgvector + RLS :5432",
+      "tag": "ACID Relational",
+      "pos": [660, 260],
+      "size": [130, 60],
+      "sources": [{ "path": "database/supabase_rls.sql", "line": 1 }]
+    },
+    {
+      "id": "mcp",
+      "type": "security",
+      "label": "FastMCP Tools",
+      "sublabel": "SSE Sandbox :8001",
+      "tag": "Isolated Tools",
+      "pos": [870, 110],
+      "size": [130, 60],
+      "sources": [{ "path": "ai_layer/fastmcp_server.py", "line": 1 }]
+    },
+    {
+      "id": "rerank",
+      "type": "backend",
+      "label": "FlashRank Reranker",
+      "sublabel": "Cross-Encoder <20ms",
+      "tag": "Neural Top-5",
+      "pos": [870, 260],
+      "size": [130, 60],
+      "sources": [{ "path": "ai_layer/flashrank_reranker.py", "line": 1 }]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "AWS Cloud VPC (us-east-1)",
+      "wraps": ["alb", "api", "redis", "db", "agent", "mcp", "s3", "rerank"]
+    },
+    {
+      "kind": "security-group",
+      "label": "Private App & Data Subnet",
+      "wraps": ["api", "redis", "db", "agent", "mcp", "rerank"]
+    }
+  ],
+  "connections": [
+    { "id": "client-to-alb", "from": "client", "to": "alb", "label": "HTTPS :443", "variant": "emphasis" },
+    { "id": "alb-to-api", "from": "alb", "to": "api", "label": "Proxy :8000", "variant": "emphasis" },
+    { "id": "api-to-redis", "from": "api", "to": "redis", "label": "Cache / PubSub", "fromSide": "top", "toSide": "bottom" },
+    { "id": "api-to-db", "from": "api", "to": "db", "label": "asyncpg SQL", "variant": "emphasis" },
+    { "id": "api-to-s3", "from": "api", "to": "s3", "label": "Presigned PUT", "fromSide": "bottom", "toSide": "top" },
+    { "id": "api-to-agent", "from": "api", "to": "agent", "label": "Invoke Agent", "variant": "emphasis" },
+    { "id": "agent-to-mcp", "from": "agent", "to": "mcp", "label": "SSE Tools :8001", "variant": "security" },
+    { "id": "agent-to-db", "from": "agent", "to": "db", "label": "Checkpoints", "fromSide": "bottom", "toSide": "top" },
+    { "id": "db-to-rerank", "from": "db", "to": "rerank", "label": "Vectors", "variant": "emphasis" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Ingress & Edge",
+      "items": [
+        "AWS ALB terminates TLS :443 and forwards to ECS Fargate",
+        "Frontend Console polls health and streams live execution via SSE"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Asynchronous Core",
+      "items": [
+        "FastAPI non-blocking ASGI lifespan connection pools",
+        "Redis 7 sub-10ms semantic cache and distributed idempotency mutex",
+        "PostgreSQL 16 ACID engine with pgvector HNSW cosine index"
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "Agentic Intelligence",
+      "items": [
+        "LangGraph supervisor graph with checkpoint persistence",
+        "FastMCP isolated tool execution server over SSE protocol",
+        "FlashRank neural cross-encoder candidate reranker (<20ms)"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Zero Trust Security",
+      "items": [
+        "Supabase Row-Level Security (RLS) on auth.uid()",
+        "Zero client API key leakage via Backend Gateway indirection",
+        "Dedicated read-only SQL role for agent execution safety"
+      ]
+    }
+  ]
+}

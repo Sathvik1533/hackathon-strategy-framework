@@ -94,6 +94,23 @@ switch (command) {
     run('python3 scripts/review_pr.py', 'Running Automated PR Reviewer Agent');
     break;
 
+  case 'diagram':
+  case 'archify':
+    banner();
+    console.log(`\x1b[32m✔ Building Interactive Archify Architecture Diagram\x1b[0m`);
+    {
+      const archifyPath = fs.existsSync('/Users/k.sathvik/.gemini/config/skills/archify/bin/archify.mjs')
+        ? '/Users/k.sathvik/.gemini/config/skills/archify/bin/archify.mjs'
+        : 'archify';
+      run(`node ${archifyPath} deliver architecture .archify/architecture-fullstack-topology-20261005-070500/candidate.json docs/architecture/system-architecture.html --repo-root . --quality showcase --json`, 'Generating Archify Diagram');
+      console.log(`
+\x1b[32m✔ Interactive Archify Architecture Diagram Ready!\x1b[0m
+• Interactive HTML View: \x1b[34mdocs/architecture/system-architecture.html\x1b[0m
+• Inspect in Browser:    \x1b[33mopen docs/architecture/system-architecture.html\x1b[0m
+      `);
+    }
+    break;
+
   case 'help':
   default:
     banner();
@@ -104,6 +121,7 @@ switch (command) {
   \x1b[33mhsf demo\x1b[0m    - Run animated terminal cURL demo (stage backup if UI lags)
   \x1b[33mhsf eval\x1b[0m    - Run RAGAS 25-case golden dataset accuracy & faithfulness tests
   \x1b[33mhsf review\x1b[0m  - Run automated PR reviewer agent on latest branch changes
+  \x1b[33mhsf diagram\x1b[0m - Deliver verified Archify full-stack architecture diagram HTML
 
 \x1b[1mQuickstart for Teammates:\x1b[0m
   1. git clone https://github.com/Sathvik1533/hackathon-strategy-framework.git
