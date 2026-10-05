@@ -107,12 +107,19 @@ To ensure 5 or 6 teammates can push code simultaneously with **zero git merge co
 
 ```mermaid
 flowchart TD
-    Main["main (Locked Production Trunk)"]
-    FE["feat/frontend-views (Mirage)"]
-    BE["feat/backend-api (Ironhide)"]
-    AI["feat/ai-multi-agent (Wheeljack)"]
-    DB["feat/database-vector (Ratchet)"]
-    DevOps["feat/devops-pitch (Bumblebee)"]
+    classDef main fill:#d97706,stroke:#fbbf24,stroke-width:2px,color:#ffffff;
+    classDef fe fill:#0284c7,stroke:#38bdf8,stroke-width:2px,color:#ffffff;
+    classDef be fill:#4f46e5,stroke:#818cf8,stroke-width:2px,color:#ffffff;
+    classDef ai fill:#7c3aed,stroke:#a78bfa,stroke-width:2px,color:#ffffff;
+    classDef db fill:#059669,stroke:#34d399,stroke-width:2px,color:#ffffff;
+    classDef devops fill:#ea580c,stroke:#fb923c,stroke-width:2px,color:#ffffff;
+
+    Main["main (Locked Production Trunk)"]:::main
+    FE["feat/frontend-views (Mirage)"]:::fe
+    BE["feat/backend-api (Ironhide)"]:::be
+    AI["feat/ai-multi-agent (Wheeljack)"]:::ai
+    DB["feat/database-vector (Ratchet)"]:::db
+    DevOps["feat/devops-pitch (Bumblebee)"]:::devops
 
     Main --> FE
     Main --> BE
@@ -125,6 +132,13 @@ flowchart TD
     AI -.->|PR Review Script| Main
     DB -.->|PR Review Script| Main
     DevOps -.->|PR Review Script| Main
+
+    click Main "../README.md" "View Production Trunk"
+    click FE "../frontend/index.html" "View Mirage Frontend Codebase"
+    click BE "../backend/src/app/main.py" "View Ironhide Backend Codebase"
+    click AI "../ai_layer/langgraph_supervisor.py" "View Wheeljack AI Multi-Agent"
+    click DB "../database/supabase_rls.sql" "View Ratchet Database Schemas"
+    click DevOps "../infra/Dockerfile" "View Bumblebee DevOps Configs"
 ```
 
 1. **Strict File Ownership**: Every role edits *only* their assigned directory (Frontend leads edit `frontend/`, Backend leads edit `backend/`, etc.).

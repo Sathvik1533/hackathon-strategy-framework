@@ -46,10 +46,22 @@ If you just joined this hackathon team and cloned this repo, **here is how to st
 
 ```mermaid
 flowchart LR
-    Step1["1. Clone & ./init.sh<br/>(Stack Boots in 60s)"] --> Step2["2. Run npx hsf wizard<br/>(Pick Role & Get Autobot)"]
-    Step2 --> Step3["3. Work on feat/role Branch<br/>(Zero Git Conflicts)"]
-    Step3 --> Step4["4. Paste .hsf Prompt in IDE<br/>(Cursor / Claude / Antigravity)"]
-    Step4 --> Step5["5. Verify & Merge<br/>(Pytest & PR Reviewer)"]
+    classDef step1 fill:#0284c7,stroke:#38bdf8,stroke-width:2px,color:#ffffff;
+    classDef step2 fill:#7c3aed,stroke:#c084fc,stroke-width:2px,color:#ffffff;
+    classDef step3 fill:#059669,stroke:#34d399,stroke-width:2px,color:#ffffff;
+    classDef step4 fill:#d97706,stroke:#fbbf24,stroke-width:2px,color:#ffffff;
+    classDef step5 fill:#dc2626,stroke:#f87171,stroke-width:2px,color:#ffffff;
+
+    Step1["1. Clone & ./init.sh<br/>(Stack Boots in 60s)"]:::step1 --> Step2["2. Run npx hsf wizard<br/>(Pick Role & Get Autobot)"]:::step2
+    Step2 --> Step3["3. Work on feat/role Branch<br/>(Zero Git Conflicts)"]:::step3
+    Step3 --> Step4["4. Paste .hsf Prompt in IDE<br/>(Cursor / Claude / Antigravity)"]:::step4
+    Step4 --> Step5["5. Verify & Merge<br/>(Pytest & PR Reviewer)"]:::step5
+
+    click Step1 "init.sh" "Run init.sh to boot stack"
+    click Step2 "scripts/quickstart_wizard.py" "Launch Onboarding Wizard"
+    click Step3 "docs/TEAMMATE_CHEAT_SHEET.md" "View Teammate Cheat Sheet"
+    click Step4 ".hsf/my_agent_prompt.md" "Inspect Agent Prompt"
+    click Step5 "scripts/review_pr.py" "Run Automated PR Reviewer"
 ```
 
 ### 🛠️ The 3-Step Setup for Every Teammate:
@@ -94,56 +106,163 @@ If you've never built a full-stack AI system before, think of this architecture 
 
 ## 🏗️ Master Architectural Diagrams (Mermaid.js)
 
-### 1. Full-Stack Component Architecture
+### 1. Master System Architecture Map (Interactive & Color-Coded)
 ```mermaid
 flowchart TD
-    subgraph Frontend["1. FRONTEND LAYER (Core UI Console)"]
-        UI["Dashboard & Input Forms (index.html, documents.html, analytics.html)"]
-        SSE_Client["SSE Listener (EventSource: /api/v1/jobs/{id}/stream)"]
-        Terminal["Auto-Scrolling Log Terminal"]
+    classDef fe fill:#0284c7,stroke:#38bdf8,stroke-width:2px,color:#ffffff;
+    classDef be fill:#4f46e5,stroke:#818cf8,stroke-width:2px,color:#ffffff;
+    classDef db fill:#059669,stroke:#34d399,stroke-width:2px,color:#ffffff;
+    classDef ai fill:#7c3aed,stroke:#c084fc,stroke-width:2px,color:#ffffff;
+    classDef squad fill:#db2777,stroke:#f472b6,stroke-width:2px,color:#ffffff;
+    classDef stage fill:#d97706,stroke:#fbbf24,stroke-width:2px,color:#ffffff;
+
+    subgraph Layer1["🎨 1. FRONTEND & ROBOTIC HUD"]
+        NextJS["Next.js 14 App Router + Framer Motion (mascot-dashboard/)"]:::fe
+        Console["Agent Execution Console (frontend/index.html)"]:::fe
+        Vault["Document & Vector Vault (frontend/documents.html)"]:::fe
+        Metrics["Telemetry & Circuit Monitor (frontend/analytics.html)"]:::fe
+        AestheticEngine["5 Aesthetic Paradigms (Brutalist, Neo, Glass, Clay, Skeuo)"]:::fe
     end
 
-    subgraph Backend["2. BACKEND API LAYER (FastAPI 0.115+)"]
-        Router["API Gateway & Routers (api/v1)"]
-        Envelopes["Pydantic v2 Envelopes (ResponseEnvelope[T])"]
-        JobService["Job Dispatcher & Background Tasks"]
-        OpenAPI["OpenAPI 3.1 Spec (docs/openapi.json)"]
+    subgraph Layer2["⚡ 2. BACKEND API & RESILIENCE"]
+        FastAPI["FastAPI 0.115+ Async Gateway (ResponseEnvelope[T])"]:::be
+        OpenAPI["OpenAPI 3.1 Strict Contracts (docs/openapi.json)"]:::be
+        CircuitBreakers["3-State Circuit Breakers (CLOSED / OPEN / HALF_OPEN)"]:::be
+        RedisEngine["Redis 7 Connection Pool & Sliding-Window Rate Limits"]:::be
     end
 
-    subgraph Resilience["3. PRODUCTION RESILIENCE & CACHING"]
-        CircuitBreaker["Circuit Breaker (CLOSED / OPEN / HALF-OPEN)"]
-        Backoff["Exponential Backoff with Full Jitter"]
-        Idempotency["Distributed Idempotency Guard (SETNX)"]
-        SemanticCache["Redis Semantic Query Cache (<10ms)"]
+    subgraph Layer3["💾 3. DATA & VECTOR STORAGE"]
+        Postgres["PostgreSQL 16 Relational Engine"]:::db
+        pgvector["1536-dim HNSW Cosine Index (m=16, ef=64)"]:::db
+        BM25["GIN tsvector Lexical Search (RRF k=60 Fusion)"]:::db
+        RLS["Supabase Multi-Tenant Row-Level Security (supabase_rls.sql)"]:::db
     end
 
-    subgraph Storage["4. DATABASE & STORAGE LAYER"]
-        PG["PostgreSQL 16 (ACID Relational Core)"]
-        HNSW["pgvector HNSW Cosine Index (1536-dim)"]
-        GIN["TSVECTOR GIN Inverted Index (BM25)"]
-        RLS["Supabase Row-Level Security (auth.uid())"]
-        RedisStore["Redis 7 (Pub/Sub Channels, State, Token Counters)"]
-        S3["Amazon S3 (Blobs > 100KB: PDFs, Models, Videos)"]
+    subgraph Layer4["🤖 4. 5-PILLAR AI COGNITIVE BRAIN"]
+        A2A["1. A2A Multi-Agent System (LangGraph StateGraph + Human Gate)"]:::ai
+        Memory["2. Memory & State Orchestration (Postgres + Redis + Local Telemetry)"]:::ai
+        RAG["3. Hybrid RAG & Neural Reranker (pgvector + FlashRank <18ms)"]:::ai
+        MCP["4. FastMCP SSE Tool Sandbox (Port 8001 Crash Isolation)"]:::ai
+        Evals["5. RAGAS Evaluation Harness (Faithfulness >= 0.90 Benchmarks)"]:::ai
     end
 
-    subgraph AI["5. AI & AGENTIC LAYER"]
-        LangGraph["LangGraph Multi-Agent Supervisor"]
-        HumanGate["Human-in-the-Loop Interrupt Gate"]
-        FastMCP["FastMCP Tool Server (Isolated SSE Tools)"]
-        RRF["Hybrid Retriever (Dense + Sparse Reciprocal Rank Fusion)"]
-        Reranker["FlashRank Cross-Encoder Neural Reranker (<20ms)"]
-        JevRouter["Jev System-1 Fast Decision Router (<150ms)"]
-        Guardrails["Prompt Injection & SQL Mutation Guardrails"]
-        Eval["RAGAS Golden Dataset Evaluation Harness"]
+    subgraph Layer5["🤖 5. ROBOTIC SQUAD & SENIOR COMPANION"]
+        SeniorOrbit["Senior Orbit 👓🤖 (Principal Engineer Terminal & HUD)"]:::squad
+        Autobots["Transformers Robot Squad (Mirage, Ironhide, Wheeljack, Ratchet, Bumblebee)"]:::squad
+        SkillRegistry["Dynamic Skill Synthesizer (17 Core Skills + On-Demand Fetch)"]:::squad
+        ContinuousLearning[".hsf/ Team Memory & Telemetry Engine (Zero Amnesia)"]:::squad
     end
 
-    subgraph Infra["6. DEPLOYMENT & AWS CLOUD LAYER"]
-        Docker["Multi-Stage Docker (<180MB, Non-Root appuser)"]
-        ALB["AWS Application Load Balancer (HTTPS / Route53)"]
-        Fargate["AWS ECS on Fargate (Serverless Containers)"]
-        ECR["Amazon Elastic Container Registry"]
-        CloudWatch["Amazon CloudWatch Logging & Telemetry"]
+    subgraph Layer6["🏆 6. STAGE DEFENSE & JUDGE CERTIFICATION"]
+        PitchDeck["Marp Presentation Engine (6-Minute Formula HTML/PDF)"]:::stage
+        OfflineDemo["Offline Terminal Stage Runner (pitch/demo.sh <30s Local)"]:::stage
+        RehearsalSimulator["6-Minute Pitch Rehearsal Simulator (pitch_rehearsal.py)"]:::stage
+        JudgeCert["Automated Judge Audit Certification (JUDGE_CERTIFICATION.md)"]:::stage
     end
+
+    style Layer1 fill:#082f49,stroke:#38bdf8,stroke-width:2px,color:#38bdf8
+    style Layer2 fill:#1e1b4b,stroke:#818cf8,stroke-width:2px,color:#818cf8
+    style Layer3 fill:#022c22,stroke:#34d399,stroke-width:2px,color:#34d399
+    style Layer4 fill:#2e1065,stroke:#c084fc,stroke-width:2px,color:#c084fc
+    style Layer5 fill:#4a044e,stroke:#f472b6,stroke-width:2px,color:#f472b6
+    style Layer6 fill:#451a03,stroke:#fbbf24,stroke-width:2px,color:#fbbf24
+
+    Layer1 <-->|Async HTTP / SSE| Layer2
+    Layer2 <-->|TCP Port 5432 & SSL| Layer3
+    Layer2 <-->|LangGraph & FastMCP SSE| Layer4
+    Layer4 <-->|Autobot Pairing & Memory| Layer5
+    Layer2 <-->|Pitch Rehearsal & Evals| Layer6
+
+    click NextJS "mascot-dashboard/src/app/page.tsx" "Open Mascot Dashboard"
+    click Console "frontend/index.html" "Open Console UI"
+    click Vault "frontend/documents.html" "Open Document Vault"
+    click Metrics "frontend/analytics.html" "Open System Telemetry"
+    click FastAPI "backend/src/app/main.py" "Open FastAPI Gateway"
+    click OpenAPI "docs/openapi.json" "Open OpenAPI 3.1 Spec"
+    click CircuitBreakers "backend/src/app/core/resilience.py" "Inspect Circuit Breaker"
+    click RedisEngine "backend/src/app/core/redis.py" "Inspect Redis Connection Pool"
+    click Postgres "database/seed_data.py" "Inspect Postgres Models"
+    click RLS "database/supabase_rls.sql" "Inspect Supabase RLS Policies"
+    click A2A "ai_layer/langgraph_supervisor.py" "Inspect LangGraph Supervisor"
+    click Memory "ai_layer/orbit_memory_tracer.py" "Inspect Memory Engine"
+    click RAG "ai_layer/hybrid_retriever.py" "Inspect Hybrid Retriever"
+    click MCP "ai_layer/fastmcp_server.py" "Inspect FastMCP SSE Server"
+    click Evals "ai_layer/eval_harness.py" "Inspect RAGAS Evaluation Harness"
+    click SeniorOrbit "scripts/senior_companion.py" "Open Senior Orbit Desk"
+    click Autobots "ai_layer/dynamic_squad_orchestrator.py" "Inspect Autobot Fleet"
+    click SkillRegistry "ai_layer/skill_registry.py" "Inspect Skill Synthesizer"
+    click PitchDeck "pitch/pitch.marp.md" "Inspect Marp Pitch Deck"
+    click OfflineDemo "pitch/demo.sh" "Inspect Offline Demo Script"
+    click RehearsalSimulator "scripts/pitch_rehearsal.py" "Launch Pitch Rehearsal Simulator"
+    click JudgeCert "docs/JUDGE_CERTIFICATION.md" "View Judge Audit Certificate"
+```
+
+---
+
+### 2. Full-Stack Component Architecture
+```mermaid
+flowchart TD
+    classDef fe fill:#0284c7,stroke:#38bdf8,stroke-width:2px,color:#ffffff;
+    classDef be fill:#4f46e5,stroke:#818cf8,stroke-width:2px,color:#ffffff;
+    classDef res fill:#e11d48,stroke:#fb7185,stroke-width:2px,color:#ffffff;
+    classDef db fill:#059669,stroke:#34d399,stroke-width:2px,color:#ffffff;
+    classDef ai fill:#7c3aed,stroke:#c084fc,stroke-width:2px,color:#ffffff;
+    classDef infra fill:#ea580c,stroke:#fb923c,stroke-width:2px,color:#ffffff;
+
+    subgraph Frontend["🎨 1. FRONTEND LAYER (Core UI Console)"]
+        UI["Dashboard & Input Forms (index.html, documents.html, analytics.html)"]:::fe
+        SSE_Client["SSE Listener (EventSource: /api/v1/jobs/{id}/stream)"]:::fe
+        Terminal["Auto-Scrolling Log Terminal"]:::fe
+    end
+
+    subgraph Backend["⚡ 2. BACKEND API LAYER (FastAPI 0.115+)"]
+        Router["API Gateway & Routers (api/v1)"]:::be
+        Envelopes["Pydantic v2 Envelopes (ResponseEnvelope[T])"]:::be
+        JobService["Job Dispatcher & Background Tasks"]:::be
+        OpenAPI["OpenAPI 3.1 Spec (docs/openapi.json)"]:::be
+    end
+
+    subgraph Resilience["🛡️ 3. PRODUCTION RESILIENCE & CACHING"]
+        CircuitBreaker["Circuit Breaker (CLOSED / OPEN / HALF-OPEN)"]:::res
+        Backoff["Exponential Backoff with Full Jitter"]:::res
+        Idempotency["Distributed Idempotency Guard (SETNX)"]:::res
+        SemanticCache["Redis Semantic Query Cache (<10ms)"]:::res
+    end
+
+    subgraph Storage["💾 4. DATABASE & STORAGE LAYER"]
+        PG["PostgreSQL 16 (ACID Relational Core)"]:::db
+        HNSW["pgvector HNSW Cosine Index (1536-dim)"]:::db
+        GIN["TSVECTOR GIN Inverted Index (BM25)"]:::db
+        RLS["Supabase Row-Level Security (auth.uid())"]:::db
+        RedisStore["Redis 7 (Pub/Sub Channels, State, Token Counters)"]:::db
+        S3["Amazon S3 (Blobs > 100KB: PDFs, Models, Videos)"]:::db
+    end
+
+    subgraph AI["🤖 5. AI & AGENTIC LAYER"]
+        LangGraph["LangGraph Multi-Agent Supervisor"]:::ai
+        HumanGate["Human-in-the-Loop Interrupt Gate"]:::ai
+        FastMCP["FastMCP Tool Server (Isolated SSE Tools)"]:::ai
+        RRF["Hybrid Retriever (Dense + Sparse Reciprocal Rank Fusion)"]:::ai
+        Reranker["FlashRank Cross-Encoder Neural Reranker (<20ms)"]:::ai
+        JevRouter["Jev System-1 Fast Decision Router (<150ms)"]:::ai
+        Guardrails["Prompt Injection & SQL Mutation Guardrails"]:::ai
+        Eval["RAGAS Golden Dataset Evaluation Harness"]:::ai
+    end
+
+    subgraph Infra["☁️ 6. DEPLOYMENT & AWS CLOUD LAYER"]
+        Docker["Multi-Stage Docker (<180MB, Non-Root appuser)"]:::infra
+        ALB["AWS Application Load Balancer (HTTPS / Route53)"]:::infra
+        Fargate["AWS ECS on Fargate (Serverless Containers)"]:::infra
+        ECR["Amazon Elastic Container Registry"]:::infra
+        CloudWatch["Amazon CloudWatch Logging & Telemetry"]:::infra
+    end
+
+    style Frontend fill:#082f49,stroke:#38bdf8,stroke-width:2px,color:#38bdf8
+    style Backend fill:#1e1b4b,stroke:#818cf8,stroke-width:2px,color:#818cf8
+    style Resilience fill:#4c0519,stroke:#fb7185,stroke-width:2px,color:#fb7185
+    style Storage fill:#022c22,stroke:#34d399,stroke-width:2px,color:#34d399
+    style AI fill:#2e1065,stroke:#c084fc,stroke-width:2px,color:#c084fc
+    style Infra fill:#431407,stroke:#fb923c,stroke-width:2px,color:#fb923c
 
     Frontend -->|HTTP REST / JSON| Router
     Router --> Envelopes
@@ -161,6 +280,18 @@ flowchart TD
     Storage --> RLS
     Router --> Storage
     Infra --> Backend
+
+    click UI "frontend/index.html" "Open Frontend UI"
+    click Router "backend/src/app/main.py" "Open FastAPI Gateway"
+    click OpenAPI "docs/openapi.json" "Open OpenAPI Spec"
+    click CircuitBreaker "backend/src/app/core/resilience.py" "View Circuit Breaker"
+    click SemanticCache "backend/src/app/core/redis.py" "View Redis Cache"
+    click PG "database/seed_data.py" "View Database Seeder"
+    click RLS "database/supabase_rls.sql" "View Row-Level Security"
+    click LangGraph "ai_layer/langgraph_supervisor.py" "View LangGraph Supervisor"
+    click FastMCP "ai_layer/fastmcp_server.py" "View FastMCP Server"
+    click Eval "ai_layer/eval_harness.py" "View Evaluation Harness"
+    click Docker "infra/Dockerfile" "View Multi-Stage Dockerfile"
 ```
 
 ---
@@ -206,6 +337,10 @@ sequenceDiagram
 ### 3. Production Circuit Breaker State Machine
 ```mermaid
 stateDiagram-v2
+    classDef closedState fill:#065f46,stroke:#34d399,stroke-width:2px,color:#ffffff;
+    classDef openState fill:#9f1239,stroke:#fb7185,stroke-width:2px,color:#ffffff;
+    classDef halfOpenState fill:#b45309,stroke:#fbbf24,stroke-width:2px,color:#ffffff;
+
     [*] --> CLOSED: Initial Startup
     CLOSED --> OPEN: 5 Consecutive Failures Detected
     note right of CLOSED: All requests pass to external LLM/API
@@ -213,6 +348,10 @@ stateDiagram-v2
     note right of OPEN: Fails fast immediately without calling external API
     HALF_OPEN --> CLOSED: Trial Request Succeeds
     HALF_OPEN --> OPEN: Trial Request Fails
+
+    class CLOSED closedState
+    class OPEN openState
+    class HALF_OPEN halfOpenState
 ```
 
 ---
@@ -239,11 +378,17 @@ We integrated the **Archify** visual architecture engine to compile a verified, 
 
 ```mermaid
 flowchart LR
-    Browser["Client Browser (Vanilla JS)"] -->|1. fetch() POST + Bearer JWT| AbortCtrl["AbortController (10s Timeout)"]
-    AbortCtrl -->|2. HTTP/1.1 or HTTP/2| CORSMw["FastAPI CORSMiddleware"]
-    CORSMw -->|3. Validate JSON Payload| Pydantic["Pydantic v2 Schema"]
-    Pydantic -->|4. Dispatch Handler| Endpoint["/api/v1 Endpoints"]
-    Endpoint -->|5. Standard Envelope| Envelope["ResponseEnvelope[T]"]
+    classDef fe fill:#0284c7,stroke:#38bdf8,stroke-width:2px,color:#ffffff;
+    classDef be fill:#4f46e5,stroke:#818cf8,stroke-width:2px,color:#ffffff;
+
+    Browser["Client Browser (Vanilla JS)"]:::fe -->|1. fetch() POST + Bearer JWT| AbortCtrl["AbortController (10s Timeout)"]:::fe
+    AbortCtrl -->|2. HTTP/1.1 or HTTP/2| CORSMw["FastAPI CORSMiddleware"]:::be
+    CORSMw -->|3. Validate JSON Payload| Pydantic["Pydantic v2 Schema"]:::be
+    Pydantic -->|4. Dispatch Handler| Endpoint["/api/v1 Endpoints"]:::be
+    Endpoint -->|5. Standard Envelope| Envelope["ResponseEnvelope[T]"]:::be
+
+    click Browser "frontend/app.js" "Client JS"
+    click Endpoint "backend/src/app/api/v1/endpoints/jobs.py" "API Endpoint"
 ```
 
 * **Step-by-Step Process**:
@@ -262,12 +407,19 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    Worker["Async Agent Worker"] -->|1. Publish Progress & Log| RedisChannel["Redis Pub/Sub (channel:jobs:id)"]
-    RedisChannel -->|2. Async listen()| SSEGen["FastAPI StreamingResponse"]
-    SSEGen -->|3. text/event-stream Chunks| HTTPSocket["Persistent HTTP Stream (:8000)"]
-    HTTPSocket -->|4. Native onmessage| EventSrc["Browser EventSource Client"]
-    EventSrc -->|5. Auto-Scroll Telemetry| TermUI["Live Terminal UI View"]
-    EventSrc -.->|Auto-Reconnect on Drop| RedisSnapshot["Redis Snapshot (state:jobs:id)"]
+    classDef be fill:#4f46e5,stroke:#818cf8,stroke-width:2px,color:#ffffff;
+    classDef red fill:#be123c,stroke:#fb7185,stroke-width:2px,color:#ffffff;
+    classDef fe fill:#0284c7,stroke:#38bdf8,stroke-width:2px,color:#ffffff;
+
+    Worker["Async Agent Worker"]:::be -->|1. Publish Progress & Log| RedisChannel["Redis Pub/Sub (channel:jobs:id)"]:::red
+    RedisChannel -->|2. Async listen()| SSEGen["FastAPI StreamingResponse"]:::be
+    SSEGen -->|3. text/event-stream Chunks| HTTPSocket["Persistent HTTP Stream (:8000)"]:::be
+    HTTPSocket -->|4. Native onmessage| EventSrc["Browser EventSource Client"]:::fe
+    EventSrc -->|5. Auto-Scroll Telemetry| TermUI["Live Terminal UI View"]:::fe
+    EventSrc -.->|Auto-Reconnect on Drop| RedisSnapshot["Redis Snapshot (state:jobs:id)"]:::red
+
+    click Worker "ai_layer/langgraph_supervisor.py" "Agent Worker"
+    click EventSrc "frontend/app.js" "EventSource Listener"
 ```
 
 * **Step-by-Step Process**:
@@ -286,13 +438,19 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    Route["FastAPI Route Handler"] -->|1. Depends(get_db)| Session["AsyncSession Lifecycle"]
-    Session -->|2. Connection Checkout| AsyncPool["SQLAlchemy asyncpg Pool (size=10, max=20)"]
-    AsyncPool -->|3. TCP Port 5432 / SSL| PG16["PostgreSQL 16 Database"]
-    PG16 -->|4. Cosine Operator <=>| HNSW["1536-dim HNSW Vector Index"]
-    PG16 -->|4. GIN Index on tsv_content| BM25["Full-Text BM25 Index"]
-    PG16 -->|5. Commit or Rollback| Session
-    Session -->|6. Release Connection| AsyncPool
+    classDef be fill:#4f46e5,stroke:#818cf8,stroke-width:2px,color:#ffffff;
+    classDef db fill:#047857,stroke:#34d399,stroke-width:2px,color:#ffffff;
+
+    Route["FastAPI Route Handler"]:::be -->|1. Depends(get_db)| Session["AsyncSession Lifecycle"]:::be
+    Session -->|2. Connection Checkout| AsyncPool["SQLAlchemy asyncpg Pool"]:::be
+    AsyncPool -->|3. TCP Port 5432 / SSL| PG16["PostgreSQL 16 Database"]:::db
+    PG16 -->|4. Cosine Operator <=>| HNSW["1536-dim HNSW Vector Index"]:::db
+    PG16 -->|4. GIN Index on tsv_content| BM25["Full-Text BM25 Index"]:::db
+    PG16 -->|5. Commit or Rollback| Session:::be
+    Session -->|6. Release Connection| AsyncPool:::be
+
+    click Route "backend/src/app/api/v1/endpoints/documents.py" "API Route"
+    click PG16 "database/seed_data.py" "Database Engine"
 ```
 
 * **Step-by-Step Process**:
@@ -310,10 +468,16 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    ClientBrowser["Client Browser (JS Client)"] -->|1. HTTPS Request + Anon Key| PostgREST["Supabase PostgREST Gateway"]
-    PostgREST -->|2. Extract JWT auth.uid()| RLSPolicies["PostgreSQL Row-Level Security (RLS)"]
-    RLSPolicies -->|3. Match auth.uid() == user_id| AllowedRows["Authorized Rows Returned"]
-    ClientBrowser -.->|Direct TCP Port 5432| FirewallBlock["BLOCKED BY FIREWALL (Zero Raw DB Access)"]
+    classDef fe fill:#0284c7,stroke:#38bdf8,stroke-width:2px,color:#ffffff;
+    classDef db fill:#047857,stroke:#34d399,stroke-width:2px,color:#ffffff;
+    classDef block fill:#991b1b,stroke:#f87171,stroke-width:2px,color:#ffffff;
+
+    ClientBrowser["Client Browser (JS Client)"]:::fe -->|1. HTTPS Request + Anon Key| PostgREST["Supabase PostgREST Gateway"]:::db
+    PostgREST -->|2. Extract JWT auth.uid()| RLSPolicies["PostgreSQL Row-Level Security (RLS)"]:::db
+    RLSPolicies -->|3. Match auth.uid() == user_id| AllowedRows["Authorized Rows Returned"]:::db
+    ClientBrowser -.->|Direct TCP Port 5432| FirewallBlock["BLOCKED BY FIREWALL (Zero Raw DB Access)"]:::block
+
+    click RLSPolicies "database/supabase_rls.sql" "Supabase RLS Policy"
 ```
 
 * **Step-by-Step Process**:
@@ -330,11 +494,18 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    BrowserUI["Frontend Console UI"] -->|1. POST /api/v1/jobs/render (No LLM Key)| APIGateway["FastAPI Backend Gateway"]
-    APIGateway -->|2. Check Sliding Window| RedisRate["Redis Rate Limiter & Token Budget"]
-    RedisRate -->|3. Sanitize User Input| Guardrails["Prompt Injection Guardrails"]
-    Guardrails -->|4. Dispatch with Internal Key| LLMService["Backend AI Coordinator"]
-    BrowserUI -.->|Direct LLM API Call with Secret Key| LeakBlocked["STRICTLY FORBIDDEN (Prevents Key Theft)"]
+    classDef fe fill:#0284c7,stroke:#38bdf8,stroke-width:2px,color:#ffffff;
+    classDef be fill:#4f46e5,stroke:#818cf8,stroke-width:2px,color:#ffffff;
+    classDef ai fill:#7c3aed,stroke:#c084fc,stroke-width:2px,color:#ffffff;
+    classDef block fill:#991b1b,stroke:#f87171,stroke-width:2px,color:#ffffff;
+
+    BrowserUI["Frontend Console UI"]:::fe -->|1. POST /api/v1/jobs/render| APIGateway["FastAPI Backend Gateway"]:::be
+    APIGateway -->|2. Check Sliding Window| RedisRate["Redis Rate Limiter & Token Budget"]:::be
+    RedisRate -->|3. Sanitize User Input| Guardrails["Prompt Injection Guardrails"]:::ai
+    Guardrails -->|4. Dispatch with Internal Key| LLMService["Backend AI Coordinator"]:::ai
+    BrowserUI -.->|Direct LLM API Call with Secret Key| LeakBlocked["STRICTLY FORBIDDEN (Key Theft Defense)"]:::block
+
+    click Guardrails "ai_layer/guardrails.py" "Guardrails Module"
 ```
 
 * **Step-by-Step Process**:
@@ -352,12 +523,20 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    Supervisor["LangGraph Multi-Agent Supervisor"] -->|1. In-Process (0ms)| HybridRetriever["Hybrid Retriever (pgvector + BM25)"]
-    HybridRetriever -->|2. Neural Reranking (<20ms)| FlashRank["FlashRank Cross-Encoder"]
-    Supervisor -->|3. HTTP SSE / JSON-RPC :8001| FastMCP["FastMCP Tool Server (Isolated Sandbox)"]
-    FastMCP -->|4. Execute Tool| SafeSubprocess["Subprocess / Scraper Sandbox"]
-    Supervisor -->|5. Backoff + Circuit Breaker| ExternalAPI["OpenAI / Anthropic HTTPS API"]
-    ExternalAPI -->|6. Sub-10ms Lookup| SemanticCache["Redis Semantic Response Cache"]
+    classDef ai fill:#7c3aed,stroke:#c084fc,stroke-width:2px,color:#ffffff;
+    classDef mcp fill:#0284c7,stroke:#38bdf8,stroke-width:2px,color:#ffffff;
+    classDef red fill:#be123c,stroke:#fb7185,stroke-width:2px,color:#ffffff;
+
+    Supervisor["LangGraph Multi-Agent Supervisor"]:::ai -->|1. In-Process (0ms)| HybridRetriever["Hybrid Retriever (pgvector + BM25)"]:::ai
+    HybridRetriever -->|2. Neural Reranking (<20ms)| FlashRank["FlashRank Cross-Encoder"]:::ai
+    Supervisor -->|3. HTTP SSE / JSON-RPC :8001| FastMCP["FastMCP Tool Server (Isolated Sandbox)"]:::mcp
+    FastMCP -->|4. Execute Tool| SafeSubprocess["Subprocess / Scraper Sandbox"]:::mcp
+    Supervisor -->|5. Backoff + Circuit Breaker| ExternalAPI["OpenAI / Anthropic HTTPS API"]:::ai
+    ExternalAPI -->|6. Sub-10ms Lookup| SemanticCache["Redis Semantic Response Cache"]:::red
+
+    click Supervisor "ai_layer/langgraph_supervisor.py" "LangGraph Supervisor"
+    click FastMCP "ai_layer/fastmcp_server.py" "FastMCP SSE Server"
+    click FlashRank "ai_layer/flashrank_reranker.py" "FlashRank Reranker"
 ```
 
 * **Step-by-Step Process**:
@@ -376,13 +555,20 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    PublicClient["Public Internet Client"] -->|1. HTTPS Port 443 (ACM TLS)| ALB["AWS Application Load Balancer"]
-    ALB -->|2. Forward to Target Group Port 8000| Fargate["AWS ECS Fargate Task (Docker Container)"]
-    Fargate -->|3. Check Health via /api/v1/health| ALB
-    Fargate -->|4. Private Subnet TCP 5432| RDS["Amazon RDS PostgreSQL (pgvector)"]
-    Fargate -->|5. IAM Task Role Auth| S3Bucket["Amazon S3 Storage Bucket"]
-    Fargate -->|6. Return Presigned PUT URL| PublicClient
-    PublicClient -->|7. Direct Binary Upload (>100KB)| S3Bucket
+    classDef ext fill:#0284c7,stroke:#38bdf8,stroke-width:2px,color:#ffffff;
+    classDef cloud fill:#ea580c,stroke:#fb923c,stroke-width:2px,color:#ffffff;
+    classDef db fill:#047857,stroke:#34d399,stroke-width:2px,color:#ffffff;
+
+    PublicClient["Public Internet Client"]:::ext -->|1. HTTPS Port 443| ALB["AWS Application Load Balancer"]:::cloud
+    ALB -->|2. Target Group Port 8000| Fargate["AWS ECS Fargate Task"]:::cloud
+    Fargate -->|3. Check Health via /api/v1/health| ALB:::cloud
+    Fargate -->|4. Private Subnet TCP 5432| RDS["Amazon Aurora Postgres"]:::db
+    Fargate -->|5. IAM Task Role Auth| S3Bucket["Amazon S3 Storage Bucket"]:::cloud
+    Fargate -->|6. Return Presigned PUT URL| PublicClient:::ext
+    PublicClient -->|7. Direct Binary Upload (>100KB)| S3Bucket:::cloud
+
+    click Fargate "infra/Dockerfile" "Dockerfile"
+    click ALB "infra/aws-ecs-task-definition.json" "ECS Task Definition"
 ```
 
 * **Step-by-Step Process**:
@@ -914,14 +1100,24 @@ The Parent Agent (`HSFMascotAgent`) evaluates the announced problem statement at
 
 ```mermaid
 flowchart TD
-    Problem["Hackathon Problem Statement"] --> Classifier{"Parent Agent Decision Engine"}
-    Classifier -->|High-throughput / Telemetry / IoT / Real-Time| EDA["Event-Driven Architecture (EDA)<br/>Redis Streams + CQRS Light"]
-    Classifier -->|Multi-Agent Tools / Regulatory / Clinical| Hexagonal["Modular Monolith + Hexagonal Ports & Adapters<br/>FastMCP Tool Isolation (Port 8001)"]
-    Classifier -->|Default Enterprise / Document RAG / B2B SaaS| ModMono["Modular Monolith + Async Worker Mesh<br/>(Redis Pub/Sub Background Workers)"]
+    classDef problem fill:#4f46e5,stroke:#818cf8,stroke-width:2px,color:#ffffff;
+    classDef decision fill:#d97706,stroke:#fbbf24,stroke-width:2px,color:#ffffff;
+    classDef pattern1 fill:#0284c7,stroke:#38bdf8,stroke-width:2px,color:#ffffff;
+    classDef pattern2 fill:#7c3aed,stroke:#c084fc,stroke-width:2px,color:#ffffff;
+    classDef pattern3 fill:#059669,stroke:#34d399,stroke-width:2px,color:#ffffff;
+    classDef rollout fill:#e11d48,stroke:#fb7185,stroke-width:2px,color:#ffffff;
 
-    EDA --> Rollout["Role Delegation & Layer Scaffolding"]
+    Problem["🎯 Hackathon Problem Statement"]:::problem --> Classifier{"🤖 Parent Agent Decision Engine"}:::decision
+    Classifier -->|High-throughput / Telemetry / IoT / Real-Time| EDA["⚡ Event-Driven Architecture (EDA)<br/>Redis Streams + CQRS Light"]:::pattern1
+    Classifier -->|Multi-Agent Tools / Regulatory / Clinical| Hexagonal["🛡️ Modular Monolith + Hexagonal Ports<br/>FastMCP Tool Isolation (Port 8001)"]:::pattern2
+    Classifier -->|Default Enterprise / Document RAG / B2B SaaS| ModMono["🏢 Modular Monolith + Async Worker Mesh<br/>(Redis Pub/Sub Background Workers)"]:::pattern3
+
+    EDA --> Rollout["🚀 Role Delegation & Layer Scaffolding"]:::rollout
     Hexagonal --> Rollout
     ModMono --> Rollout
+
+    click Problem "ai_layer/decision_matrix.md" "View Decision Matrix"
+    click Classifier "ai_layer/mascot_agent.py" "Parent Agent Engine"
 ```
 
 ### 1. Comparative Architectural Matrix
@@ -949,18 +1145,30 @@ The Parent Agent (`HSFMascotAgent` in `ai_layer/mascot_agent.py`) dynamically se
 
 ```mermaid
 flowchart TD
-    Problem["Problem Statement Ingested"] --> Classifier{"Parent Agent Aesthetic Classifier"}
-    Classifier -->|Developer Tools, Cloud Infra, Observability, Cyber| IB["Industrial Brutalism<br/>(Mission-Critical System Terminal HUD)"]
-    Classifier -->|Consumer B2C, Viral Creator Economy, Web3, Gaming| NB["Neo-Brutalism<br/>(High-Contrast Bold Pop & Kinetic Playfulness)"]
-    Classifier -->|Healthcare Clinical RAG, Legal Governance, Executive AI| GM["Glassmorphism<br/>(Frosted Precision Glass & Spatial Depth)"]
-    Classifier -->|EdTech, Kids Learning, Gamified Habits, Mental Health| CM["Claymorphism<br/>(Friendly 3D Volumetric Soft Aesthetic)"]
-    Classifier -->|Audio Synthesizers, Hardware DSP, Studio Consoles| SK["Skeuomorphism<br/>(Modern Tactile Hardware & Analog Meters)"]
+    classDef input fill:#4f46e5,stroke:#818cf8,stroke-width:2px,color:#ffffff;
+    classDef judge fill:#d97706,stroke:#fbbf24,stroke-width:2px,color:#ffffff;
+    classDef ib fill:#334155,stroke:#94a3b8,stroke-width:2px,color:#ffffff;
+    classDef nb fill:#e11d48,stroke:#fb7185,stroke-width:2px,color:#ffffff;
+    classDef gm fill:#0284c7,stroke:#38bdf8,stroke-width:2px,color:#ffffff;
+    classDef cm fill:#7c3aed,stroke:#c084fc,stroke-width:2px,color:#ffffff;
+    classDef sk fill:#b45309,stroke:#fde047,stroke-width:2px,color:#ffffff;
+    classDef tokens fill:#059669,stroke:#34d399,stroke-width:2px,color:#ffffff;
 
-    IB --> DesignTokens["CSS Tokens, Tailwind Recipe, Motion Rules Mapped"]
+    Problem["🎯 Problem Statement Ingested"]:::input --> Classifier{"🎨 Parent Agent Aesthetic Classifier"}:::judge
+    Classifier -->|Developer Tools, Cloud Infra, Observability, Cyber| IB["🖥️ Industrial Brutalism<br/>(Mission-Critical System Terminal HUD)"]:::ib
+    Classifier -->|Consumer B2C, Viral Creator Economy, Web3, Gaming| NB["⚡ Neo-Brutalism<br/>(High-Contrast Bold Pop & Kinetic Playfulness)"]:::nb
+    Classifier -->|Healthcare Clinical RAG, Legal Governance, Executive AI| GM["💎 Glassmorphism<br/>(Frosted Precision Glass & Spatial Depth)"]:::gm
+    Classifier -->|EdTech, Kids Learning, Gamified Habits, Mental Health| CM["🧸 Claymorphism<br/>(Friendly 3D Volumetric Soft Aesthetic)"]:::cm
+    Classifier -->|Audio Synthesizers, Hardware DSP, Studio Consoles| SK["🎛️ Skeuomorphism<br/>(Modern Tactile Hardware & Analog Meters)"]:::sk
+
+    IB --> DesignTokens["✨ CSS Tokens, Tailwind Recipe, Motion Rules Mapped"]:::tokens
     NB --> DesignTokens
     GM --> DesignTokens
     CM --> DesignTokens
     SK --> DesignTokens
+
+    click Classifier "ai_layer/mascot_agent.py" "Mascot Aesthetic Engine"
+    click DesignTokens "frontend/style.css" "Frontend Style Tokens"
 ```
 
 ### 1. Comparative Aesthetic Matrix
@@ -1168,11 +1376,21 @@ Orbit operates as a **Senior Principal Robotic Director** sitting beside your te
 
 ```mermaid
 flowchart LR
-    Problem["Hackathon Problem Statement"] --> PyEngine["HSFMascotAgent.py<br/>(ai_layer/mascot_agent.py)"]
-    PyEngine --> Rationale["Deep Architectural Justification & Moat Analysis"]
-    PyEngine --> FastAPIRoutes["REST / SSE Endpoints (/api/v1/agent/*)"]
-    PyEngine --> SquadPrompts["Autobot Squad Prompts (Antigravity/Claude/Cursor)"]
-    FastAPIRoutes --> Dashboard["Next.js Motion Dashboard<br/>(mascot-dashboard/)"]
+    classDef prob fill:#4f46e5,stroke:#818cf8,stroke-width:2px,color:#ffffff;
+    classDef py fill:#059669,stroke:#34d399,stroke-width:2px,color:#ffffff;
+    classDef doc fill:#d97706,stroke:#fbbf24,stroke-width:2px,color:#ffffff;
+    classDef api fill:#7c3aed,stroke:#c084fc,stroke-width:2px,color:#ffffff;
+    classDef next fill:#0284c7,stroke:#38bdf8,stroke-width:2px,color:#ffffff;
+
+    Problem["🎯 Problem Statement"]:::prob --> PyEngine["🐍 HSFMascotAgent.py<br/>(ai_layer/mascot_agent.py)"]:::py
+    PyEngine --> Rationale["📜 Architectural Justification & Moat Analysis"]:::doc
+    PyEngine --> FastAPIRoutes["⚡ REST / SSE Endpoints (/api/v1/agent/*)"]:::api
+    PyEngine --> SquadPrompts["🤖 Autobot Squad Prompts (Antigravity/Claude/Cursor)"]:::doc
+    FastAPIRoutes --> Dashboard["🌐 Next.js Motion Dashboard (mascot-dashboard/)"]:::next
+
+    click PyEngine "ai_layer/mascot_agent.py" "Python Mascot Agent"
+    click FastAPIRoutes "backend/src/app/api/v1/endpoints/agent.py" "Agent Endpoints"
+    click Dashboard "mascot-dashboard/src/app/page.tsx" "Next.js Mascot Dashboard"
 ```
 
 ### 1. Pure Python Mascot Director Engine (`ai_layer/mascot_agent.py`)
@@ -1212,25 +1430,31 @@ Most hackathon teams have great ideas but lose the competition on predictable ex
 
 ```mermaid
 flowchart TD
+    classDef bs fill:#991b1b,stroke:#f87171,stroke-width:2px,color:#ffffff;
+    classDef armor fill:#065f46,stroke:#34d399,stroke-width:2px,color:#ffffff;
+
     subgraph BlindSpots["⚠️ THE 7 FATAL COMPETITOR BLIND SPOTS (Why 99% Fail)"]
-        BS1["1. Conference Stage Wi-Fi Drop<br/>(Live browser demo freezes)"]
-        BS2["2. Upstream AI API Limits & Latency<br/>(14-second rate limit stalls)"]
-        BS3["3. Naive Vector Hallucination<br/>(Simple cosine search hallucinates)"]
-        BS4["4. Unrestricted Agent Action Hazards<br/>(Unchecked DB mutations crash demo)"]
-        BS5["5. Hour 22 Docker Breakage<br/>(Last-minute dependency failure)"]
-        BS6["6. The Hour 23 Slide Rush<br/>(Scrambled messy Canva slides)"]
-        BS7["7. Architecture Diagram Vagueness<br/>(Hand-drawn boxes with no ports)"]
+        BS1["1. Conference Stage Wi-Fi Drop<br/>(Live browser demo freezes)"]:::bs
+        BS2["2. Upstream AI API Limits & Latency<br/>(14-second rate limit stalls)"]:::bs
+        BS3["3. Naive Vector Hallucination<br/>(Simple cosine search hallucinates)"]:::bs
+        BS4["4. Unrestricted Agent Action Hazards<br/>(Unchecked DB mutations crash demo)"]:::bs
+        BS5["5. Hour 22 Docker Breakage<br/>(Last-minute dependency failure)"]:::bs
+        BS6["6. The Hour 23 Slide Rush<br/>(Scrambled messy Canva slides)"]:::bs
+        BS7["7. Architecture Diagram Vagueness<br/>(Hand-drawn boxes with no ports)"]:::bs
     end
 
     subgraph HSFArmor["🛡️ HOW HSF SYSTEMATICALLY ELIMINATES THE RISK"]
-        HSF1["pitch/demo.sh (100% offline localhost cURL, 0ms internet dependency)"]
-        HSF2["Sub-10ms Redis Semantic Caching & 3-State Circuit Breakers (8ms repeats)"]
-        HSF3["pgvector HNSW + BM25 RRF + FlashRank Cross-Encoder (RAGAS >= 0.90)"]
-        HSF4["LangGraph Human-in-the-Loop Interrupt Gate (interrupt_before=['human_gate'])"]
-        HSF5["Pre-verified Multi-Stage Dockerfile (<180MB, non-root appuser)"]
-        HSF6["pitch/pitch.marp.md (6-minute formula, 2-sec HTML compilation)"]
-        HSF7["Archify Interactive SVG Blueprints + Mermaid.js Verified Topology Maps"]
+        HSF1["pitch/demo.sh (100% offline localhost cURL, 0ms internet dependency)"]:::armor
+        HSF2["Sub-10ms Redis Semantic Caching & 3-State Circuit Breakers (8ms repeats)"]:::armor
+        HSF3["pgvector HNSW + BM25 RRF + FlashRank Cross-Encoder (RAGAS >= 0.90)"]:::armor
+        HSF4["LangGraph Human-in-the-Loop Interrupt Gate (interrupt_before=['human_gate'])"]:::armor
+        HSF5["Pre-verified Multi-Stage Dockerfile (<180MB, non-root appuser)"]:::armor
+        HSF6["pitch/pitch.marp.md (6-minute formula, 2-sec HTML compilation)"]:::armor
+        HSF7["Archify Interactive SVG Blueprints + Mermaid.js Verified Topology Maps"]:::armor
     end
+
+    style BlindSpots fill:#450a0a,stroke:#f87171,stroke-width:2px,color:#f87171
+    style HSFArmor fill:#022c22,stroke:#34d399,stroke-width:2px,color:#34d399
 
     BS1 ==>|Shielded by| HSF1
     BS2 ==>|Shielded by| HSF2
@@ -1239,6 +1463,14 @@ flowchart TD
     BS5 ==>|Shielded by| HSF5
     BS6 ==>|Shielded by| HSF6
     BS7 ==>|Shielded by| HSF7
+
+    click HSF1 "pitch/demo.sh" "Inspect Demo Script"
+    click HSF2 "backend/src/app/core/redis.py" "Inspect Redis Cache"
+    click HSF3 "ai_layer/eval_harness.py" "Inspect Eval Harness"
+    click HSF4 "ai_layer/langgraph_supervisor.py" "Inspect LangGraph"
+    click HSF5 "infra/Dockerfile" "Inspect Dockerfile"
+    click HSF6 "pitch/pitch.marp.md" "Inspect Pitch Deck"
+    click HSF7 "docs/architecture/system-architecture.html" "View Archify SVG"
 ```
 
 | Competitor Blind Spot | Why 99% of Teams Fail | How HSF Eliminates the Risk |
@@ -1284,12 +1516,28 @@ This master timeline details how a 5-person squad executes flawlessly across the
 
 ```mermaid
 flowchart LR
-    H0["Hour 0: Orbit Deconstruct<br/>(hsf strategize)"] --> H1["Hour 0-1: Parallel Boot<br/>(AI IDE Prompts Active)"]
-    H1 --> H8["Hour 1-8: Core Features<br/>(FastAPI, pgvector, FastMCP)"]
-    H8 --> H16["Hour 8-16: Integration<br/>(SSE Feeds, RLS, Redis Cache)"]
-    H16 --> H20["Hour 16-20: Hardening<br/>(Circuit Breakers & RAGAS)"]
-    H20 --> H23["Hour 20-23: Stage Demo<br/>(Marp Slides & demo.sh)"]
-    H23 --> H24["Hour 24: Victory<br/>(Live Pitch & Defense)"]
+    classDef t0 fill:#4f46e5,stroke:#818cf8,stroke-width:2px,color:#ffffff;
+    classDef t1 fill:#0284c7,stroke:#38bdf8,stroke-width:2px,color:#ffffff;
+    classDef t2 fill:#059669,stroke:#34d399,stroke-width:2px,color:#ffffff;
+    classDef t3 fill:#7c3aed,stroke:#c084fc,stroke-width:2px,color:#ffffff;
+    classDef t4 fill:#d97706,stroke:#fbbf24,stroke-width:2px,color:#ffffff;
+    classDef t5 fill:#e11d48,stroke:#fb7185,stroke-width:2px,color:#ffffff;
+    classDef t6 fill:#15803d,stroke:#4ade80,stroke-width:3px,color:#ffffff;
+
+    H0["Hour 0: Orbit Deconstruct<br/>(hsf strategize)"]:::t0 --> H1["Hour 0-1: Parallel Boot<br/>(AI IDE Prompts Active)"]:::t1
+    H1 --> H8["Hour 1-8: Core Features<br/>(FastAPI, pgvector, FastMCP)"]:::t2
+    H8 --> H16["Hour 8-16: Integration<br/>(SSE Feeds, RLS, Redis Cache)"]:::t3
+    H16 --> H20["Hour 16-20: Hardening<br/>(Circuit Breakers & RAGAS)"]:::t4
+    H20 --> H23["Hour 20-23: Stage Demo<br/>(Marp Slides & demo.sh)"]:::t5
+    H23 --> H24["Hour 24: Stage Victory<br/>(Live Pitch & Defense)"]:::t6
+
+    click H0 "scripts/mascot_agent.py" "Run Mascot Strategize"
+    click H1 "scripts/quickstart_wizard.py" "Run Quickstart Wizard"
+    click H8 "backend/src/app/main.py" "Backend API Main"
+    click H16 "frontend/app.js" "Frontend SSE"
+    click H20 "ai_layer/eval_harness.py" "Run Evals"
+    click H23 "scripts/pitch_rehearsal.py" "Run Pitch Rehearsal"
+    click H24 "docs/JUDGE_CERTIFICATION.md" "View Judge Certification"
 ```
 
 ### Phase 1: Problem Drop & Autonomous Dispatch (Hour 0 – Hour 1)
@@ -1399,39 +1647,46 @@ In **HSF**, we replicate this exact vision: **Senior Orbit** leads an autonomous
 
 ```mermaid
 flowchart TD
+    classDef dir fill:#db2777,stroke:#f472b6,stroke-width:2px,color:#ffffff;
+    classDef bot fill:#4f46e5,stroke:#818cf8,stroke-width:2px,color:#ffffff;
+    classDef squad fill:#0284c7,stroke:#38bdf8,stroke-width:2px,color:#ffffff;
+    classDef menu fill:#059669,stroke:#34d399,stroke-width:2px,color:#ffffff;
+    classDef learn fill:#7c3aed,stroke:#a78bfa,stroke-width:2px,color:#ffffff;
+    classDef input fill:#ea580c,stroke:#fb923c,stroke-width:2px,color:#ffffff;
+
     subgraph ProblemInput["🎯 1. PROBLEM STATEMENT DROP (Hour 0)"]
-        PS["Problem Statement Input (CLI, Web Widget, or API)"]
-        Director["Orbit Prime 🤖👑 (Supreme Commander & Master Architect)"]
+        PS["Problem Statement Input (CLI, Web Widget, or API)"]:::input
+        Director["Orbit Prime 🤖👑 (Supreme Commander & Master Architect)"]:::dir
     end
 
     subgraph SquadPartition["🤖 2. AUTONOMOUS AUTOBOT FLEET ALLOCATION"]
-        Ironhide["Ironhide 🛡️⚡<br/>Backend Titan & Resilience<br/>(FastAPI • Redis • Circuits)"]
-        Mirage["Mirage 🎨✨<br/>Frontend Hologram Specialist<br/>(5 Aesthetics • Next.js • Emil Motion)"]
-        Wheeljack["Wheeljack 🔬⚡<br/>AI & Multi-Agent Weaponsmith<br/>(LangGraph • FastMCP • FlashRank)"]
-        Ratchet["Ratchet 🏥💾<br/>Database & Security Guardian<br/>(Postgres 16 • pgvector • RLS)"]
-        Bumblebee["Bumblebee 🐝🚀<br/>DevOps & Stage Scout<br/>(Docker <180MB • ECS • demo.sh)"]
+        Ironhide["Ironhide 🛡️⚡<br/>Backend Titan & Resilience<br/>(FastAPI • Redis • Circuits)"]:::bot
+        Mirage["Mirage 🎨✨<br/>Frontend Hologram Specialist<br/>(5 Aesthetics • Next.js • Emil Motion)"]:::bot
+        Wheeljack["Wheeljack 🔬⚡<br/>AI & Multi-Agent Weaponsmith<br/>(LangGraph • FastMCP • FlashRank)"]:::bot
+        Ratchet["Ratchet 🏥💾<br/>Database & Security Guardian<br/>(Postgres 16 • pgvector • RLS)"]:::bot
+        Bumblebee["Bumblebee 🐝🚀<br/>DevOps & Stage Scout<br/>(Docker <180MB • ECS • demo.sh)"]:::bot
     end
 
     subgraph VariableSizing["👥 3. DYNAMIC TEAM SIZING (1 to 6+ Teammates)"]
-        Size1["1 Person: Solo Pioneer<br/>(Single Dev + 6 Autobot Co-Pilots)"]
-        Size2["2 People: Dynamic Duo<br/>(Product Lead + AI/Data Lead)"]
-        Size3["3 People: Trio Strike Team<br/>(Frontend + Backend + AI)"]
-        Size4["4 People: Core Four<br/>(Frontend + Backend + AI + Data/DevOps)"]
-        Size5["5 People: Full Pentad<br/>(Standard 5 Dedicated Leads)"]
-        Size6["6+ People: Extended League<br/>(Pentad + QA/Eval Pod)"]
+        Size1["1 Person: Solo Pioneer<br/>(Single Dev + 6 Autobot Co-Pilots)"]:::squad
+        Size2["2 People: Dynamic Duo<br/>(Product Lead + AI/Data Lead)"]:::squad
+        Size3["3 People: Trio Strike Team<br/>(Frontend + Backend + AI)"]:::squad
+        Size4["4 People: Core Four<br/>(Frontend + Backend + AI + Data/DevOps)"]:::squad
+        Size5["5 People: Full Pentad<br/>(Standard 5 Dedicated Leads)"]:::squad
+        Size6["6+ People: Extended League<br/>(Pentad + QA/Eval Pod)"]:::squad
     end
 
     subgraph FeaturesMenu["🍱 4. UNIVERSAL 5-LAYER FEATURES MENU"]
-        FEMenu["Frontend Menu: Live Studio, SSE Streamer, Human Gate Modal, 5 Aesthetics"]
-        BEMenu["Backend Menu: Async Routes, Redis Locks, Circuit Breakers, ResponseEnvelope"]
-        DBMenu["Database Menu: pgvector HNSW Index, TSVECTOR BM25, Supabase RLS, Audit Logs"]
-        AIMenu["AI Menu: LangGraph Supervisor, FlashRank Reranker, FastMCP Server, RAGAS"]
-        DevMenu["DevOps Menu: Multi-Stage Docker <180MB, AWS ECS Fargate, Offline demo.sh"]
+        FEMenu["Frontend Menu: Live Studio, SSE Streamer, Human Gate Modal, 5 Aesthetics"]:::menu
+        BEMenu["Backend Menu: Async Routes, Redis Locks, Circuit Breakers, ResponseEnvelope"]:::menu
+        DBMenu["Database Menu: pgvector HNSW Index, TSVECTOR BM25, Supabase RLS, Audit Logs"]:::menu
+        AIMenu["AI Menu: LangGraph Supervisor, FlashRank Reranker, FastMCP Server, RAGAS"]:::menu
+        DevMenu["DevOps Menu: Multi-Stage Docker <180MB, AWS ECS Fargate, Offline demo.sh"]:::menu
     end
 
     subgraph ContinuousLearning["🧠 5. CONTINUOUS LEARNING & TELEMETRY ENGINE"]
-        Tracer[".hsf/traces.jsonl & .hsf/memory.json<br/>Logs Every Pairing Session, Code Review & Guardrail Alert"]
-        LearningLoop["Detects Team-Wide Bottlenecks • Tracks Learning Curves • Recalls Past Context"]
+        Tracer[".hsf/traces.jsonl & .hsf/memory.json<br/>Logs Every Pairing Session, Code Review & Guardrail Alert"]:::learn
+        LearningLoop["Detects Team-Wide Bottlenecks • Tracks Learning Curves • Recalls Past Context"]:::learn
     end
 
     PS --> Director
@@ -1450,6 +1705,26 @@ flowchart TD
     VariableSizing --> FeaturesMenu
     FeaturesMenu --> ContinuousLearning
     ContinuousLearning -.->|Cognitive Memory Feedback| Director
+
+    style ProblemInput fill:#1e1b4b,stroke:#818cf8,stroke-width:2px,color:#ffffff
+    style SquadPartition fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#ffffff
+    style VariableSizing fill:#0f172a,stroke:#a78bfa,stroke-width:2px,color:#ffffff
+    style FeaturesMenu fill:#064e3b,stroke:#34d399,stroke-width:2px,color:#ffffff
+    style ContinuousLearning fill:#4c0519,stroke:#fb7185,stroke-width:2px,color:#ffffff
+
+    click Director "scripts/mascot_director.py" "Open Orbit Prime Mascot Director"
+    click Ironhide "backend/src/app/main.py" "View Ironhide Backend Engine"
+    click Mirage "frontend/index.html" "View Mirage Frontend Hologram"
+    click Wheeljack "ai_layer/langgraph_supervisor.py" "View Wheeljack AI StateGraph"
+    click Ratchet "database/supabase_rls.sql" "View Ratchet Database Guardian"
+    click Bumblebee "pitch/demo.sh" "View Bumblebee Stage Scout"
+    click Tracer ".hsf/memory.json" "View Continuous Learning Memory"
+    click LearningLoop ".hsf/traces.jsonl" "View Telemetry Logs"
+    click FEMenu "frontend/index.html" "Explore Frontend Feature Menu"
+    click BEMenu "backend/src/app/api/v1/endpoints/jobs.py" "Explore Backend Feature Menu"
+    click DBMenu "backend/src/app/db/repositories/document.py" "Explore Database Feature Menu"
+    click AIMenu "ai_layer/fastmcp_server.py" "Explore AI Feature Menu"
+    click DevMenu "infra/Dockerfile" "Explore DevOps Feature Menu"
 ```
 
 ---
@@ -1828,18 +2103,42 @@ Here is the definitive **10-Dimension Value-Add Blueprint** that proves HSF is a
 
 ```mermaid
 flowchart TD
+    classDef p1 fill:#0284c7,stroke:#38bdf8,stroke-width:2px,color:#ffffff;
+    classDef p2 fill:#db2777,stroke:#f472b6,stroke-width:2px,color:#ffffff;
+    classDef p3 fill:#7c3aed,stroke:#a78bfa,stroke-width:2px,color:#ffffff;
+    classDef p4 fill:#d97706,stroke:#fbbf24,stroke-width:2px,color:#ffffff;
+    classDef p5 fill:#059669,stroke:#34d399,stroke-width:2px,color:#ffffff;
+    classDef p6 fill:#4f46e5,stroke:#818cf8,stroke-width:2px,color:#ffffff;
+    classDef p7 fill:#e11d48,stroke:#fb7185,stroke-width:2px,color:#ffffff;
+    classDef p8 fill:#ea580c,stroke:#fb923c,stroke-width:2px,color:#ffffff;
+    classDef p9 fill:#2563eb,stroke:#60a5fa,stroke-width:2px,color:#ffffff;
+    classDef p10 fill:#16a34a,stroke:#4ade80,stroke-width:2px,color:#ffffff;
+
     subgraph AllRounder["🏆 THE 10 PILLARS OF THE HSF ALL-ROUNDER PACKAGE"]
-        D1["1. Full-Stack Production Architecture<br/>(FastAPI, Next.js, Postgres 16, Redis 7)"]
-        D2["2. Autonomous Robotics & Mascot Ecosystem<br/>(Orbit Prime + Transformers Autobot Squad)"]
-        D3["3. 5-Pillar Modular AI Cognitive Engine<br/>(A2A, Memory, Hybrid RAG, FastMCP, Evals)"]
-        D4["4. Zero-Collision Polyglot Architecture<br/>(Python Brain + Java Muscle via Clean Network Bridge)"]
-        D5["5. Autonomous Frontend Aesthetic Engine<br/>(5 Paradigms: Brutalism, Neo, Glass, Clay, Skeuo)"]
-        D6["6. Frictionless Teammate DX & 60s Onboarding<br/>(quickstart_wizard.py + TEAMMATE_CHEAT_SHEET.md)"]
-        D7["7. Developer Telemetry & Continuous Learning<br/>(.hsf/memory.json + traces.jsonl)"]
-        D8["8. Stage Wi-Fi & Infrastructure Resilience<br/>(pitch/demo.sh + Circuit Breakers + Docker <180MB)"]
-        D9["9. 6-Minute Pitch Rehearsal Simulator<br/>(pitch_rehearsal.py + Marp Pitch Slides)"]
-        D10["10. Automated Judge Audit & Certification<br/>(generate_judge_report.py + JUDGE_CERTIFICATION.md)"]
+        D1["1. Full-Stack Production Architecture<br/>(FastAPI, Next.js, Postgres 16, Redis 7)"]:::p1
+        D2["2. Autonomous Robotics & Mascot Ecosystem<br/>(Orbit Prime + Transformers Autobot Squad)"]:::p2
+        D3["3. 5-Pillar Modular AI Cognitive Engine<br/>(A2A, Memory, Hybrid RAG, FastMCP, Evals)"]:::p3
+        D4["4. Zero-Collision Polyglot Architecture<br/>(Python Brain + Java Muscle via Clean Network Bridge)"]:::p4
+        D5["5. Autonomous Frontend Aesthetic Engine<br/>(5 Paradigms: Brutalism, Neo, Glass, Clay, Skeuo)"]:::p5
+        D6["6. Frictionless Teammate DX & 60s Onboarding<br/>(quickstart_wizard.py + TEAMMATE_CHEAT_SHEET.md)"]:::p6
+        D7["7. Developer Telemetry & Continuous Learning<br/>(.hsf/memory.json + traces.jsonl)"]:::p7
+        D8["8. Stage Wi-Fi & Infrastructure Resilience<br/>(pitch/demo.sh + Circuit Breakers + Docker <180MB)"]:::p8
+        D9["9. 6-Minute Pitch Rehearsal Simulator<br/>(pitch_rehearsal.py + Marp Pitch Slides)"]:::p9
+        D10["10. Automated Judge Audit & Certification<br/>(generate_judge_report.py + JUDGE_CERTIFICATION.md)"]:::p10
     end
+
+    style AllRounder fill:#0f172a,stroke:#38bdf8,stroke-width:3px,color:#ffffff
+
+    click D1 "backend/src/app/main.py" "Inspect Full-Stack Architecture"
+    click D2 "scripts/mascot_director.py" "Inspect Mascot & Autobot Squad"
+    click D3 "ai_layer/langgraph_supervisor.py" "Inspect 5-Pillar AI Engine"
+    click D4 "docs/architecture/polyglot-zero-collision-guide.md" "Inspect Zero-Collision Polyglot Guide"
+    click D5 "frontend/index.html" "Inspect 5 Frontend Aesthetic Paradigms"
+    click D6 "docs/TEAMMATE_CHEAT_SHEET.md" "Open Teammate Cheat Sheet"
+    click D7 ".hsf/memory.json" "Inspect Developer Memory & Traces"
+    click D8 "pitch/demo.sh" "Inspect Offline Stage Demo Script"
+    click D9 "scripts/pitch_rehearsal.py" "Run 6-Minute Pitch Rehearsal"
+    click D10 "docs/JUDGE_CERTIFICATION.md" "Inspect Judge Certification Audit"
 ```
 
 ### 🥊 Comparative Showdown: Ordinary Hackathon Squad vs. HSF Super-Team

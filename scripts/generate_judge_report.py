@@ -134,36 +134,42 @@ This project was built upon the **Hackathon Strategy Framework (HSF)** to delive
 
 ```mermaid
 flowchart TD
+    classDef client fill:#0284c7,stroke:#38bdf8,stroke-width:2px,color:#ffffff;
+    classDef gateway fill:#4f46e5,stroke:#818cf8,stroke-width:2px,color:#ffffff;
+    classDef resilience fill:#ea580c,stroke:#fb923c,stroke-width:2px,color:#ffffff;
+    classDef data fill:#059669,stroke:#34d399,stroke-width:2px,color:#ffffff;
+    classDef ai fill:#7c3aed,stroke:#a78bfa,stroke-width:2px,color:#ffffff;
+
     subgraph ClientTier["🌐 CLIENT & VISUAL INTERACTION TIER"]
-        NextJS["Next.js 14 App Router (Port 3000)"]
-        Widget["Senior Orbit Desktop HUD (frontend/orbit-widget.js)"]
-        CLI["Unified CLI & Wizard (bin/cli.js)"]
+        NextJS["Next.js 14 App Router (Port 3000)"]:::client
+        Widget["Senior Orbit Desktop HUD (frontend/orbit-widget.js)"]:::client
+        CLI["Unified CLI & Wizard (bin/cli.js)"]:::client
     end
 
     subgraph GatewayTier["⚡ FASTAPI ASYNC GATEWAY (Port 8000)"]
-        FastAPI["FastAPI 0.115+ Router (ResponseEnvelope[T])"]
-        AuthMiddleware["JWT Bearer & Rate Limiting"]
-        CircuitBreaker["Distributed Circuit Breaker (CLOSED/OPEN/HALF_OPEN)"]
+        FastAPI["FastAPI 0.115+ Router (ResponseEnvelope[T])"]:::gateway
+        AuthMiddleware["JWT Bearer & Rate Limiting"]:::gateway
+        CircuitBreaker["Distributed Circuit Breaker (CLOSED/OPEN/HALF_OPEN)"]:::gateway
     end
 
     subgraph ResilienceTier["⚡ REDIS 7 RESILIENCE & CACHE ENGINE"]
-        RedisCache["Semantic Cache (<10ms Hits)"]
-        RedisStream["Real-Time SSE Event Stream"]
-        RedisLock["SETNX Distributed Mutex Locks"]
+        RedisCache["Semantic Cache (<10ms Hits)"]:::resilience
+        RedisStream["Real-Time SSE Event Stream"]:::resilience
+        RedisLock["SETNX Distributed Mutex Locks"]:::resilience
     end
 
     subgraph DataTier["💾 RELATIONAL & VECTOR STORAGE"]
-        Postgres["PostgreSQL 16 Engine"]
-        pgvector["pgvector HNSW Cosine Index (<=>)"]
-        BM25["GIN tsvector Full-Text Search"]
-        RLS["Supabase Row-Level Security Policies"]
+        Postgres["PostgreSQL 16 Engine"]:::data
+        pgvector["pgvector HNSW Cosine Index (<=>)"]:::data
+        BM25["GIN tsvector Full-Text Search"]:::data
+        RLS["Supabase Row-Level Security Policies"]:::data
     end
 
     subgraph AITier["🤖 AGENTIC REASONING & NEURAL ENGINES"]
-        LangGraph["LangGraph Cyclic StateGraph Supervisor"]
-        HumanGate["Human-in-the-Loop Review Gate"]
-        FlashRank["FlashRank TinyBERT Cross-Encoder (<18ms)"]
-        FastMCP["FastMCP Tool Server Sandbox (Port 8001 SSE)"]
+        LangGraph["LangGraph Cyclic StateGraph Supervisor"]:::ai
+        HumanGate["Human-in-the-Loop Review Gate"]:::ai
+        FlashRank["FlashRank TinyBERT Cross-Encoder (<18ms)"]:::ai
+        FastMCP["FastMCP Tool Server Sandbox (Port 8001 SSE)"]:::ai
     end
 
     NextJS --> FastAPI
@@ -180,6 +186,23 @@ flowchart TD
     LangGraph --> HumanGate
     LangGraph --> FlashRank
     LangGraph --> FastMCP
+
+    style ClientTier fill:#0c4a6e,stroke:#38bdf8,stroke-width:2px,color:#ffffff
+    style GatewayTier fill:#1e1b4b,stroke:#818cf8,stroke-width:2px,color:#ffffff
+    style ResilienceTier fill:#431407,stroke:#fb923c,stroke-width:2px,color:#ffffff
+    style DataTier fill:#064e3b,stroke:#34d399,stroke-width:2px,color:#ffffff
+    style AITier fill:#3b0764,stroke:#a78bfa,stroke-width:2px,color:#ffffff
+
+    click NextJS "frontend/index.html" "View Frontend UI"
+    click Widget "frontend/orbit-widget.js" "View Mascot HUD"
+    click CLI "bin/cli.js" "View Unified CLI"
+    click FastAPI "backend/src/app/main.py" "View FastAPI Gateway"
+    click CircuitBreaker "backend/src/app/core/circuit_breaker.py" "View Circuit Breaker"
+    click RedisCache "backend/src/app/core/redis.py" "View Redis Cache"
+    click Postgres "backend/src/app/db/repositories/document.py" "View Database Layer"
+    click RLS "database/supabase_rls.sql" "View Row-Level Security"
+    click LangGraph "ai_layer/langgraph_supervisor.py" "View LangGraph Supervisor"
+    click FastMCP "ai_layer/fastmcp_server.py" "View FastMCP Server"
 ```
 
 ---

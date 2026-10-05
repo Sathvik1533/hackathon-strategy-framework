@@ -31,18 +31,23 @@ However, top enterprise engineering organizations (Netflix, Stripe, Uber, Airbnb
 
 ```mermaid
 flowchart TD
+    classDef danger fill:#e11d48,stroke:#fda4af,stroke-width:2px,color:#ffffff;
+    classDef crash fill:#9f1239,stroke:#f43f5e,stroke-width:3px,color:#ffffff;
+
     subgraph Antipattern["❌ THE COLLISION TRAP (IN-PROCESS OVERLAP)"]
-        Monolith["Single Monolithic Directory & Process"]
-        JNI["In-Process Bridge (JNI / JPype / Jython)"]
-        BuildConflict["Conflicting Toolchains (javac + poetry + pip)"]
-        Bloat["Bloated Container Image (>1.5GB)"]
-        Crash["JVM Garbage Collector vs Python Memory Fragmentation Crash"]
+        Monolith["Single Monolithic Directory & Process"]:::danger
+        JNI["In-Process Bridge (JNI / JPype / Jython)"]:::danger
+        BuildConflict["Conflicting Toolchains (javac + poetry + pip)"]:::danger
+        Bloat["Bloated Container Image (>1.5GB)"]:::danger
+        Crash["💥 JVM Garbage Collector vs Python Memory Fragmentation Crash"]:::crash
         
         Monolith --> JNI
         Monolith --> BuildConflict
         Monolith --> Bloat
         JNI --> Crash
     end
+
+    style Antipattern fill:#4c0519,stroke:#f43f5e,stroke-width:2px,color:#ffffff
 ```
 
 ### 1. In-Process Runtime Collision (JNI / JPype / Jython)
@@ -63,12 +68,16 @@ flowchart TD
 
 ```mermaid
 flowchart LR
+    classDef py fill:#059669,stroke:#34d399,stroke-width:2px,color:#ffffff;
+    classDef bridge fill:#d97706,stroke:#fbbf24,stroke-width:2px,color:#ffffff;
+    classDef jv fill:#4f46e5,stroke:#818cf8,stroke-width:2px,color:#ffffff;
+
     subgraph PythonDomain["🐍 PYTHON DOMAIN (Cognitive Brain & Gateway)"]
-        FastAPI["FastAPI Gateway (Port 8000)"]
-        LangGraph["LangGraph Multi-Agent Supervisor"]
-        pgvector["pgvector Hybrid RAG (<20ms)"]
-        FastMCP["FastMCP Tool Server (Port 8001)"]
-        Telemetry["Telemetry & Memory Tracer"]
+        FastAPI["FastAPI Gateway (Port 8000)"]:::py
+        LangGraph["LangGraph Multi-Agent Supervisor"]:::py
+        pgvector["pgvector Hybrid RAG (<20ms)"]:::py
+        FastMCP["FastMCP Tool Server (Port 8001)"]:::py
+        Telemetry["Telemetry & Memory Tracer"]:::py
         
         FastAPI --> LangGraph
         LangGraph --> pgvector
@@ -77,16 +86,16 @@ flowchart LR
     end
 
     subgraph ZeroCollisionBridge["⚡ ZERO-COLLISION NETWORK / EVENT BRIDGE"]
-        REST["OpenAPI 3.1 HTTP REST / JSON"]
-        gRPC["Binary gRPC / Protocol Buffers (<1ms)"]
-        EventBus["Redis 7 Event Bus (Pub/Sub & Streams)"]
+        REST["OpenAPI 3.1 HTTP REST / JSON"]:::bridge
+        gRPC["Binary gRPC / Protocol Buffers (<1ms)"]:::bridge
+        EventBus["Redis 7 Event Bus (Pub/Sub & Streams)"]:::bridge
     end
 
     subgraph JavaDomain["☕ JAVA DOMAIN (Optional Enterprise Muscle)"]
-        JavaEngine["Spring Boot / Quarkus Service (Port 8080)"]
-        RulesEngine["High-Throughput Drools Rules Engine"]
-        BatchCalc["Multithreaded CPU Number Cruncher"]
-        EnterpriseDB["Banking Ledger / Enterprise ERP Connector"]
+        JavaEngine["Spring Boot / Quarkus Service (Port 8080)"]:::jv
+        RulesEngine["High-Throughput Drools Rules Engine"]:::jv
+        BatchCalc["Multithreaded CPU Number Cruncher"]:::jv
+        EnterpriseDB["Banking Ledger / Enterprise ERP Connector"]:::jv
         
         JavaEngine --> RulesEngine
         JavaEngine --> BatchCalc
@@ -96,6 +105,17 @@ flowchart LR
     FastAPI <==>|Clean HTTP / JSON| REST <==> JavaEngine
     LangGraph <==>|Low-Latency RPC| gRPC <==> JavaEngine
     FastAPI <==>|Async Pub/Sub Tasks| EventBus <==> JavaEngine
+
+    style PythonDomain fill:#064e3b,stroke:#34d399,stroke-width:2px,color:#ffffff
+    style ZeroCollisionBridge fill:#451a03,stroke:#fbbf24,stroke-width:2px,color:#ffffff
+    style JavaDomain fill:#1e1b4b,stroke:#818cf8,stroke-width:2px,color:#ffffff
+
+    click FastAPI "../../backend/src/app/main.py" "View FastAPI Gateway"
+    click LangGraph "../../ai_layer/langgraph_supervisor.py" "View LangGraph Multi-Agent"
+    click pgvector "../../backend/src/app/db/repositories/document.py" "View pgvector RAG"
+    click FastMCP "../../ai_layer/fastmcp_server.py" "View FastMCP Server"
+    click Telemetry "../../.hsf/traces.jsonl" "View Telemetry Logs"
+    click REST "../../docs/openapi.json" "View OpenAPI Specification"
 ```
 
 ---
