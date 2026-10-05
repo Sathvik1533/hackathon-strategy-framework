@@ -9,6 +9,7 @@ import { SkillsGrid } from '@/components/SkillsGrid';
 import { RobotSquadOrchestrator } from '@/components/RobotSquadOrchestrator';
 import { SkillFetcherConsole } from '@/components/SkillFetcherConsole';
 import { MemoryTracerConsole } from '@/components/MemoryTracerConsole';
+import { VictoryGapAnalysis } from '@/components/VictoryGapAnalysis';
 import { Terminal, Shield, Zap, Sparkles, ExternalLink, Github, BookOpen } from 'lucide-react';
 
 export default function DashboardPage() {
@@ -109,7 +110,10 @@ export default function DashboardPage() {
           {/* 1. Transformers Autonomous Robot Squad & Variable Team Orchestrator */}
           <RobotSquadOrchestrator />
 
-          {/* 2. Autonomous Architectural Decision Card */}
+          {/* 2. 5. What Else Are You Missing? The Hackathon Victory Gap Analysis */}
+          <VictoryGapAnalysis />
+
+          {/* 3. Autonomous Architectural Decision Card */}
           <ArchitecturalDecisionCard />
 
           {/* 3. Autonomous Frontend Aesthetic Matrix with Live Previews */}

@@ -358,3 +358,29 @@ async def test_agent_telemetry_traces_and_memory(async_client):
     assert "total_interactions" in mem_data
     assert "system_health_index" in mem_data
     assert "devin" in mem_data["teammates_tracked"]
+
+
+@pytest.mark.asyncio
+async def test_agent_victory_gap_analysis(async_client):
+    res = await async_client.get("/api/v1/agent/victory-gap-analysis")
+    assert res.status_code == 200
+    payload = res.json()["data"]
+    assert payload["total_gaps"] == 7
+    blind_spots = payload["blind_spots"]
+    assert len(blind_spots) == 7
+
+    # Verify all 7 critical failure modes
+    titles = [item["blind_spot"] for item in blind_spots]
+    assert any("Wi-Fi Drop" in t for t in titles)
+    assert any("Rate Limits" in t for t in titles)
+    assert any("Naive Vector Hallucination" in t for t in titles)
+    assert any("Unrestricted Agent Action Hazards" in t for t in titles)
+    assert any("Docker & Container Breakage" in t for t in titles)
+    assert any("Hour 23 Slide Rush" in t for t in titles)
+    assert any("Architecture Diagram Vagueness" in t for t in titles)
+
+    for item in blind_spots:
+        assert len(item["why_99_percent_fail"]) > 10
+        assert len(item["how_hsf_eliminates_risk"]) > 10
+        assert "fail_safe_command" in item
+        assert "proof_metric" in item
