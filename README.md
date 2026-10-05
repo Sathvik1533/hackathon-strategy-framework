@@ -749,57 +749,99 @@ Rules to follow:
 4. Create a dedicated branch `feat/{{FEATURE_NAME}}` and ensure zero hardcoded secrets or raw SQL interpolations.
 ```
 
+### 2. Team Division & Responsibilities (5-Person Squad)
+
+```
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│ TEAMMATE 1: BACKEND API & RESILIENCE LEAD                                              │
+│ • Focus: FastAPI endpoints, Pydantic v2 schemas, ResponseEnvelope, Circuit Breakers.   │
+│ • Key Files: `backend/src/app/api/v1/`, `backend/src/app/core/resilience.py`.          │
+│ • Skills: `fastapi-production-archetype`, `async-agent-celery-redis`, `context7-docs`  │
+├────────────────────────────────────────────────────────────────────────────────────────┤
+│ TEAMMATE 2: DATABASE & VECTOR SEARCH LEAD                                              │
+│ • Focus: PostgreSQL 16 ACID models, Alembic migrations, pgvector HNSW, Supabase RLS.   │
+│ • Key Files: `database/supabase_rls.sql`, `backend/src/app/models/`, `seed_data.py`.   │
+│ • Skills: `pgvector-hybrid-search`, `hackathon-speedrun-kit`.                          │
+├────────────────────────────────────────────────────────────────────────────────────────┤
+│ TEAMMATE 3: AI & MULTI-AGENT ARCHITECTURE LEAD                                         │
+│ • Focus: LangGraph supervisor graph, FastMCP tools, Jev router, RAGAS eval harness.    │
+│ • Key Files: `ai_layer/langgraph_supervisor.py`, `fastmcp_server.py`, `eval_harness.py`│
+│ • Skills: `langgraph-production-patterns`, `pydantic-ai-workflows`, `fastmcp-tool`     │
+├────────────────────────────────────────────────────────────────────────────────────────┤
+│ TEAMMATE 4: FRONTEND & REAL-TIME UX LEAD                                               │
+│ • Focus: Console UI, SSE log streaming terminal, document vault, telemetry dashboard. │
+│ • Key Files: `frontend/index.html`, `documents.html`, `analytics.html`, `style.css`.  │
+│ • Skills: `hallmark`, `emil-design-eng`, `awesome-design-systems`.                     │
+├────────────────────────────────────────────────────────────────────────────────────────┤
+│ TEAMMATE 5: CLOUD DEVOPS, CI/CD & PITCH LEAD                                           │
+│ • Focus: Multi-stage Docker, AWS ECS Fargate, CI workflows, Marp slides, stage demo.   │
+│ • Key Files: `infra/Dockerfile`, `deploy_aws.sh`, `pitch/pitch.marp.md`, `demo.sh`.    │
+│ • Skills: `agent-docker-aws-deploy`, `marp-presentation-engine`, `hackathon-speedrun` │
+└────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
 ---
 
-### 2. Concrete Role-Specific Prompts for Teammates
+### 3. Concrete Role-Specific Prompts for the 5 Teammates
 
-#### 👤 Teammate 1: Backend & Data Lead
+#### 👤 Teammate 1: Backend API & Resilience Lead
 ```markdown
-You are acting as the Backend & Data Lead for our team in this hackathon.
+You are acting as the Backend API & Resilience Lead for our team in this hackathon.
 Our project problem statement is: "AI Medical Research Assistant".
-Your assigned stack layer is: Backend API & PostgreSQL Database (Core Pages: backend/src/app/api/v1/endpoints/documents.py, database/supabase_rls.sql).
-The pre-installed skills available for your layer are: fastapi-production-archetype, pgvector-hybrid-search, async-agent-celery-redis.
+Your assigned stack layer is: Backend API & Resilience (Core Pages: backend/src/app/api/v1/endpoints/jobs.py, backend/src/app/core/resilience.py, backend/src/app/core/redis.py).
+The pre-installed skills available for your layer are: fastapi-production-archetype, async-agent-celery-redis, context7-docs-fetcher, poetry-python-packaging.
 
 Task:
-Implement an async document ingestion endpoint that extracts text from medical research PDFs, generates 1536-dim embeddings, stores them in PostgreSQL with pgvector, and enforces Supabase Row-Level Security (RLS) so users only see their own uploads. Return data using ResponseEnvelope[T].
+Build an asynchronous task dispatcher on /api/v1/jobs/render that enqueues workflows to Redis Pub/Sub, validates inputs using Pydantic v2 schemas, wraps downstream calls in our 3-State CircuitBreaker and Exponential Backoff decorators, and streams live progress logs to /api/v1/jobs/{id}/stream. Ensure all outputs strictly follow ResponseEnvelope[T].
 ```
 
-#### 👤 Teammate 2: AI & Agentic Lead
+#### 👤 Teammate 2: Database & Vector Search Lead
 ```markdown
-You are acting as the AI & Agentic Lead for our team in this hackathon.
+You are acting as the Database & Vector Search Lead for our team in this hackathon.
 Our project problem statement is: "AI Medical Research Assistant".
-Your assigned stack layer is: AI & Multi-Agent Layer (Core Pages: ai_layer/langgraph_supervisor.py, ai_layer/hybrid_retriever.py).
-The pre-installed skills available for your layer are: langgraph-production-patterns, pydantic-ai-workflows, fastmcp-tool-server, rag-reranking-pipeline, agent-security-guardrails, agent-eval-harness.
+Your assigned stack layer is: Database & Vector Storage (Core Pages: database/supabase_rls.sql, backend/src/app/models/document.py, database/seed_data.py).
+The pre-installed skills available for your layer are: pgvector-hybrid-search, hackathon-speedrun-kit.
 
 Task:
-Build a LangGraph supervisor graph that coordinates a MedicalResearcherNode and a FactCheckerNode. Use our hybrid retriever with Reciprocal Rank Fusion, apply FlashRank reranking, enforce an interrupt_before gate before outputting clinical recommendations, and run eval_harness.py to record RAGAS Faithfulness scores.
+Set up our PostgreSQL 16 schema with pgvector 1536-dim HNSW Cosine Index and TSVECTOR GIN text index for hybrid BM25 search. Implement Row-Level Security (RLS) policies in database/supabase_rls.sql to isolate patient records by auth.uid(). Write an instant 3-second database seeder in database/seed_data.py populating 50 realistic medical papers with synthetic embeddings.
 ```
 
-#### 👤 Teammate 3: Frontend Lead
+#### 👤 Teammate 3: AI & Multi-Agent Architecture Lead
 ```markdown
-You are acting as the Frontend Lead for our team in this hackathon.
+You are acting as the AI & Multi-Agent Architecture Lead for our team in this hackathon.
 Our project problem statement is: "AI Medical Research Assistant".
-Your assigned stack layer is: Frontend Console (Core Pages: frontend/index.html, frontend/documents.html, frontend/analytics.html).
+Your assigned stack layer is: AI & Multi-Agent Layer (Core Pages: ai_layer/langgraph_supervisor.py, ai_layer/hybrid_retriever.py, ai_layer/eval_harness.py).
+The pre-installed skills available for your layer are: langgraph-production-patterns, pydantic-ai-workflows, fastmcp-tool-server, jev-decision-router, rag-reranking-pipeline, agent-security-guardrails, agent-eval-harness.
+
+Task:
+Build a LangGraph supervisor graph coordinating a MedicalResearcherNode and a FactCheckerNode with PostgreSQL checkpoint persistence. Integrate our hybrid retriever with Reciprocal Rank Fusion (RRF), apply FlashRank neural reranking (<20ms), add an interrupt_before gate for physician approval before issuing drug recommendations, and execute ai_layer/eval_harness.py to record RAGAS Faithfulness scores >0.90.
+```
+
+#### 👤 Teammate 4: Frontend & Real-Time UX Lead
+```markdown
+You are acting as the Frontend & Real-Time UX Lead for our team in this hackathon.
+Our project problem statement is: "AI Medical Research Assistant".
+Your assigned stack layer is: Frontend Console & Real-Time UI (Core Pages: frontend/index.html, frontend/documents.html, frontend/analytics.html).
 The pre-installed skills available for your layer are: hallmark, emil-design-eng, awesome-design-systems.
 
 Task:
-Connect our documents view in frontend/documents.html to the hybrid vector search endpoint at /api/v1/documents/search. Render real-time candidate cards with similarity badges, hook up the SSE progress stream to our live terminal console, and maintain strict anti-AI-slop typography and dark-mode tokens in frontend/style.css.
+Connect our high-density dark-mode frontend views: index.html (Agent Execution Console with live SSE terminal), documents.html (Medical document vault and hybrid search cards), and analytics.html (System Telemetry & Circuit Breaker status). Ensure 150-220ms smooth micro-interactions, responsive grids, and clean typography with zero generic AI styling.
 ```
 
-#### 👤 Teammate 4: DevOps & Pitch Lead
+#### 👤 Teammate 5: Cloud DevOps, CI/CD & Pitch / Demo Lead
 ```markdown
-You are acting as the DevOps & Pitch Lead for our team in this hackathon.
+You are acting as the Cloud DevOps, CI/CD & Pitch / Demo Lead for our team in this hackathon.
 Our project problem statement is: "AI Medical Research Assistant".
-Your assigned stack layer is: Deployment & Presentation (Core Pages: infra/Dockerfile, pitch/pitch.marp.md, pitch/demo.sh).
+Your assigned stack layer is: Cloud Infrastructure & Presentation (Core Pages: infra/Dockerfile, infra/deploy_aws.sh, pitch/pitch.marp.md, pitch/demo.sh).
 The pre-installed skills available for your layer are: agent-docker-aws-deploy, marp-presentation-engine, hackathon-speedrun-kit.
 
 Task:
-Compile our pitch deck in pitch/pitch.marp.md into interactive HTML and PDF slides using Marp. Populate the slides with our architecture diagram, RAGAS Faithfulness metrics, and business ROI. Test our stage fail-safe runner in pitch/demo.sh to guarantee a flawless live terminal backup if stage Wi-Fi drops.
+Verify our multi-stage Docker build (<180MB non-root appuser) and AWS ECS Fargate task definition with ALB health checks. Compile our pitch presentation in pitch/pitch.marp.md into interactive HTML and standalone PDF slides via Marp, showcasing our problem, architecture, RAGAS scores, and business ROI. Test the terminal fail-safe runner in pitch/demo.sh to guarantee a flawless live stage backup.
 ```
 
 ---
 
-### 3. Antigravity IDE Slash Commands & Artifacts Protocol
+### 4. Antigravity IDE Slash Commands & Artifacts Protocol
 
 * `/goal`: Launch a long-running, autonomous sprint task (e.g., overnight feature completion) that continues until all validation tests pass.
 * `/plan`: Create an explicit step-by-step breakdown of user stories, database models, and endpoints before writing code.

@@ -59,3 +59,13 @@ Open a PR against `main` using our standard [Pull Request Template](.github/pull
 * **Database Isolation**: Never bypass Row-Level Security (RLS) policies.
 * **Resilience**: Any call to external AI APIs must use `@retry_with_exponential_backoff` and Circuit Breakers.
 * **Zero AI Slop**: Frontend UI must use tokenized dark-mode CSS and responsive layouts without generic placeholders.
+
+---
+
+## 👥 5-Person Squad Role Alignment
+
+1. **Teammate 1 (Backend API & Resilience Lead)**: Endpoints in `backend/src/app/api/v1/`, Pydantic v2 schemas, circuit breakers, and Redis Pub/Sub async job queues.
+2. **Teammate 2 (Database & Vector Search Lead)**: PostgreSQL 16 schema, SQLAlchemy models, Alembic migrations, pgvector HNSW index tuning, and Supabase RLS policies.
+3. **Teammate 3 (AI & Multi-Agent Architecture Lead)**: LangGraph supervisor graphs, FastMCP SSE tools, Jev decision router, FlashRank reranking, and RAGAS eval harness.
+4. **Teammate 4 (Frontend & Real-Time UX Lead)**: Console UI, SSE log streaming terminal, document vault views, and responsive dark-mode telemetry dashboards.
+5. **Teammate 5 (Cloud DevOps, CI/CD & Pitch / Demo Lead)**: Multi-stage Docker, AWS ECS Fargate, CI workflows, Marp presentation slides, and live terminal stage demo scripts.
