@@ -1,0 +1,202 @@
+{
+  "team_name": "Autobots Strike Fleet",
+  "total_team_xp": 3275,
+  "team_level": 4,
+  "mvp_teammate": "AI Lead",
+  "teammates": {
+    "Lead Architect": {
+      "name": "Lead Architect",
+      "role": "Lead System Architect",
+      "autobot_companion": "Orbit Prime \ud83e\udd16\ud83d\udc51",
+      "xp": 450,
+      "level": 2,
+      "level_title": "Tactical Strategist",
+      "quests_completed": 2,
+      "cheers_received": 3,
+      "synergy_streak": 1,
+      "badges": [
+        "\ud83e\udd16 Autobot Bonded",
+        "\ud83d\ude80 Ignite Master"
+      ],
+      "recent_activity": [
+        "Bootstrapped HSF stack in 48s",
+        "Paired with Orbit Prime"
+      ]
+    },
+    "Backend Lead": {
+      "name": "Backend Lead",
+      "role": "Backend & Security Lead",
+      "autobot_companion": "Ironhide \ud83d\udee1\ufe0f\u26a1",
+      "xp": 750,
+      "level": 3,
+      "level_title": "Resilience Titan",
+      "quests_completed": 3,
+      "cheers_received": 8,
+      "synergy_streak": 5,
+      "badges": [
+        "\ud83d\udee1\ufe0f Contract Sentinel",
+        "\ud83c\udff0 Citadel Defender"
+      ],
+      "recent_activity": [
+        "Cheered by Frontend Lead (+25 Synergy XP)",
+        "Cheered by Frontend Lead (+25 Synergy XP)",
+        "Cheered by Frontend Lead (+25 Synergy XP)",
+        "Cheered by Frontend Lead (+25 Synergy XP)",
+        "Hardened circuit breaker failover",
+        "Verified 19/19 pytest pass rate"
+      ]
+    },
+    "Frontend Lead": {
+      "name": "Frontend Lead",
+      "role": "Frontend & UX Lead",
+      "autobot_companion": "Mirage \ud83c\udfa8\u2728",
+      "xp": 525,
+      "level": 2,
+      "level_title": "Tactical Strategist",
+      "quests_completed": 2,
+      "cheers_received": 6,
+      "synergy_streak": 2,
+      "badges": [
+        "\ud83c\udfa8 Aesthetic Visionary",
+        "\ud83d\ude80 Ignite Master"
+      ],
+      "recent_activity": [
+        "Cheered by Orbit Mascot (+25 Synergy XP)",
+        "Deployed Next.js Motion HUD",
+        "Crafted Glassmorphic design tokens"
+      ]
+    },
+    "AI Lead": {
+      "name": "AI Lead",
+      "role": "AI & Multi-Agent Lead",
+      "autobot_companion": "Wheeljack \ud83d\udd2c\u26a1",
+      "xp": 850,
+      "level": 4,
+      "level_title": "Cyber-Scientist",
+      "quests_completed": 4,
+      "cheers_received": 6,
+      "synergy_streak": 1,
+      "badges": [
+        "\u26a1 Neural Marksman",
+        "\ud83c\udfaf Truth Seeker"
+      ],
+      "recent_activity": [
+        "Verified RAGAS Faithfulness 0.94",
+        "Benchmarked FlashRank CPU latency 16ms"
+      ]
+    },
+    "DevOps Lead": {
+      "name": "DevOps Lead",
+      "role": "DevOps & Stage Lead",
+      "autobot_companion": "Bumblebee \ud83d\udc1d\ud83d\ude80",
+      "xp": 700,
+      "level": 3,
+      "level_title": "Resilience Titan",
+      "quests_completed": 4,
+      "cheers_received": 4,
+      "synergy_streak": 1,
+      "badges": [
+        "\ud83d\udd76\ufe0f Shadow Ghost",
+        "\ud83d\ude80 Ignite Master"
+      ],
+      "recent_activity": [
+        "Completed Quest: Ignition Sequence (+100 XP)",
+        "Compiled Marp pitch deck in 1.8s",
+        "Tested offline pitch/demo.sh runner"
+      ]
+    }
+  },
+  "quests": [
+    {
+      "id": "q-ignition",
+      "title": "Ignition Sequence",
+      "description": "Run ./init.sh and verify local Docker stack & health checks in under 60 seconds.",
+      "category": "DevOps",
+      "xp_reward": 100,
+      "badge": "\ud83d\ude80 Ignite Master",
+      "completed_by": [
+        "DevOps Lead"
+      ],
+      "completed": true,
+      "completed_at": "2026-10-06T00:55:40.965553+00:00"
+    },
+    {
+      "id": "q-autobot",
+      "title": "Autobot Alliance",
+      "description": "Run hsf wizard, choose role, pair with an Autobot companion, and acquire .hsf prompt.",
+      "category": "Coordination",
+      "xp_reward": 150,
+      "badge": "\ud83e\udd16 Autobot Bonded",
+      "completed_by": [],
+      "completed": false,
+      "completed_at": null
+    },
+    {
+      "id": "q-contract",
+      "title": "Zero-Collision Contract",
+      "description": "Define an OpenAPI 3.1 Pydantic schema or Supabase RLS security policy with zero type errors.",
+      "category": "Backend & DB",
+      "xp_reward": 200,
+      "badge": "\ud83d\udee1\ufe0f Contract Sentinel",
+      "completed_by": [],
+      "completed": false,
+      "completed_at": null
+    },
+    {
+      "id": "q-neural-strike",
+      "title": "Neural Strike RAG",
+      "description": "Execute hybrid dense HNSW + sparse BM25 query with FlashRank cross-encoder latency < 20ms.",
+      "category": "AI & Data",
+      "xp_reward": 250,
+      "badge": "\u26a1 Neural Marksman",
+      "completed_by": [],
+      "completed": false,
+      "completed_at": null
+    },
+    {
+      "id": "q-resilience-fortress",
+      "title": "Resilience Fortress",
+      "description": "Trigger circuit breaker failover test and confirm automated 3-state recovery and local fallback.",
+      "category": "Resilience",
+      "xp_reward": 300,
+      "badge": "\ud83c\udff0 Citadel Defender",
+      "completed_by": [],
+      "completed": false,
+      "completed_at": null
+    },
+    {
+      "id": "q-eval-supremacy",
+      "title": "Eval Supremacy",
+      "description": "Run RAGAS evaluation harness and verify Faithfulness score >= 0.90 on 25 golden cases.",
+      "category": "Evals & QA",
+      "xp_reward": 350,
+      "badge": "\ud83c\udfaf Truth Seeker",
+      "completed_by": [],
+      "completed": false,
+      "completed_at": null
+    },
+    {
+      "id": "q-shadow-runner",
+      "title": "Stage Shadow Runner",
+      "description": "Execute offline stage runner (pitch/demo.sh) locally in <30 seconds with 0ms internet dependency.",
+      "category": "Stage Defense",
+      "xp_reward": 400,
+      "badge": "\ud83d\udd76\ufe0f Shadow Ghost",
+      "completed_by": [],
+      "completed": false,
+      "completed_at": null
+    },
+    {
+      "id": "q-stage-victory",
+      "title": "Stage Victory Rehearsal",
+      "description": "Complete 6-minute live pitch rehearsal simulator with 0 judge critical flags.",
+      "category": "Stage Victory",
+      "xp_reward": 500,
+      "badge": "\ud83c\udfc6 Champion of Orbit",
+      "completed_by": [],
+      "completed": false,
+      "completed_at": null
+    }
+  ],
+  "last_updated": "2026-10-06T01:06:42.530746+00:00"
+}

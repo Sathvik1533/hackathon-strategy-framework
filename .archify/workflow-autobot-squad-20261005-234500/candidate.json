@@ -1,0 +1,77 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Transformers Autonomous Robot Squad (Autobots) Orchestration",
+    "output": "docs/architecture/autobot-squad.workflow.html",
+    "animation": "trace",
+    "visual_preset": "signal-flow",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/Sathvik1533/hackathon-strategy-framework",
+      "revision": "a69b7f690e06623c0e1093a364520cf9c2c0d580",
+      "provider": "github",
+      "link_mode": "web"
+    }
+  },
+  "lanes": [
+    { "id": "command", "label": "Orbit Supreme Command" },
+    { "id": "fleet", "label": "Autobot Specialist Fleet" },
+    { "id": "governance", "label": "Team Sizing & Features Menu" },
+    { "id": "telemetry", "label": "Continuous Learning Engine", "variant": "exception" }
+  ],
+  "phases": [
+    { "id": "intake", "label": "Intake & Strategy", "fromCol": 0, "toCol": 1 },
+    { "id": "partition", "label": "Autobot Allocation", "fromCol": 2, "toCol": 3, "variant": "emphasis" },
+    { "id": "delivery", "label": "Delivery & Learning", "fromCol": 4, "toCol": 5, "variant": "dashed" }
+  ],
+  "mainPath": ["problem", "director", "fleet", "sizing", "menu", "tracer", "memory"],
+  "nodes": [
+    { "id": "problem", "lane": "command", "col": 0, "type": "external", "label": "Problem Drop", "sublabel": "Hour 0 Statement", "width": 140, "sources": [{ "path": "scripts/mascot_agent.py", "line": 1 }] },
+    { "id": "director", "lane": "command", "col": 1, "type": "backend", "label": "Orbit Prime", "sublabel": "Supreme Commander", "tag": "Python Mascot", "width": 140, "sources": [{ "path": "ai_layer/mascot_agent.py", "line": 1 }] },
+    { "id": "fleet", "lane": "fleet", "col": 2, "type": "backend", "label": "Autobot Fleet", "sublabel": "Ironhide • Mirage • Wheeljack", "tag": "Specialists", "width": 140, "sources": [{ "path": "backend/src/app/main.py", "line": 1 }] },
+    { "id": "scout", "lane": "fleet", "col": 4, "type": "cloud", "label": "Bumblebee Scout", "sublabel": "Docker & demo.sh", "tag": "Stage Ready", "width": 140, "sources": [{ "path": "pitch/demo.sh", "line": 1 }] },
+    { "id": "sizing", "lane": "governance", "col": 3, "type": "backend", "label": "Dynamic Sizing", "sublabel": "1 to 6+ Engineers", "tag": "Solo to League", "width": 140, "sources": [{ "path": "scripts/quickstart_wizard.py", "line": 1 }] },
+    { "id": "menu", "lane": "governance", "col": 4, "type": "backend", "label": "Features Menu", "sublabel": "5-Layer Universal", "tag": "Tailored Options", "width": 140, "sources": [{ "path": "backend/src/app/api/v1/endpoints/jobs.py", "line": 1 }] },
+    { "id": "tracer", "lane": "telemetry", "col": 4, "type": "database", "label": "Telemetry Logger", "sublabel": ".hsf/traces.jsonl", "tag": "Pairing Traces", "width": 140, "sources": [{ "path": ".hsf/memory.json", "line": 1 }] },
+    { "id": "memory", "lane": "telemetry", "col": 5, "type": "database", "label": "Cognitive Memory", "sublabel": ".hsf/memory.json", "tag": "Long-Term Context", "width": 140, "sources": [{ "path": ".hsf/memory.json", "line": 1 }] }
+  ],
+  "edges": [
+    { "id": "drop-to-director", "from": "problem", "to": "director", "variant": "default" },
+    { "id": "director-to-fleet", "from": "director", "to": "fleet", "label": "dispatch fleet", "variant": "emphasis" },
+    { "id": "fleet-to-sizing", "from": "fleet", "to": "sizing", "label": "team formula", "variant": "emphasis" },
+    { "id": "sizing-to-menu", "from": "sizing", "to": "menu", "label": "features menu", "variant": "emphasis" },
+    { "id": "menu-to-scout", "from": "menu", "to": "scout", "variant": "default" },
+    { "id": "menu-to-tracer", "from": "menu", "to": "tracer", "label": "log session", "variant": "emphasis" },
+    { "id": "tracer-to-memory", "from": "tracer", "to": "memory", "label": "learn context", "variant": "emphasis" }
+  ],
+  "cards": [
+    {
+      "dot": "rose",
+      "title": "Orbit Prime Supreme Leadership",
+      "items": [
+        "100% pure Python mascot engine evaluates problem statements at Hour 0",
+        "Partitions workload across specialized Autobot companions without team overlap",
+        "Generates customized features menus and prompts for AI coding IDEs"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Variable Team Sizing (1 to 6+ Devs)",
+      "items": [
+        "Dynamically flexes from Solo Pioneer (1 Dev + 6 Autobots) to Full League (6+ Devs)",
+        "Zero-conflict git branches (feat/<role>) eliminate merge collision risks",
+        "Every teammate receives tailored cheat sheets and companion personalities"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Continuous Learning & Telemetry Engine",
+      "items": [
+        "Captures code reviews, guardrail trip events, and benchmark results in .hsf/traces.jsonl",
+        "Memory store (.hsf/memory.json) retains decisions and prevents repeating past mistakes",
+        "Cognitive feedback loop continuously refines agent guidance in real time"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,199 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Zero-Collision Polyglot Architecture Bridge (Python Brain + Java Muscle)",
+    "output": "docs/architecture/polyglot-bridge.architecture.html",
+    "quality_profile": "showcase",
+    "animation": "trace",
+    "repository": {
+      "url": "https://github.com/Sathvik1533/hackathon-strategy-framework",
+      "revision": "a69b7f690e06623c0e1093a364520cf9c2c0d580",
+      "provider": "github",
+      "link_mode": "web"
+    }
+  },
+  "components": [
+    {
+      "id": "fastapi",
+      "type": "backend",
+      "label": "FastAPI Gateway",
+      "sublabel": "Python Core :8000",
+      "tag": "ASGI Lifespan",
+      "pos": [50, 260],
+      "size": [130, 60],
+      "sources": [{ "path": "backend/src/app/main.py", "line": 1 }]
+    },
+    {
+      "id": "langgraph",
+      "type": "backend",
+      "label": "LangGraph Supervisor",
+      "sublabel": "Multi-Agent Graph",
+      "tag": "StateGraph",
+      "pos": [50, 110],
+      "size": [130, 60],
+      "sources": [{ "path": "ai_layer/langgraph_supervisor.py", "line": 1 }]
+    },
+    {
+      "id": "pgvector",
+      "type": "database",
+      "label": "pgvector Hybrid RAG",
+      "sublabel": "PostgreSQL 16 :5432",
+      "tag": "<20ms RRF",
+      "pos": [50, 420],
+      "size": [130, 60],
+      "sources": [{ "path": "database/supabase_rls.sql", "line": 1 }]
+    },
+    {
+      "id": "fastmcp",
+      "type": "security",
+      "label": "FastMCP Sandbox",
+      "sublabel": "SSE Tools :8001",
+      "tag": "Process Isolation",
+      "pos": [270, 110],
+      "size": [130, 60],
+      "sources": [{ "path": "ai_layer/fastmcp_server.py", "line": 1 }]
+    },
+    {
+      "id": "telemetry",
+      "type": "database",
+      "label": "Telemetry Tracer",
+      "sublabel": "Developer Traces",
+      "tag": "traces.jsonl",
+      "pos": [270, 420],
+      "size": [130, 60],
+      "sources": [{ "path": ".hsf/memory.json", "line": 1 }]
+    },
+    {
+      "id": "rest",
+      "type": "backend",
+      "label": "OpenAPI 3.1 REST",
+      "sublabel": "HTTP/JSON Bridge",
+      "tag": "Typed Contract",
+      "pos": [490, 110],
+      "size": [130, 60],
+      "sources": [{ "path": "docs/openapi.json", "line": 1 }]
+    },
+    {
+      "id": "grpc",
+      "type": "messagebus",
+      "label": "Binary gRPC Bus",
+      "sublabel": "Protocol Buffers",
+      "tag": "<1ms Low Latency",
+      "pos": [490, 260],
+      "size": [130, 60],
+      "sources": [{ "path": "docs/architecture/polyglot-zero-collision-guide.md", "line": 64 }]
+    },
+    {
+      "id": "eventbus",
+      "type": "database",
+      "label": "Redis 7 Event Bus",
+      "sublabel": "Pub/Sub & Streams",
+      "tag": "Async PubSub",
+      "pos": [490, 420],
+      "size": [130, 60],
+      "sources": [{ "path": "backend/src/app/core/redis.py", "line": 1 }]
+    },
+    {
+      "id": "spring",
+      "type": "backend",
+      "label": "Spring Boot Engine",
+      "sublabel": "Java Muscle :8080",
+      "tag": "Enterprise JVM",
+      "pos": [710, 260],
+      "size": [130, 60],
+      "sources": [{ "path": "docs/architecture/polyglot-zero-collision-guide.md", "line": 85 }]
+    },
+    {
+      "id": "drools",
+      "type": "backend",
+      "label": "Drools Rules Engine",
+      "sublabel": "High-Throughput",
+      "tag": "Rule Execution",
+      "pos": [930, 110],
+      "size": [130, 60],
+      "sources": [{ "path": "docs/architecture/polyglot-zero-collision-guide.md", "line": 87 }]
+    },
+    {
+      "id": "batch",
+      "type": "backend",
+      "label": "CPU Number Cruncher",
+      "sublabel": "Multithreaded Math",
+      "tag": "JVM Threads",
+      "pos": [930, 260],
+      "size": [130, 60],
+      "sources": [{ "path": "docs/architecture/polyglot-zero-collision-guide.md", "line": 88 }]
+    },
+    {
+      "id": "erp",
+      "type": "database",
+      "label": "Banking Ledger DB",
+      "sublabel": "Enterprise ERP",
+      "tag": "ACID Ledger",
+      "pos": [930, 420],
+      "size": [130, 60],
+      "sources": [{ "path": "docs/architecture/polyglot-zero-collision-guide.md", "line": 89 }]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Python Cognitive Brain Domain (Port 8000)",
+      "wraps": ["fastapi", "langgraph", "pgvector", "fastmcp", "telemetry"]
+    },
+    {
+      "kind": "security-group",
+      "label": "Zero-Collision Network & Event Bridge",
+      "wraps": ["rest", "grpc", "eventbus"]
+    },
+    {
+      "kind": "region",
+      "label": "Java Enterprise Muscle Domain (Port 8080)",
+      "wraps": ["spring", "drools", "batch", "erp"]
+    }
+  ],
+  "connections": [
+    { "id": "fastapi-to-langgraph", "from": "fastapi", "to": "langgraph", "label": "invoke graph", "fromSide": "top", "toSide": "bottom", "variant": "emphasis" },
+    { "id": "langgraph-to-fastmcp", "from": "langgraph", "to": "fastmcp", "label": "tool calls", "variant": "security" },
+    { "id": "fastapi-to-pgvector", "from": "fastapi", "to": "pgvector", "label": "hybrid search", "fromSide": "bottom", "toSide": "top", "variant": "emphasis" },
+    { "id": "fastapi-to-telemetry", "from": "fastapi", "to": "telemetry", "label": "log trace", "fromSide": "right", "toSide": "left", "variant": "default" },
+    { "id": "fastapi-to-grpc", "from": "fastapi", "to": "grpc", "label": "binary RPC", "variant": "emphasis" },
+    { "id": "fastmcp-to-rest", "from": "fastmcp", "to": "rest", "label": "HTTP REST", "variant": "default" },
+    { "id": "telemetry-to-eventbus", "from": "telemetry", "to": "eventbus", "label": "publish stream", "variant": "default" },
+    { "id": "grpc-to-spring", "from": "grpc", "to": "spring", "label": "dispatch RPC", "variant": "emphasis" },
+    { "id": "rest-to-spring", "from": "rest", "to": "spring", "label": "REST call", "variant": "default" },
+    { "id": "eventbus-to-spring", "from": "eventbus", "to": "spring", "label": "consume tasks", "variant": "default" },
+    { "id": "spring-to-drools", "from": "spring", "to": "drools", "label": "execute rules", "fromSide": "top", "toSide": "left", "variant": "default" },
+    { "id": "spring-to-batch", "from": "spring", "to": "batch", "label": "batch calc", "variant": "emphasis" },
+    { "id": "spring-to-erp", "from": "spring", "to": "erp", "label": "commit tx", "fromSide": "bottom", "toSide": "left", "variant": "emphasis" }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "Python Cognitive Brain Domain",
+      "items": [
+        "FastAPI handles async HTTP requests, OpenAPI validation, and SSE streaming",
+        "LangGraph supervises multi-agent cyclic reasoning and human approval gates",
+        "pgvector performs hybrid RAG searches with sub-20ms neural reranking"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Zero-Collision Network Bridge",
+      "items": [
+        "Clean network protocol boundary via OpenAPI 3.1 REST, gRPC, and Redis 7",
+        "Zero in-process JNI/JPype overlapping—eliminates JVM/CPython memory panics",
+        "Enables polyglot collaboration with zero tooling or git merge friction"
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "Java Enterprise Muscle Domain",
+      "items": [
+        "Spring Boot service executes high-throughput Drools business rule engines",
+        "Multithreaded numeric computation leverages JVM generational memory pools",
+        "Direct integration with enterprise banking ledgers and legacy ERP systems"
+      ]
+    }
+  ]
+}

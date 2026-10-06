@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "diagram_type": "dataflow",
+  "meta": {
+    "title": "Inter-Layer Dataflow & Neural RAG Retrieval Pipeline",
+    "output": "docs/architecture/inter-layer-dataflow.html",
+    "viewBox": [1080, 680],
+    "animation": "trace",
+    "visual_preset": "signal-flow",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/Sathvik1533/hackathon-strategy-framework",
+      "revision": "a69b7f690e06623c0e1093a364520cf9c2c0d580",
+      "provider": "github",
+      "link_mode": "web"
+    }
+  },
+  "stages": [
+    { "label": "Ingress & Edge" },
+    { "label": "Gateway & Cache" },
+    { "label": "Storage & Index" },
+    { "label": "Cognitive AI" },
+    { "label": "Neural Delivery" }
+  ],
+  "nodes": [
+    { "id": "browser", "type": "frontend", "label": "Frontend Console", "sublabel": "Browser UI :8000", "stage": 0, "row": 0, "tag": "Vanilla JS / SSE", "sources": [{ "path": "frontend/index.html", "line": 1 }] },
+    { "id": "public", "type": "external", "label": "External Client", "sublabel": "Direct Binary Ingest", "stage": 0, "row": 2, "tag": "Presigned PUT", "sources": [{ "path": "infra/aws-architecture.md", "line": 35 }] },
+    { "id": "gateway", "type": "backend", "label": "FastAPI Gateway", "sublabel": "ResponseEnvelope[T]", "stage": 1, "row": 0, "tag": "Pydantic Ingress", "sources": [{ "path": "backend/src/app/main.py", "line": 1 }] },
+    { "id": "redis", "type": "database", "label": "Redis 7 Cache", "sublabel": "Cache & Mutex", "stage": 1, "row": 2, "tag": "sub-10ms hits", "sources": [{ "path": "backend/src/app/core/redis.py", "line": 1 }] },
+    { "id": "pgvector", "type": "database", "label": "PostgreSQL 16", "sublabel": "pgvector HNSW", "stage": 2, "row": 0, "tag": "Cosine Operator", "sources": [{ "path": "database/supabase_rls.sql", "line": 1 }] },
+    { "id": "s3", "type": "cloud", "label": "Amazon S3", "sublabel": "Object Storage", "stage": 2, "row": 2, "tag": ">100KB Blobs", "sources": [{ "path": "infra/aws-architecture.md", "line": 1 }] },
+    { "id": "langgraph", "type": "backend", "label": "LangGraph Graph", "sublabel": "Supervisor Graph", "stage": 3, "row": 0, "tag": "StateGraph", "sources": [{ "path": "ai_layer/langgraph_supervisor.py", "line": 1 }] },
+    { "id": "mcp", "type": "security", "label": "FastMCP Sandbox", "sublabel": "JSON-RPC SSE :8001", "stage": 3, "row": 2, "tag": "Isolated Process", "sources": [{ "path": "ai_layer/fastmcp_server.py", "line": 1 }] },
+    { "id": "reranker", "type": "backend", "label": "FlashRank", "sublabel": "Neural Cross-Encoder", "stage": 4, "row": 0, "tag": "<18ms CPU", "sources": [{ "path": "ai_layer/flashrank_reranker.py", "line": 1 }] },
+    { "id": "terminal", "type": "frontend", "label": "Live Console", "sublabel": "EventSource UI", "stage": 4, "row": 2, "tag": "SSE Feed", "sources": [{ "path": "frontend/app.js", "line": 1 }] }
+  ],
+  "flows": [
+    { "from": "browser", "to": "gateway", "label": "POST /jobs", "classification": "authorized", "variant": "emphasis" },
+    { "from": "public", "to": "redis", "label": "rate limit", "classification": "sliding window", "variant": "default" },
+    { "from": "gateway", "to": "pgvector", "label": "HNSW query", "classification": "read committed", "variant": "emphasis" },
+    { "from": "redis", "to": "s3", "label": "token check", "classification": "IAM verified", "variant": "default" },
+    { "from": "pgvector", "to": "langgraph", "label": "candidates", "classification": "top 25 chunks", "variant": "emphasis" },
+    { "from": "s3", "to": "mcp", "label": "read blob", "classification": "presigned", "variant": "default" },
+    { "from": "langgraph", "to": "reranker", "label": "rerank top 5", "classification": "cross encoder", "variant": "emphasis" },
+    { "from": "mcp", "to": "terminal", "label": "tool events", "classification": "sandboxed", "variant": "security" },
+    { "from": "reranker", "to": "terminal", "label": "final stream", "classification": "SSE chunks", "variant": "emphasis", "route": "vertical-channel" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Ingress & Edge Decoupling",
+      "items": [
+        "FastAPI validates JWT headers and Pydantic schemas in <5ms",
+        "Direct S3 uploads via Presigned URLs prevent backend memory bloat",
+        "Redis distributed locks prevent duplicate simultaneous executions"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Hybrid Dense + Sparse Storage",
+      "items": [
+        "PostgreSQL 16 combines pgvector HNSW cosine distance and BM25 tsvector",
+        "Reciprocal Rank Fusion (RRF, k=60) merges lexical and vector matches",
+        "Row-Level Security (RLS) policies enforce multi-tenant tenant_id isolation"
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "Neural Cross-Encoder & FastMCP Isolation",
+      "items": [
+        "FlashRank CPU cross-encoder reranks top 25 candidates to top 5 in <18ms",
+        "FastMCP runs in an isolated sandbox over SSE JSON-RPC on port 8001",
+        "Real-time event stream pushes chunk telemetry directly to judge console"
+      ]
+    }
+  ]
+}

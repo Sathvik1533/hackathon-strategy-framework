@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HSF Cybernetic Arena • Teammate Gaming Leaderboard</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="orbit-widget.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    .arena-header {
+      background: linear-gradient(135deg, rgba(30, 27, 75, 0.8) 0%, rgba(15, 23, 42, 0.95) 100%);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+    .arena-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .arena-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .arena-avatar {
+      font-size: 2.8rem;
+      background: rgba(139, 92, 246, 0.15);
+      border: 1px solid rgba(139, 92, 246, 0.4);
+      padding: 12px;
+      border-radius: 16px;
+      box-shadow: 0 0 24px rgba(139, 92, 246, 0.25);
+    }
+    .arena-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .arena-stat-box {
+      background: rgba(17, 24, 39, 0.8);
+      border: 1px solid rgba(55, 65, 81, 0.6);
+      border-radius: 12px;
+      padding: 14px 18px;
+    }
+    .arena-stat-label {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+    .arena-stat-val {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #ffffff;
+      font-family: var(--font-mono, 'JetBrains Mono');
+      margin-top: 2px;
+    }
+    .leaderboard-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 10px;
+      margin-top: 8px;
+    }
+    .leaderboard-table th {
+      color: #94a3b8;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 10px 16px;
+      text-align: left;
+      font-weight: 700;
+    }
+    .leaderboard-row {
+      background: #111827;
+      border: 1px solid #1f2937;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .leaderboard-row:hover {
+      border-color: #3b82f6;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(59, 130, 246, 0.15);
+    }
+    .leaderboard-row td {
+      padding: 16px;
+      border-top: 1px solid #1f2937;
+      border-bottom: 1px solid #1f2937;
+    }
+    .leaderboard-row td:first-child {
+      border-left: 1px solid #1f2937;
+      border-top-left-radius: 12px;
+      border-bottom-left-radius: 12px;
+    }
+    .leaderboard-row td:last-child {
+      border-right: 1px solid #1f2937;
+      border-top-right-radius: 12px;
+      border-bottom-right-radius: 12px;
+    }
+    .rank-medal {
+      font-size: 1.4rem;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+    }
+    .player-cell {
+      display: flex;
+      flex-direction: column;
+    }
+    .player-name {
+      font-weight: 700;
+      color: #ffffff;
+      font-size: 1.05rem;
+    }
+    .player-role {
+      font-size: 0.8rem;
+      color: #94a3b8;
+    }
+    .companion-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid rgba(71, 85, 105, 0.5);
+      border-radius: 9999px;
+      padding: 4px 10px;
+      font-size: 0.82rem;
+      color: #cbd5e1;
+      font-weight: 600;
+    }
+    .xp-pill {
+      font-family: var(--font-mono, 'JetBrains Mono');
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #38bdf8;
+    }
+    .progress-bar-bg {
+      background: #1f2937;
+      height: 6px;
+      border-radius: 3px;
+      width: 140px;
+      margin-top: 6px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      background: linear-gradient(90deg, #38bdf8, #818cf8);
+      height: 100%;
+      border-radius: 3px;
+    }
+    .cheer-btn {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: #fbbf24;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .cheer-btn:hover {
+      background: #f59e0b;
+      color: #000000;
+      box-shadow: 0 0 16px rgba(245, 158, 11, 0.4);
+      transform: scale(1.05);
+    }
+    .quests-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .quest-card {
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 14px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+    }
+    .quest-card:hover {
+      border-color: #8b5cf6;
+      box-shadow: 0 8px 24px rgba(139, 92, 246, 0.15);
+    }
+    .quest-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .quest-cat {
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: #1e293b;
+      color: #94a3b8;
+      font-family: var(--font-mono, 'JetBrains Mono');
+    }
+    .quest-xp {
+      color: #a78bfa;
+      font-family: var(--font-mono, 'JetBrains Mono');
+      font-weight: 800;
+      font-size: 0.95rem;
+    }
+    .quest-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+    .quest-desc {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      line-height: 1.45;
+      margin-bottom: 14px;
+    }
+    .quest-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+    }
+    .badge-claim {
+      background: #2563eb;
+      color: #ffffff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .badge-claim:hover {
+      background: #1d4ed8;
+      box-shadow: 0 0 12px rgba(37, 99, 235, 0.4);
+    }
+    .badge-completed {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #34d399;
+      font-size: 0.75rem;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <header class="app-header">
+      <div class="brand">
+        <span class="badge">HSF CYBERNETIC ARENA • LIVE PARTICIPATION</span>
+        <h1>Teammate Gaming Arena & Leaderboard</h1>
+      </div>
+      <div class="header-actions">
+        <a href="/docs" target="_blank" class="btn btn-secondary">📖 OpenAPI Spec</a>
+        <a href="/docs/architecture/index.html" target="_blank" class="btn btn-secondary">🗺️ Archify Blueprints</a>
+      </div>
+    </header>
+
+    <!-- Global Navigation Bar across all Core Pages -->
+    <nav class="nav-bar">
+      <a href="/index.html" class="nav-item">🤖 Orbit Mascot & Agent Console</a>
+      <a href="/documents.html" class="nav-item">📄 Document Vault & Vector Search</a>
+      <a href="/analytics.html" class="nav-item">📊 System Telemetry & Evals</a>
+      <a href="/connectivity.html" class="nav-item">🔗 Connectivity Topology</a>
+      <a href="/leaderboard.html" class="nav-item active">🎮 Teammate Gaming Arena</a>
+      <a href="/docs" target="_blank" class="nav-item">📜 API Contract (/docs)</a>
+    </nav>
+
+    <!-- Cybernetic Arena Header -->
+    <div class="arena-header">
+      <div class="arena-top">
+        <div class="arena-title-wrap">
+          <div class="arena-avatar">🏆⚡</div>
+          <div>
+            <h2 id="teamNameHeading">Autobots Strike Fleet</h2>
+            <p class="subtitle" style="margin-bottom:0;">Interactive sprint momentum, peer synergy cheers, and 24-hour hackathon quest bounties.</p>
+          </div>
+        </div>
+        <div>
+          <button type="button" class="btn btn-primary" id="refreshBtn">🔄 Refresh Arena</button>
+        </div>
+      </div>
+
+      <div class="arena-stats">
+        <div class="arena-stat-box">
+          <div class="arena-stat-label">Total Team XP</div>
+          <div class="arena-stat-val" id="totalTeamXp">-- XP</div>
+        </div>
+        <div class="arena-stat-box">
+          <div class="arena-stat-label">Team Synergy Level</div>
+          <div class="arena-stat-val" id="teamLevelVal" style="color: #a78bfa;">Level --</div>
+        </div>
+        <div class="arena-stat-box">
+          <div class="arena-stat-label">Current Stage MVP</div>
+          <div class="arena-stat-val" id="mvpTeammate" style="color: #fbbf24;">--</div>
+        </div>
+        <div class="arena-stat-box">
+          <div class="arena-stat-label">Quests Completed</div>
+          <div class="arena-stat-val" id="questsCompletedCount" style="color: #34d399;">-- / 8</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Leaderboard Standings -->
+    <section class="card" style="margin-bottom: 24px;">
+      <div class="card-header">
+        <div>
+          <h2>👑 Teammate Standings & Autobot Synergy</h2>
+          <p class="subtitle">Rankings dynamically adapt to quest bounties, PR approvals, and peer cheers.</p>
+        </div>
+      </div>
+
+      <div style="overflow-x: auto;">
+        <table class="leaderboard-table">
+          <thead>
+            <tr>
+              <th style="width: 60px;">Rank</th>
+              <th>Teammate & Role</th>
+              <th>Autobot Companion</th>
+              <th>Level & Rank Title</th>
+              <th>Experience Points</th>
+              <th>Peer Cheers</th>
+              <th style="text-align: right;">Action</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboardBody">
+            <!-- Populated dynamically via JS -->
+            <tr><td colspan="7" style="text-align: center; color: #94a3b8; padding: 24px;">Loading Cybernetic Arena Standings...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 24-Hour Hackathon Quests & Bounties -->
+    <section class="card">
+      <div class="card-header">
+        <div>
+          <h2>🎯 24-Hour Hackathon Quests & Bounties</h2>
+          <p class="subtitle">Complete sprint milestones from Hour 0 Ignition to Hour 24 Stage Victory to unlock badges and team XP.</p>
+        </div>
+      </div>
+
+      <div class="quests-grid" id="questsGrid">
+        <!-- Populated dynamically via JS -->
+      </div>
+    </section>
+  </div>
+
+  <script>
+    async function loadLeaderboard() {
+      try {
+        const res = await fetch('/api/v1/gamification/leaderboard');
+        if (!res.ok) throw new Error('Failed to load leaderboard API');
+        const json = await res.json();
+        const data = json.data;
+
+        // Populate header stats
+        document.getElementById('teamNameHeading').textContent = data.team_name || 'Autobots Strike Fleet';
+        document.getElementById('totalTeamXp').textContent = (data.total_team_xp || 0) + ' XP';
+        document.getElementById('teamLevelVal').textContent = 'Level ' + (data.team_level || 1);
+        document.getElementById('mvpTeammate').textContent = '👑 ' + (data.mvp_teammate || 'None');
+
+        const completedCount = (data.quests || []).filter(q => q.completed).length;
+        document.getElementById('questsCompletedCount').textContent = completedCount + ' / ' + (data.quests || []).length;
+
+        // Populate leaderboard standings
+        const tbody = document.getElementById('leaderboardBody');
+        tbody.innerHTML = '';
+        const medals = ['🥇', '🥈', '🥉', '4.', '5.', '6.'];
+
+        (data.standings || []).forEach((s, idx) => {
+          const medal = medals[idx] || (idx + 1) + '.';
+          const progressPercent = Math.min(100, Math.round(((s.xp % 500) / 500) * 100));
+
+          const tr = document.createElement('tr');
+          tr.className = 'leaderboard-row';
+          tr.innerHTML = `
+            <td><span class="rank-medal">${medal}</span></td>
+            <td>
+              <div class="player-cell">
+                <span class="player-name">${s.name}</span>
+                <span class="player-role">${s.role}</span>
+              </div>
+            </td>
+            <td>
+              <span class="companion-badge">${s.autobot_companion}</span>
+            </td>
+            <td>
+              <div style="font-weight: 700; color: #e2e8f0;">Lv.${s.level} ${s.level_title}</div>
+              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: ${progressPercent}%;"></div></div>
+            </td>
+            <td><span class="xp-pill">${s.xp} XP</span></td>
+            <td><span style="font-weight: 700; color: #fbbf24;">${s.cheers_received} 🙌</span></td>
+            <td style="text-align: right;">
+              <button type="button" class="cheer-btn" onclick="cheerTeammate('${s.name}')">
+                🙌 High-Five (+25 XP)
+              </button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        // Populate Quests
+        const grid = document.getElementById('questsGrid');
+        grid.innerHTML = '';
+        (data.quests || []).forEach(q => {
+          const card = document.createElement('div');
+          card.className = 'quest-card';
+          const isDone = q.completed;
+
+          card.innerHTML = `
+            <div>
+              <div class="quest-top">
+                <span class="quest-cat">${q.category}</span>
+                <span class="quest-xp">+${q.xp_reward} XP</span>
+              </div>
+              <div class="quest-title">${q.badge} ${q.title}</div>
+              <div class="quest-desc">${q.description}</div>
+            </div>
+            <div class="quest-actions">
+              ${isDone
+                ? `<span class="badge-completed">✔ Claimed by ${q.completed_by.join(', ')}</span>`
+                : `<button type="button" class="badge-claim" onclick="claimQuest('${q.id}')">⚡ Claim Bounty</button>`
+              }
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function cheerTeammate(name) {
+      try {
+        const res = await fetch('/api/v1/gamification/cheer', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sender: 'Teammate', receiver_name: name })
+        });
+        const data = await res.json();
+        alert(data.message || 'Cheer sent!');
+        loadLeaderboard();
+      } catch (err) {
+        alert('Failed to send cheer: ' + err.message);
+      }
+    }
+
+    async function claimQuest(questId) {
+      const name = prompt('Enter your teammate name to claim this bounty (e.g., Backend Lead, Frontend Lead):', 'Backend Lead');
+      if (!name) return;
+      try {
+        const res = await fetch('/api/v1/gamification/claim-quest', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ quest_id: questId, teammate_name: name })
+        });
+        const data = await res.json();
+        alert(data.message || 'Bounty claimed!');
+        loadLeaderboard();
+      } catch (err) {
+        alert('Failed to claim bounty: ' + err.message);
+      }
+    }
+
+    document.getElementById('refreshBtn').addEventListener('click', loadLeaderboard);
+    loadLeaderboard();
+  </script>
+</body>
+</html>

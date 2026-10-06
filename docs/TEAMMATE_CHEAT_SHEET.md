@@ -201,3 +201,30 @@ If the stage Wi-Fi crashes 30 seconds before your presentation:
    * LangGraph agent task approval
    * Zero external internet dependency.
 4. Judges will award maximum points for enterprise reliability!
+
+---
+
+## 🎮 Cybernetic Arena & Teammate Leaderboard
+
+HSF includes an interactive **Gamified Sprint Arena** to keep team energy and collaboration sky-high:
+
+* **View Live Standings**:
+  ```bash
+  npx hsf leaderboard
+  # Or open the live web arcade HUD:
+  open frontend/leaderboard.html
+  ```
+* **Inspect & Claim 24h Quests (+100 to +500 XP)**:
+  ```bash
+  # View all 8 active sprint bounties
+  npx hsf quest
+  
+  # Claim a completed quest (e.g., Ignition Sequence, Neural Strike, Eval Supremacy)
+  npx hsf quest claim q-ignition --teammate "Backend Lead"
+  ```
+* **High-Five / Peer Cheer (+25 Synergy XP)**:
+  ```bash
+  # Send morale boosts to teammates when they ship or pass tests
+  npx hsf cheer "Frontend Lead"
+  ```
+

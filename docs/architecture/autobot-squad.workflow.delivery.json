@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "962412d7-973c-4303-80f2-1ed7c891a422",
+  "status": "current",
+  "command": "deliver",
+  "type": "workflow",
+  "input": "/Users/k.sathvik/.gemini/antigravity/scratch/hackathon-strategy-framework/.archify/workflow-autobot-squad-20261005-234500/candidate.json",
+  "output": "/Users/k.sathvik/.gemini/antigravity/scratch/hackathon-strategy-framework/docs/architecture/autobot-squad.workflow.html",
+  "specification": {
+    "sha256": "6ff0a3d1ec7cea25efba440f84860bb5c9953ef7fa650572774229cd29be269d",
+    "bytes": 5012
+  },
+  "artifact": {
+    "sha256": "607f8c0b3f741e678fdb7545fde5c8512fa1f652e6f890b31efb820cf8a5c7d5",
+    "bytes": 762298
+  }
+}

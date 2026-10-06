@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "8f2c69b1-6bc3-4069-adac-407f6a8d2160",
+  "status": "current",
+  "command": "deliver",
+  "type": "lifecycle",
+  "input": "/Users/k.sathvik/.gemini/antigravity/scratch/hackathon-strategy-framework/.archify/lifecycle-circuit-breaker-20261005-234500/candidate.json",
+  "output": "/Users/k.sathvik/.gemini/antigravity/scratch/hackathon-strategy-framework/docs/architecture/circuit-breaker.lifecycle.html",
+  "specification": {
+    "sha256": "6e6d6e82c2c46f86d56807002518c89bcfbabc8f4c64359414cb10a95b800e70",
+    "bytes": 3658
+  },
+  "artifact": {
+    "sha256": "e56e01b9b6e490ac3f89b04c186e6e8ef88debdb31dbe8a797ba8359666bd19a",
+    "bytes": 757927
+  }
+}

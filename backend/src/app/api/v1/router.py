@@ -1,5 +1,13 @@
 from fastapi import APIRouter
-from src.app.api.v1.endpoints import ai_agent, analytics, auth, documents, health, jobs
+from src.app.api.v1.endpoints import (
+    ai_agent,
+    analytics,
+    auth,
+    documents,
+    gamification,
+    health,
+    jobs,
+)
 
 api_v1_router = APIRouter()
 
@@ -13,3 +21,7 @@ api_v1_router.include_router(
 api_v1_router.include_router(
     analytics.router, prefix="/analytics", tags=["System Telemetry & Analytics"]
 )
+api_v1_router.include_router(
+    gamification.router, prefix="/gamification", tags=["Gamification & Leaderboard"]
+)
+

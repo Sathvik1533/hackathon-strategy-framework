@@ -1,0 +1,381 @@
+{
+  "schemaVersion": 1,
+  "ok": false,
+  "command": "finalize",
+  "status": "fail",
+  "type": "architecture",
+  "quality": "showcase",
+  "startedAt": "2026-10-05T18:09:22.526Z",
+  "specification": {
+    "path": "/Users/k.sathvik/.gemini/antigravity/scratch/hackathon-strategy-framework/.archify/architecture-fullstack-topology-20261005-070500/candidate.json",
+    "sha256": "927138862384245009b43d350c17db20bec1ddf896f75b681721e73c7e8d86bb",
+    "bytes": 5599
+  },
+  "artifact": {
+    "path": "/Users/k.sathvik/.gemini/antigravity/scratch/hackathon-strategy-framework/docs/architecture/system-architecture.html",
+    "sha256": "d0fc35a03e61acb289a3dee80eed9df6a00b0a34f9cc6483d2cec80bf56b25e9",
+    "bytes": 768597
+  },
+  "stages": {
+    "validate": {
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": null,
+      "execution": "embedded-in-deliver",
+      "command": [
+        "/opt/homebrew/Cellar/node/25.8.1_1/bin/node",
+        "/Users/k.sathvik/.gemini/config/skills/archify/bin/archify.mjs",
+        "deliver",
+        "architecture",
+        "/Users/k.sathvik/.gemini/antigravity/scratch/hackathon-strategy-framework/.archify/architecture-fullstack-topology-20261005-070500/candidate.json",
+        "/Users/k.sathvik/.gemini/antigravity/scratch/hackathon-strategy-framework/docs/architecture/system-architecture.html",
+        "--quality",
+        "showcase",
+        "--repo-root",
+        "/Users/k.sathvik/.gemini/antigravity/scratch/hackathon-strategy-framework",
+        "--json"
+      ],
+      "receipt": {
+        "schemaVersion": 1,
+        "ok": true,
+        "command": "validate",
+        "specification": {
+          "sha256": "927138862384245009b43d350c17db20bec1ddf896f75b681721e73c7e8d86bb",
+          "bytes": 5599
+        },
+        "validation": {
+          "checksPassed": 9,
+          "checkCount": 9,
+          "compositionProfile": "showcase",
+          "compositionStatus": "pass",
+          "errors": 0,
+          "warnings": 0
+        }
+      }
+    },
+    "deliver": {
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": 723,
+      "command": [
+        "/opt/homebrew/Cellar/node/25.8.1_1/bin/node",
+        "/Users/k.sathvik/.gemini/config/skills/archify/bin/archify.mjs",
+        "deliver",
+        "architecture",
+        "/Users/k.sathvik/.gemini/antigravity/scratch/hackathon-strategy-framework/.archify/architecture-fullstack-topology-20261005-070500/candidate.json",
+        "/Users/k.sathvik/.gemini/antigravity/scratch/hackathon-strategy-framework/docs/architecture/system-architecture.html",
+        "--quality",
+        "showcase",
+        "--repo-root",
+        "/Users/k.sathvik/.gemini/antigravity/scratch/hackathon-strategy-framework",
+        "--json"
+      ],
+      "receipt": {
+        "schemaVersion": 1,
+        "receiptId": "a420e347-c68a-4933-bbf6-bc33189a152f",
+        "ok": true,
+        "command": "deliver",
+        "type": "architecture",
+        "input": "/Users/k.sathvik/.gemini/antigravity/scratch/hackathon-strategy-framework/.archify/architecture-fullstack-topology-20261005-070500/candidate.json",
+        "output": "/Users/k.sathvik/.gemini/antigravity/scratch/hackathon-strategy-framework/docs/architecture/system-architecture.html",
+        "specification": {
+          "sha256": "927138862384245009b43d350c17db20bec1ddf896f75b681721e73c7e8d86bb",
+          "bytes": 5599
+        },
+        "artifact": {
+          "sha256": "d0fc35a03e61acb289a3dee80eed9df6a00b0a34f9cc6483d2cec80bf56b25e9",
+          "bytes": 768597
+        },
+        "validation": {
+          "checksPassed": 9,
+          "checkCount": 9,
+          "compositionProfile": "showcase",
+          "compositionStatus": "pass",
+          "errors": 0,
+          "warnings": 0
+        },
+        "evidence": {
+          "verified": true,
+          "repository": "https://github.com/Sathvik1533/hackathon-strategy-framework",
+          "revision": "3bb12f6422de090de97a1e692e56fd6e81655022",
+          "references": 9
+        },
+        "update": {
+          "status": "unavailable",
+          "installedVersion": null,
+          "availableVersion": null,
+          "releaseNotes": null,
+          "checkedAt": null,
+          "source": null,
+          "noticeRequired": false,
+          "noticeText": null,
+          "reason": "disabled"
+        }
+      }
+    },
+    "check": {
+      "status": "pass",
+      "exitCode": 0,
+      "durationMs": 292,
+      "command": [
+        "/opt/homebrew/Cellar/node/25.8.1_1/bin/node",
+        "/Users/k.sathvik/.gemini/config/skills/archify/bin/archify.mjs",
+        "check",
+        "/Users/k.sathvik/.gemini/antigravity/scratch/hackathon-strategy-framework/docs/architecture/system-architecture.html",
+        "--require-provenance"
+      ],
+      "receipt": {
+        "ok": true,
+        "file": "/Users/k.sathvik/.gemini/antigravity/scratch/hackathon-strategy-framework/docs/architecture/system-architecture.html",
+        "artifact": {
+          "sha256": "d0fc35a03e61acb289a3dee80eed9df6a00b0a34f9cc6483d2cec80bf56b25e9",
+          "bytes": 768597
+        },
+        "checks": [
+          {
+            "name": "single_svg",
+            "ok": true,
+            "details": [
+              "found 1 <svg> block(s)"
+            ]
+          },
+          {
+            "name": "finite_svg",
+            "ok": true,
+            "details": []
+          },
+          {
+            "name": "orthogonal_arrows",
+            "ok": true,
+            "details": []
+          },
+          {
+            "name": "label_route_clearance",
+            "ok": true,
+            "details": []
+          },
+          {
+            "name": "relationship_crossings",
+            "ok": true,
+            "details": []
+          },
+          {
+            "name": "relationship_corridors",
+            "ok": true,
+            "details": []
+          },
+          {
+            "name": "container_border_runs",
+            "ok": true,
+            "details": []
+          },
+          {
+            "name": "route_rhythm",
+            "ok": true,
+            "details": []
+          },
+          {
+            "name": "legend_clearance",
+            "ok": true,
+            "details": []
+          }
+        ],
+        "composition": {
+          "schemaVersion": 1,
+          "profile": "showcase",
+          "status": "pass",
+          "summary": {
+            "errors": 0,
+            "warnings": 0
+          },
+          "metrics": {
+            "properCrossings": 0,
+            "resolvedCrossovers": 0,
+            "ambiguousCorridors": 0,
+            "arrowheadCollisions": 0,
+            "containerBorderRuns": 0,
+            "labelRouteClearanceIssues": 0,
+            "labelCanvasOverflowIssues": 0,
+            "minLabelRouteClearance": 14,
+            "desktopReadabilityIssues": 0,
+            "viewportHeightIssues": 0,
+            "minProjectedNodeTextPx": 7.5,
+            "maxBends": 2,
+            "routesOverSuggestedBends": 0,
+            "maxStretch": 1,
+            "routesOverSuggestedStretch": 0,
+            "minSegmentPx": 24,
+            "minInteriorSegmentPx": 179.9,
+            "shortSegmentCount": 0,
+            "shortEndpointSegmentCount": 0,
+            "shortInteriorSegmentCount": 0,
+            "microSegmentCount": 0
+          },
+          "suggestedLimits": {
+            "bendsPerRelationship": 2,
+            "stretch": 1.35,
+            "segmentPx": 16,
+            "microSegmentPx": 8
+          },
+          "routeReview": {
+            "crossings": [],
+            "detours": []
+          },
+          "leadingSpace": {
+            "measured": true,
+            "emptyTopPx": 80,
+            "emptyTopRatio": 0.141,
+            "occupiedTop": 80,
+            "viewBoxTop": 0,
+            "canvasHeight": 568,
+            "typicalNodeHeight": 60,
+            "reviewSuggested": false
+          },
+          "desktopReadability": {
+            "budgetBasis": "recognized-declared-wide",
+            "readerContract": "declared-wide-v1",
+            "availableDiagramWidth": 1003.125,
+            "actualBudgetPx": 1003.125,
+            "actualReaderWidth": 1033.125,
+            "desiredReaderWidth": 1033.125,
+            "viewportCap": 1376,
+            "limit": "source-size",
+            "requestedTargetPx": 7.5,
+            "requestedTargetMet": true,
+            "hardFloorPx": 6,
+            "hardFloorMet": true,
+            "minimumOwner": {
+              "kind": "edge",
+              "id": "client-to-alb",
+              "from": "client",
+              "to": "alb"
+            },
+            "minimumSourceTextPx": 8,
+            "minimumProjectedTextPx": 7.5,
+            "semanticTextCount": 29
+          },
+          "issues": []
+        },
+        "provenance": "current",
+        "deliveryReceiptId": "a420e347-c68a-4933-bbf6-bc33189a152f"
+      }
+    },
+    "browser-check": {
+      "status": "fail",
+      "exitCode": 1,
+      "durationMs": 27,
+      "command": [
+        "/opt/homebrew/Cellar/node/25.8.1_1/bin/node",
+        "/Users/k.sathvik/.gemini/config/skills/archify/bin/archify.mjs",
+        "browser-check",
+        "/Users/k.sathvik/.gemini/antigravity/scratch/hackathon-strategy-framework/docs/architecture/system-architecture.html",
+        "--json",
+        "--require-provenance"
+      ],
+      "execution": "in-process",
+      "receipt": {
+        "schemaVersion": 1,
+        "ok": false,
+        "command": "browser-check",
+        "evidenceKind": "automated-browser",
+        "status": "fail",
+        "visualReview": "not-requested",
+        "provenance": "current",
+        "deliveryReceiptId": "a420e347-c68a-4933-bbf6-bc33189a152f",
+        "artifact": {
+          "path": "/Users/k.sathvik/.gemini/antigravity/scratch/hackathon-strategy-framework/docs/architecture/system-architecture.html",
+          "sha256": "d0fc35a03e61acb289a3dee80eed9df6a00b0a34f9cc6483d2cec80bf56b25e9",
+          "bytes": 768597
+        },
+        "state": {
+          "detail": "read",
+          "motion": "still"
+        },
+        "chrome": {
+          "status": "available",
+          "executable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+        },
+        "diagnostics": [
+          {
+            "code": "viewer/browser-check-runtime",
+            "severity": "error",
+            "message": "browser-check could not complete its Chrome inspection.",
+            "subject": {
+              "artifact": "/Users/k.sathvik/.gemini/antigravity/scratch/hackathon-strategy-framework/docs/architecture/system-architecture.html"
+            },
+            "evidence": {
+              "reason": "Chrome DevTools read pipe failed: stream ended\nChrome process: still running.\nChrome stderr:\n[1005/233922.882300:ERROR:third_party/crashpad/crashpad/util/mac/xattr.cc:41] getxattr size org.chromium.crashpad.database.initialized on file /Users/k.sathvik/Library/Application Support/Google/Chrome/Crashpad: Operation not permitted (1)\n[1005/233922.884227:ERROR:third_party/crashpad/crashpad/util/mac/xattr.cc:41] getxattr size com.googlecode.crashpad.initialized on file /Users/k.sathvik/Library/Application Support/Google/Chrome/Crashpad: Operation not permitted (1)\n[1005/233922.884269:ERROR:third_party/crashpad/crashpad/util/mac/xattr.cc:66] setxattr org.chromium.crashpad.database.initialized on file /Users/k.sathvik/Library/Application Support/Google/Chrome/Crashpad: Operation not permitted (1)\n[1005/233922.886005:ERROR:third_party/crashpad/crashpad/util/file/file_io.cc:103] ReadExactly: expected 8, observed 0\n[1005/233922.888630:ERROR:third_party/crashpad/crashpad/util/mac/xattr.cc:41] getxattr size org.chromium.crashpad.database.initialized on file /Users/k.sathvik/Library/Application Support/Google/Chrome/Crashpad: Operation not permitted (1)\n[1005/233922.888669:ERROR:third_party/crashpad/crashpad/util/mac/xattr.cc:41] getxattr size com.googlecode.crashpad.initialized on file /Users/k.sathvik/Library/Application Support/Google/Chrome/Crashpad: Operation not permitted (1)\n[1005/233922.888968:ERROR:third_party/crashpad/crashpad/util/mac/xattr.cc:66] setxattr org.chromium.crashpad.database.initialized on file /Users/k.sathvik/Library/Application Support/Google/Chrome/Crashpad: Operation not permitted (1)\n[5438:83194:1005/233923.453033:FATAL:base/apple/mach_port_rendezvous_mac.cc:159] Check failed: kr == KERN_SUCCESS. bootstrap_check_in com.google.Chrome.MachPortRendezvousServer.5438: Permission denied (1100)\nChrome transport: Node v25.8.1, libuv 1.52.1, darwin; pid=5438, exitCode=null, signalCode=null.\nChrome read pipe: readable=false, ended=true, destroyed=false, receivedBytes=0, messages=0, bufferedBytes=0.\nChrome write pipe: writable=true, ended=false, destroyed=false, completedWrites=1, writtenBytes=50, bufferedBytes=0."
+            },
+            "supportedFixes": [
+              "resolve the reported Chrome inspection error, then rerun browser-check"
+            ]
+          }
+        ],
+        "containment": {
+          "status": "fail",
+          "policy": "fit-or-reader-declared-readable-vertical-scroll",
+          "viewports": []
+        },
+        "themeStates": {
+          "status": "fail",
+          "viewports": []
+        },
+        "readability": {
+          "status": "fail",
+          "minimumProjectedNodeTextPx": 6,
+          "viewports": []
+        },
+        "viewerChrome": {
+          "status": "fail",
+          "viewports": []
+        },
+        "captures": {
+          "status": "not-requested",
+          "screenshots": [],
+          "contactSheet": null
+        },
+        "sidecars": {
+          "receipt": "system-architecture.browser-check.json",
+          "files": []
+        },
+        "error": "Chrome DevTools read pipe failed: stream ended\nChrome process: still running.\nChrome stderr:\n[1005/233922.882300:ERROR:third_party/crashpad/crashpad/util/mac/xattr.cc:41] getxattr size org.chromium.crashpad.database.initialized on file /Users/k.sathvik/Library/Application Support/Google/Chrome/Crashpad: Operation not permitted (1)\n[1005/233922.884227:ERROR:third_party/crashpad/crashpad/util/mac/xattr.cc:41] getxattr size com.googlecode.crashpad.initialized on file /Users/k.sathvik/Library/Application Support/Google/Chrome/Crashpad: Operation not permitted (1)\n[1005/233922.884269:ERROR:third_party/crashpad/crashpad/util/mac/xattr.cc:66] setxattr org.chromium.crashpad.database.initialized on file /Users/k.sathvik/Library/Application Support/Google/Chrome/Crashpad: Operation not permitted (1)\n[1005/233922.886005:ERROR:third_party/crashpad/crashpad/util/file/file_io.cc:103] ReadExactly: expected 8, observed 0\n[1005/233922.888630:ERROR:third_party/crashpad/crashpad/util/mac/xattr.cc:41] getxattr size org.chromium.crashpad.database.initialized on file /Users/k.sathvik/Library/Application Support/Google/Chrome/Crashpad: Operation not permitted (1)\n[1005/233922.888669:ERROR:third_party/crashpad/crashpad/util/mac/xattr.cc:41] getxattr size com.googlecode.crashpad.initialized on file /Users/k.sathvik/Library/Application Support/Google/Chrome/Crashpad: Operation not permitted (1)\n[1005/233922.888968:ERROR:third_party/crashpad/crashpad/util/mac/xattr.cc:66] setxattr org.chromium.crashpad.database.initialized on file /Users/k.sathvik/Library/Application Support/Google/Chrome/Crashpad: Operation not permitted (1)\n[5438:83194:1005/233923.453033:FATAL:base/apple/mach_port_rendezvous_mac.cc:159] Check failed: kr == KERN_SUCCESS. bootstrap_check_in com.google.Chrome.MachPortRendezvousServer.5438: Permission denied (1100)\nChrome transport: Node v25.8.1, libuv 1.52.1, darwin; pid=5438, exitCode=null, signalCode=null.\nChrome read pipe: readable=false, ended=true, destroyed=false, receivedBytes=0, messages=0, bufferedBytes=0.\nChrome write pipe: writable=true, ended=false, destroyed=false, completedWrites=1, writtenBytes=50, bufferedBytes=0."
+      }
+    }
+  },
+  "diagnostics": [
+    {
+      "code": "viewer/browser-check-runtime",
+      "severity": "error",
+      "message": "browser-check could not complete its Chrome inspection.",
+      "subject": {
+        "artifact": "/Users/k.sathvik/.gemini/antigravity/scratch/hackathon-strategy-framework/docs/architecture/system-architecture.html"
+      },
+      "evidence": {
+        "reason": "Chrome DevTools read pipe failed: stream ended\nChrome process: still running.\nChrome stderr:\n[1005/233922.882300:ERROR:third_party/crashpad/crashpad/util/mac/xattr.cc:41] getxattr size org.chromium.crashpad.database.initialized on file /Users/k.sathvik/Library/Application Support/Google/Chrome/Crashpad: Operation not permitted (1)\n[1005/233922.884227:ERROR:third_party/crashpad/crashpad/util/mac/xattr.cc:41] getxattr size com.googlecode.crashpad.initialized on file /Users/k.sathvik/Library/Application Support/Google/Chrome/Crashpad: Operation not permitted (1)\n[1005/233922.884269:ERROR:third_party/crashpad/crashpad/util/mac/xattr.cc:66] setxattr org.chromium.crashpad.database.initialized on file /Users/k.sathvik/Library/Application Support/Google/Chrome/Crashpad: Operation not permitted (1)\n[1005/233922.886005:ERROR:third_party/crashpad/crashpad/util/file/file_io.cc:103] ReadExactly: expected 8, observed 0\n[1005/233922.888630:ERROR:third_party/crashpad/crashpad/util/mac/xattr.cc:41] getxattr size org.chromium.crashpad.database.initialized on file /Users/k.sathvik/Library/Application Support/Google/Chrome/Crashpad: Operation not permitted (1)\n[1005/233922.888669:ERROR:third_party/crashpad/crashpad/util/mac/xattr.cc:41] getxattr size com.googlecode.crashpad.initialized on file /Users/k.sathvik/Library/Application Support/Google/Chrome/Crashpad: Operation not permitted (1)\n[1005/233922.888968:ERROR:third_party/crashpad/crashpad/util/mac/xattr.cc:66] setxattr org.chromium.crashpad.database.initialized on file /Users/k.sathvik/Library/Application Support/Google/Chrome/Crashpad: Operation not permitted (1)\n[5438:83194:1005/233923.453033:FATAL:base/apple/mach_port_rendezvous_mac.cc:159] Check failed: kr == KERN_SUCCESS. bootstrap_check_in com.google.Chrome.MachPortRendezvousServer.5438: Permission denied (1100)\nChrome transport: Node v25.8.1, libuv 1.52.1, darwin; pid=5438, exitCode=null, signalCode=null.\nChrome read pipe: readable=false, ended=true, destroyed=false, receivedBytes=0, messages=0, bufferedBytes=0.\nChrome write pipe: writable=true, ended=false, destroyed=false, completedWrites=1, writtenBytes=50, bufferedBytes=0."
+      },
+      "supportedFixes": [
+        "resolve the reported Chrome inspection error, then rerun browser-check"
+      ]
+    }
+  ],
+  "evidence": {
+    "receipt": "/Users/k.sathvik/.gemini/antigravity/scratch/hackathon-strategy-framework/docs/architecture/system-architecture.finalize.json",
+    "summaryReceipt": "/Users/k.sathvik/.gemini/antigravity/scratch/hackathon-strategy-framework/docs/architecture/system-architecture.finalize-summary.json",
+    "browserCheckReceipt": "/Users/k.sathvik/.gemini/antigravity/scratch/hackathon-strategy-framework/docs/architecture/system-architecture.browser-check.json"
+  },
+  "visualReview": "not-requested",
+  "failedStage": "browser-check",
+  "finishedAt": "2026-10-05T18:09:23.794Z",
+  "durationMs": 1268,
+  "update": {
+    "status": "unavailable",
+    "installedVersion": null,
+    "availableVersion": null,
+    "releaseNotes": null,
+    "checkedAt": null,
+    "source": null,
+    "noticeRequired": false,
+    "noticeText": null,
+    "reason": "cache-valid"
+  }
+}

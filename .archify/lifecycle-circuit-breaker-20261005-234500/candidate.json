@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "diagram_type": "lifecycle",
+  "meta": {
+    "title": "Production Circuit Breaker State Machine",
+    "output": "docs/architecture/circuit-breaker.lifecycle.html",
+    "viewBox": [1040, 640],
+    "animation": "trace",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/Sathvik1533/hackathon-strategy-framework",
+      "revision": "a69b7f690e06623c0e1093a364520cf9c2c0d580",
+      "provider": "github",
+      "link_mode": "web"
+    }
+  },
+  "lanes": [
+    { "id": "main", "label": "Operational Highway" },
+    { "id": "waiting", "label": "Trial Canary Window" },
+    { "id": "exceptions", "label": "Fail-Fast Protection" }
+  ],
+  "states": [
+    { "id": "init", "type": "start", "label": "Engine Startup", "sublabel": "API gateway boot", "lane": "main", "col": 0, "step": "01", "tag": "boot", "sources": [{ "path": "backend/src/app/core/resilience.py", "line": 66 }] },
+    { "id": "closed", "type": "active", "label": "CLOSED State", "sublabel": "100% normal traffic", "lane": "main", "col": 1, "step": "02", "tag": "healthy", "sources": [{ "path": "backend/src/app/core/resilience.py", "line": 80 }] },
+    { "id": "stabilized", "type": "success", "label": "STABILIZED", "sublabel": "Counter reset to 0", "lane": "main", "col": 2, "step": "03", "tag": "restored", "sources": [{ "path": "backend/src/app/core/resilience.py", "line": 103 }] },
+    { "id": "tripped", "type": "failure", "label": "OPEN State", "sublabel": "Fail-fast immediately", "lane": "exceptions", "col": 0, "yOffset": 78, "tag": "tripped", "sources": [{ "path": "backend/src/app/core/resilience.py", "line": 93 }] },
+    { "id": "halfopen", "type": "decision", "label": "HALF-OPEN State", "sublabel": "Canary trial probe", "lane": "waiting", "col": 1, "tag": "eval", "sources": [{ "path": "backend/src/app/core/resilience.py", "line": 89 }] }
+  ],
+  "transitions": [
+    { "id": "boot-to-closed", "from": "init", "to": "closed", "variant": "default" },
+    { "id": "fail-to-open", "from": "closed", "to": "tripped", "label": "5 failures in 60s", "variant": "security" },
+    { "id": "open-to-halfopen", "from": "tripped", "to": "halfopen", "label": "30s timeout elapsed", "variant": "emphasis" },
+    { "id": "trial-succeeds", "from": "halfopen", "to": "stabilized", "label": "canary trial succeeds", "variant": "emphasis" },
+    { "id": "trial-fails", "from": "halfopen", "to": "tripped", "label": "canary trial fails", "variant": "security" },
+    { "id": "reset-to-closed", "from": "stabilized", "to": "closed", "label": "healthy operation resumes", "variant": "default" }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "Closed State (Normal Pass-Through)",
+      "items": [
+        "All requests forward to external LLMs and microservices normally",
+        "Failure counter tracks consecutive errors within 60s sliding window",
+        "Sub-10ms Redis semantic cache intercepts repeat queries"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Open State (Instant Fail-Fast Protection)",
+      "items": [
+        "Trips automatically after 5 consecutive upstream timeouts or 5xx codes",
+        "Returns immediate fallback response without calling external endpoints",
+        "Protects team stage demo from 14-second frozen browser requests"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Half-Open State (Canary Probe)",
+      "items": [
+        "Activates automatically after 30-second recovery backoff window",
+        "Allows exactly one trial probe to test upstream recovery",
+        "Instantly resets to CLOSED on success, or re-trips for 30s on failure"
+      ]
+    }
+  ]
+}

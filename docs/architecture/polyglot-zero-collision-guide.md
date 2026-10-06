@@ -118,6 +118,8 @@ flowchart LR
     click REST "../../docs/openapi.json" "View OpenAPI Specification"
 ```
 
+> 🌐 **[Open Interactive Archify SVG: Zero-Collision Polyglot Bridge Blueprint](polyglot-bridge.architecture.html)** *(Dark/Light themes, zoom & pan, source code inspection, and high-DPI export)*
+
 ---
 
 ## 🌉 The 3 Zero-Collision Polyglot Bridges

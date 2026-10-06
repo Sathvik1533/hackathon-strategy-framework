@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "ok": false,
+  "command": "browser-check",
+  "evidenceKind": "automated-browser",
+  "status": "fail",
+  "visualReview": "not-requested",
+  "provenance": "current",
+  "deliveryReceiptId": "a420e347-c68a-4933-bbf6-bc33189a152f",
+  "artifact": {
+    "path": "/Users/k.sathvik/.gemini/antigravity/scratch/hackathon-strategy-framework/docs/architecture/system-architecture.html",
+    "sha256": "d0fc35a03e61acb289a3dee80eed9df6a00b0a34f9cc6483d2cec80bf56b25e9",
+    "bytes": 768597
+  },
+  "state": {
+    "detail": "read",
+    "motion": "still"
+  },
+  "chrome": {
+    "status": "available",
+    "executable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+  },
+  "diagnostics": [
+    {
+      "code": "viewer/browser-check-runtime",
+      "severity": "error",
+      "message": "browser-check could not complete its Chrome inspection.",
+      "subject": {
+        "artifact": "/Users/k.sathvik/.gemini/antigravity/scratch/hackathon-strategy-framework/docs/architecture/system-architecture.html"
+      },
+      "evidence": {
+        "reason": "Chrome DevTools read pipe failed: stream ended\nChrome process: still running.\nChrome stderr:\n[1005/233922.882300:ERROR:third_party/crashpad/crashpad/util/mac/xattr.cc:41] getxattr size org.chromium.crashpad.database.initialized on file /Users/k.sathvik/Library/Application Support/Google/Chrome/Crashpad: Operation not permitted (1)\n[1005/233922.884227:ERROR:third_party/crashpad/crashpad/util/mac/xattr.cc:41] getxattr size com.googlecode.crashpad.initialized on file /Users/k.sathvik/Library/Application Support/Google/Chrome/Crashpad: Operation not permitted (1)\n[1005/233922.884269:ERROR:third_party/crashpad/crashpad/util/mac/xattr.cc:66] setxattr org.chromium.crashpad.database.initialized on file /Users/k.sathvik/Library/Application Support/Google/Chrome/Crashpad: Operation not permitted (1)\n[1005/233922.886005:ERROR:third_party/crashpad/crashpad/util/file/file_io.cc:103] ReadExactly: expected 8, observed 0\n[1005/233922.888630:ERROR:third_party/crashpad/crashpad/util/mac/xattr.cc:41] getxattr size org.chromium.crashpad.database.initialized on file /Users/k.sathvik/Library/Application Support/Google/Chrome/Crashpad: Operation not permitted (1)\n[1005/233922.888669:ERROR:third_party/crashpad/crashpad/util/mac/xattr.cc:41] getxattr size com.googlecode.crashpad.initialized on file /Users/k.sathvik/Library/Application Support/Google/Chrome/Crashpad: Operation not permitted (1)\n[1005/233922.888968:ERROR:third_party/crashpad/crashpad/util/mac/xattr.cc:66] setxattr org.chromium.crashpad.database.initialized on file /Users/k.sathvik/Library/Application Support/Google/Chrome/Crashpad: Operation not permitted (1)\n[5438:83194:1005/233923.453033:FATAL:base/apple/mach_port_rendezvous_mac.cc:159] Check failed: kr == KERN_SUCCESS. bootstrap_check_in com.google.Chrome.MachPortRendezvousServer.5438: Permission denied (1100)\nChrome transport: Node v25.8.1, libuv 1.52.1, darwin; pid=5438, exitCode=null, signalCode=null.\nChrome read pipe: readable=false, ended=true, destroyed=false, receivedBytes=0, messages=0, bufferedBytes=0.\nChrome write pipe: writable=true, ended=false, destroyed=false, completedWrites=1, writtenBytes=50, bufferedBytes=0."
+      },
+      "supportedFixes": [
+        "resolve the reported Chrome inspection error, then rerun browser-check"
+      ]
+    }
+  ],
+  "containment": {
+    "status": "fail",
+    "policy": "fit-or-reader-declared-readable-vertical-scroll",
+    "viewports": []
+  },
+  "themeStates": {
+    "status": "fail",
+    "viewports": []
+  },
+  "readability": {
+    "status": "fail",
+    "minimumProjectedNodeTextPx": 6,
+    "viewports": []
+  },
+  "viewerChrome": {
+    "status": "fail",
+    "viewports": []
+  },
+  "captures": {
+    "status": "not-requested",
+    "screenshots": [],
+    "contactSheet": null
+  },
+  "sidecars": {
+    "receipt": "system-architecture.browser-check.json",
+    "files": []
+  },
+  "error": "Chrome DevTools read pipe failed: stream ended\nChrome process: still running.\nChrome stderr:\n[1005/233922.882300:ERROR:third_party/crashpad/crashpad/util/mac/xattr.cc:41] getxattr size org.chromium.crashpad.database.initialized on file /Users/k.sathvik/Library/Application Support/Google/Chrome/Crashpad: Operation not permitted (1)\n[1005/233922.884227:ERROR:third_party/crashpad/crashpad/util/mac/xattr.cc:41] getxattr size com.googlecode.crashpad.initialized on file /Users/k.sathvik/Library/Application Support/Google/Chrome/Crashpad: Operation not permitted (1)\n[1005/233922.884269:ERROR:third_party/crashpad/crashpad/util/mac/xattr.cc:66] setxattr org.chromium.crashpad.database.initialized on file /Users/k.sathvik/Library/Application Support/Google/Chrome/Crashpad: Operation not permitted (1)\n[1005/233922.886005:ERROR:third_party/crashpad/crashpad/util/file/file_io.cc:103] ReadExactly: expected 8, observed 0\n[1005/233922.888630:ERROR:third_party/crashpad/crashpad/util/mac/xattr.cc:41] getxattr size org.chromium.crashpad.database.initialized on file /Users/k.sathvik/Library/Application Support/Google/Chrome/Crashpad: Operation not permitted (1)\n[1005/233922.888669:ERROR:third_party/crashpad/crashpad/util/mac/xattr.cc:41] getxattr size com.googlecode.crashpad.initialized on file /Users/k.sathvik/Library/Application Support/Google/Chrome/Crashpad: Operation not permitted (1)\n[1005/233922.888968:ERROR:third_party/crashpad/crashpad/util/mac/xattr.cc:66] setxattr org.chromium.crashpad.database.initialized on file /Users/k.sathvik/Library/Application Support/Google/Chrome/Crashpad: Operation not permitted (1)\n[5438:83194:1005/233923.453033:FATAL:base/apple/mach_port_rendezvous_mac.cc:159] Check failed: kr == KERN_SUCCESS. bootstrap_check_in com.google.Chrome.MachPortRendezvousServer.5438: Permission denied (1100)\nChrome transport: Node v25.8.1, libuv 1.52.1, darwin; pid=5438, exitCode=null, signalCode=null.\nChrome read pipe: readable=false, ended=true, destroyed=false, receivedBytes=0, messages=0, bufferedBytes=0.\nChrome write pipe: writable=true, ended=false, destroyed=false, completedWrites=1, writtenBytes=50, bufferedBytes=0."
+}

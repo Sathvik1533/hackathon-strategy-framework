@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "d61123a5-0ed0-4b79-9a6d-481da9d42a73",
+  "status": "current",
+  "command": "deliver",
+  "type": "workflow",
+  "input": "/Users/k.sathvik/.gemini/antigravity/scratch/hackathon-strategy-framework/.archify/workflow-gamification-quest-20261005-235900/candidate.json",
+  "output": "/Users/k.sathvik/.gemini/antigravity/scratch/hackathon-strategy-framework/docs/architecture/gamification-quest.workflow.html",
+  "specification": {
+    "sha256": "20f5bb2db0e9cd8454c6f8c3bbce654a79ea59497d136f7d3d397b6ce5160be3",
+    "bytes": 5137
+  },
+  "artifact": {
+    "sha256": "e0314ace6918a6e840c2d2f8062dc22da72eb696443500fa7f09c0ace183b3f9",
+    "bytes": 763248
+  }
+}

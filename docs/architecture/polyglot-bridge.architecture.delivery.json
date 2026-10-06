@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "f4267300-1c61-42e8-8ea9-ed5b4dc35946",
+  "status": "current",
+  "command": "deliver",
+  "type": "architecture",
+  "input": "/Users/k.sathvik/.gemini/antigravity/scratch/hackathon-strategy-framework/.archify/architecture-polyglot-bridge-20261005-234500/candidate.json",
+  "output": "/Users/k.sathvik/.gemini/antigravity/scratch/hackathon-strategy-framework/docs/architecture/polyglot-bridge.architecture.html",
+  "specification": {
+    "sha256": "3c30269d7296cd90a88300808812f2a176e7423f87ba5c1c53a90de0e9b74d70",
+    "bytes": 7399
+  },
+  "artifact": {
+    "sha256": "a42dfb862be46dab533cf436d6eb7e2a57fffbbc1a8f727464741b37ff04c372",
+    "bytes": 779201
+  }
+}

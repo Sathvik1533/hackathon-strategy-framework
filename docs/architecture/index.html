@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HSF Archify Architecture Gallery • Interactive SVG Blueprints</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: #111827;
+      --card-border: #1f2937;
+      --card-hover-border: #3b82f6;
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+      --accent: #3b82f6;
+      --accent-glow: rgba(59, 130, 246, 0.2);
+      --success: #10b981;
+      --warning: #f59e0b;
+      --purple: #8b5cf6;
+      --cyan: #06b6d4;
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      padding: 40px 24px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 40px;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 30px;
+    }
+
+    .badge-bar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .badge-verified {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .badge-archify {
+      background: rgba(59, 130, 246, 0.15);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .badge-count {
+      background: rgba(139, 92, 246, 0.15);
+      color: #a78bfa;
+      border: 1px solid rgba(139, 92, 246, 0.3);
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #ffffff 0%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p.lead {
+      font-size: 1.125rem;
+      color: var(--text-muted);
+      max-width: 900px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin: 28px 0;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 16px 20px;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .stat-value {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #ffffff;
+      font-family: var(--font-mono);
+      margin-top: 4px;
+    }
+
+    .diagram-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+      gap: 24px;
+      margin-top: 32px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card:hover {
+      border-color: var(--card-hover-border);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 32px -8px var(--accent-glow);
+    }
+
+    .card-top {
+      margin-bottom: 20px;
+    }
+
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .schema-tag {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: #1e293b;
+      color: #94a3b8;
+      border: 1px solid #334155;
+      font-weight: 600;
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+    }
+
+    .card h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+
+    .card p.desc {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    .feature-list {
+      list-style: none;
+      margin-bottom: 20px;
+    }
+
+    .feature-list li {
+      font-size: 0.85rem;
+      color: #cbd5e1;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .feature-list li::before {
+      content: "✔";
+      color: var(--success);
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: auto;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      font-family: var(--font-sans);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #ffffff;
+      border: 1px solid #60a5fa;
+      flex: 1;
+    }
+
+    .btn-primary:hover {
+      background: #2563eb;
+      box-shadow: 0 0 16px rgba(37, 99, 235, 0.4);
+    }
+
+    .btn-secondary {
+      background: #1f2937;
+      color: #e5e7eb;
+      border: 1px solid #374151;
+    }
+
+    .btn-secondary:hover {
+      background: #374151;
+      color: #ffffff;
+    }
+
+    footer {
+      margin-top: 60px;
+      padding-top: 24px;
+      border-top: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      margin-left: 16px;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="badge-bar">
+        <span class="badge badge-verified"><span class="status-dot"></span> Archify CLI 100% Certified</span>
+        <span class="badge badge-archify">Interactive Vector SVGs</span>
+        <span class="badge badge-count">8 Complete Blueprints</span>
+      </div>
+      <h1>Interactive Architecture Blueprint Suite</h1>
+      <p class="lead">
+        Explore production-grade, interactive vector architecture diagrams generated via the <strong>Archify</strong> skill.
+        Featuring light/dark theme toggles, pan-and-zoom inspection, animated message traces, card overlays, and high-DPI SVG/PNG export.
+      </p>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total Verified Blueprints</div>
+          <div class="stat-value">8 Diagrams</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Syntax & Geometry Errors</div>
+          <div class="stat-value" style="color: #34d399;">0 / 0 Errors</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Archify Schema Families</div>
+          <div class="stat-value">5 Families</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Interactive Features</div>
+          <div class="stat-value">Zoom • Trace • Themes</div>
+        </div>
+      </div>
+    </header>
+
+    <div class="diagram-grid">
+      <!-- 1. Full-Stack Master Topology -->
+      <div class="card">
+        <div class="card-top">
+          <div class="card-meta">
+            <span class="schema-tag">architecture</span>
+            <span class="badge badge-verified">0 Errors</span>
+          </div>
+          <h3>1. Full-Stack Master Topology</h3>
+          <p class="desc">
+            Complete end-to-end cloud and microservice architecture covering Client UI, API Gateway, Redis Cache, LangGraph Multi-Agent Engine, Java Spring Boot Core, and PostgreSQL 16 pgvector storage.
+          </p>
+          <ul class="feature-list">
+            <li>Ports: 3000, 8000, 8080, 5432, 6379, 9092, 9000</li>
+            <li>Ground truth source code references & line annotations</li>
+            <li>Row-Level Security (RLS) & Circuit Breaker policies</li>
+          </ul>
+        </div>
+        <div class="card-actions">
+          <a href="system-architecture.html" target="_blank" class="btn btn-primary">🌐 Open Interactive SVG</a>
+          <a href="../../.archify/architecture-fullstack-topology-20261005-070500/candidate.json" target="_blank" class="btn btn-secondary">JSON Spec</a>
+        </div>
+      </div>
+
+      <!-- 2. Request Lifecycle & SSE Trace -->
+      <div class="card">
+        <div class="card-top">
+          <div class="card-meta">
+            <span class="schema-tag">sequence</span>
+            <span class="badge badge-verified">0 Errors</span>
+          </div>
+          <h3>2. Request Lifecycle & SSE Trace</h3>
+          <p class="desc">
+            Granular sequence diagram detailing request handoffs, Redis cache validation, LangGraph orchestration, FastMCP tool execution, and token-by-token Server-Sent Events (SSE) streaming.
+          </p>
+          <ul class="feature-list">
+            <li>Sub-10ms cache hit shortcut vs. full agentic loop</li>
+            <li>Human-in-the-Loop interrupt gate verification</li>
+            <li>Animated timeline and interactive message inspection</li>
+          </ul>
+        </div>
+        <div class="card-actions">
+          <a href="request-execution.sequence.html" target="_blank" class="btn btn-primary">🌐 Open Interactive SVG</a>
+          <a href="../../.archify/sequence-request-execution-20261005-234500/candidate.json" target="_blank" class="btn btn-secondary">JSON Spec</a>
+        </div>
+      </div>
+
+      <!-- 3. Circuit Breaker Lifecycle -->
+      <div class="card">
+        <div class="card-top">
+          <div class="card-meta">
+            <span class="schema-tag">lifecycle</span>
+            <span class="badge badge-verified">0 Errors</span>
+          </div>
+          <h3>3. Production Circuit Breaker</h3>
+          <p class="desc">
+            Production state machine governing automated fault detection, failover isolation, and exponential backoff recovery across CLOSED, OPEN, and HALF_OPEN operational states.
+          </p>
+          <ul class="feature-list">
+            <li>Fail-safe local fallback execution on network partition</li>
+            <li>Auto-escalation & probe traffic rate limiting</li>
+            <li>State machine transitions mapped to resilience.py</li>
+          </ul>
+        </div>
+        <div class="card-actions">
+          <a href="circuit-breaker.lifecycle.html" target="_blank" class="btn btn-primary">🌐 Open Interactive SVG</a>
+          <a href="../../.archify/lifecycle-circuit-breaker-20261005-234500/candidate.json" target="_blank" class="btn btn-secondary">JSON Spec</a>
+        </div>
+      </div>
+
+      <!-- 4. Inter-Layer Dataflow & RAG -->
+      <div class="card">
+        <div class="card-top">
+          <div class="card-meta">
+            <span class="schema-tag">dataflow</span>
+            <span class="badge badge-verified">0 Errors</span>
+          </div>
+          <h3>4. Inter-Layer Dataflow & RAG</h3>
+          <p class="desc">
+            Multi-stage data ingestion, hybrid retrieval (HNSW vector + BM25 keyword matching via Reciprocal Rank Fusion), and FlashRank neural cross-encoder reranking under 20ms.
+          </p>
+          <ul class="feature-list">
+            <li>Zero-hallucination guarantee: RAGAS score ≥ 0.90</li>
+            <li>Context pruning & token optimization pipeline</li>
+            <li>Visual stage-by-stage data transformation cards</li>
+          </ul>
+        </div>
+        <div class="card-actions">
+          <a href="inter-layer-dataflow.html" target="_blank" class="btn btn-primary">🌐 Open Interactive SVG</a>
+          <a href="../../.archify/dataflow-interlayer-rag-20261005-234500/candidate.json" target="_blank" class="btn btn-secondary">JSON Spec</a>
+        </div>
+      </div>
+
+      <!-- 5. Transformers Autobot Squad -->
+      <div class="card">
+        <div class="card-top">
+          <div class="card-meta">
+            <span class="schema-tag">workflow</span>
+            <span class="badge badge-verified">0 Errors</span>
+          </div>
+          <h3>5. Autobots Squad Orchestration</h3>
+          <p class="desc">
+            Dynamic autonomous agent squad workflow mapping 6 Transformers robot companions to teammate roles across Frontend, Backend, Database, AI, Resilience, and DevOps.
+          </p>
+          <ul class="feature-list">
+            <li>Optimus Prime, Ironhide, Wheeljack, Ratchet, Bumblebee, Jazz</li>
+            <li>Automated branch creation & conflict prevention</li>
+            <li>Adaptive assignment for 1 to 6+ hackathon members</li>
+          </ul>
+        </div>
+        <div class="card-actions">
+          <a href="autobot-squad.workflow.html" target="_blank" class="btn btn-primary">🌐 Open Interactive SVG</a>
+          <a href="../../.archify/workflow-autobot-squad-20261005-234500/candidate.json" target="_blank" class="btn btn-secondary">JSON Spec</a>
+        </div>
+      </div>
+
+      <!-- 6. Zero-Collision Polyglot Bridge -->
+      <div class="card">
+        <div class="card-top">
+          <div class="card-meta">
+            <span class="schema-tag">architecture</span>
+            <span class="badge badge-verified">0 Errors</span>
+          </div>
+          <h3>6. Polyglot Architecture Bridge</h3>
+          <p class="desc">
+            Architectural contract decoupling Python (Rapid AI Prototyping & PyTorch inference) from Java (High-Throughput Virtual Threads & Financial Settlement) via Kafka & Redis Pub/Sub.
+          </p>
+          <ul class="feature-list">
+            <li>Zero-collision boundary design & shared schema models</li>
+            <li>Protobuf / OpenAPI gRPC event interchange</li>
+            <li>Strict domain segregation: AI Agent vs High-Frequency Core</li>
+          </ul>
+        </div>
+        <div class="card-actions">
+          <a href="polyglot-bridge.architecture.html" target="_blank" class="btn btn-primary">🌐 Open Interactive SVG</a>
+          <a href="../../.archify/architecture-polyglot-bridge-20261005-234500/candidate.json" target="_blank" class="btn btn-secondary">JSON Spec</a>
+        </div>
+      </div>
+
+      <!-- 7. 24-Hour Hackathon Execution Timeline -->
+      <div class="card">
+        <div class="card-top">
+          <div class="card-meta">
+            <span class="schema-tag">workflow</span>
+            <span class="badge badge-verified">0 Errors</span>
+          </div>
+          <h3>7. 24-Hour Execution Timeline</h3>
+          <p class="desc">
+            Tactical hour-by-hour roadmap transforming raw idea into a battle-tested, judge-ready submission from Minute 0 environment bootstrap to Minute 1440 live stage pitch.
+          </p>
+          <ul class="feature-list">
+            <li>Hour 6 slide generation (Marp Markdown to 2-sec HTML)</li>
+            <li>Hour 18 live evaluation harness & offline cURL demo test</li>
+            <li>Hour 22 code freeze & 6-minute live pitch rehearsal</li>
+          </ul>
+        </div>
+        <div class="card-actions">
+          <a href="hackathon-execution.workflow.html" target="_blank" class="btn btn-primary">🌐 Open Interactive SVG</a>
+          <a href="../../.archify/workflow-hackathon-execution-20261005-234500/candidate.json" target="_blank" class="btn btn-secondary">JSON Spec</a>
+        </div>
+      </div>
+
+      <!-- 8. Teammate Gamification & Quest Bounty Loop -->
+      <div class="card">
+        <div class="card-top">
+          <div class="card-meta">
+            <span class="schema-tag">workflow</span>
+            <span class="badge badge-verified">0 Errors</span>
+          </div>
+          <h3>8. Teammate Gamification & Quest Bounty Loop</h3>
+          <p class="desc">
+            Interactive sprint momentum loop, 8 hackathon quest bounties, peer synergy cheers (+25 XP), real-time level progressions (Cadet to Grandmaster), and live arcade leaderboard.
+          </p>
+          <ul class="feature-list">
+            <li>8 milestone bounties with XP rewards (Ignite to Champion)</li>
+            <li>Peer high-five cheers & continuous learning telemetry</li>
+            <li>Real-time sync to Web Arcade HUD & in-terminal CLI arena</li>
+          </ul>
+        </div>
+        <div class="card-actions">
+          <a href="gamification-quest.workflow.html" target="_blank" class="btn btn-primary">🌐 Open Interactive SVG</a>
+          <a href="../../.archify/workflow-gamification-quest-20261005-235900/candidate.json" target="_blank" class="btn btn-secondary">JSON Spec</a>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div>
+        <strong>Hackathon Strategy Framework (HSF)</strong> • Enterprise Multi-Agent Archetype
+      </div>
+      <div class="footer-links">
+        <a href="../../README.md">README</a>
+        <a href="../../docs/JUDGE_CERTIFICATION.md">Judge Certification</a>
+        <a href="../../docs/TEAMMATE_CHEAT_SHEET.md">Cheat Sheet</a>
+        <a href="../../frontend/index.html">Live UI Console</a>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

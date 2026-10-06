@@ -97,17 +97,51 @@ switch (command) {
   case 'diagram':
   case 'archify':
     banner();
-    console.log(`\x1b[32m✔ Building Interactive Archify Architecture Diagram\x1b[0m`);
     {
       const archifyPath = fs.existsSync('/Users/k.sathvik/.gemini/config/skills/archify/bin/archify.mjs')
         ? '/Users/k.sathvik/.gemini/config/skills/archify/bin/archify.mjs'
         : 'archify';
-      run(`node ${archifyPath} deliver architecture .archify/architecture-fullstack-topology-20261005-070500/candidate.json docs/architecture/system-architecture.html --repo-root . --quality showcase --json`, 'Generating Archify Diagram');
-      console.log(`
-\x1b[32m✔ Interactive Archify Architecture Diagram Ready!\x1b[0m
-• Interactive HTML View: \x1b[34mdocs/architecture/system-architecture.html\x1b[0m
-• Inspect in Browser:    \x1b[33mopen docs/architecture/system-architecture.html\x1b[0m
-      `);
+      const arg = process.argv[3];
+
+      const diagrams = [
+        { key: 'topology', schema: 'architecture', spec: '.archify/architecture-fullstack-topology-20261005-070500/candidate.json', out: 'docs/architecture/system-architecture.html', title: 'Master Full-Stack Topology' },
+        { key: 'sequence', schema: 'sequence', spec: '.archify/sequence-request-execution-20261005-234500/candidate.json', out: 'docs/architecture/request-execution.sequence.html', title: 'Request Lifecycle & SSE Trace' },
+        { key: 'lifecycle', schema: 'lifecycle', spec: '.archify/lifecycle-circuit-breaker-20261005-234500/candidate.json', out: 'docs/architecture/circuit-breaker.lifecycle.html', title: 'Circuit Breaker State Machine' },
+        { key: 'dataflow', schema: 'dataflow', spec: '.archify/dataflow-interlayer-rag-20261005-234500/candidate.json', out: 'docs/architecture/inter-layer-dataflow.html', title: 'Inter-Layer Dataflow & Neural RAG' },
+        { key: 'squad', schema: 'workflow', spec: '.archify/workflow-autobot-squad-20261005-234500/candidate.json', out: 'docs/architecture/autobot-squad.workflow.html', title: 'Autobots Squad Orchestration' },
+        { key: 'polyglot', schema: 'architecture', spec: '.archify/architecture-polyglot-bridge-20261005-234500/candidate.json', out: 'docs/architecture/polyglot-bridge.architecture.html', title: 'Zero-Collision Polyglot Bridge' },
+        { key: 'timeline', schema: 'workflow', spec: '.archify/workflow-hackathon-execution-20261005-234500/candidate.json', out: 'docs/architecture/hackathon-execution.workflow.html', title: '24-Hour Execution Timeline' },
+        { key: 'quests', schema: 'workflow', spec: '.archify/workflow-gamification-quest-20261005-235900/candidate.json', out: 'docs/architecture/gamification-quest.workflow.html', title: 'Teammate Gamification & Quest Bounty Loop' }
+      ];
+
+      if (arg === 'all') {
+        console.log(`\x1b[36m🚀 Compiling all 8 Archify Interactive Diagrams...\x1b[0m\n`);
+        diagrams.forEach(d => {
+          console.log(`\x1b[32m✔ Delivering [${d.schema}] ${d.title}...\x1b[0m`);
+          run(`node ${archifyPath} deliver ${d.schema} ${d.spec} ${d.out} --repo-root . --quality showcase --json`, `Compiling ${d.title}`);
+        });
+        console.log(`\n\x1b[1;32m✔ All 8 Archify Interactive Diagrams Compiled Successfully!\x1b[0m`);
+        console.log(`• Gallery Hub: \x1b[34mdocs/architecture/index.html\x1b[0m`);
+        console.log(`• Open Hub:    \x1b[33mopen docs/architecture/index.html\x1b[0m\n`);
+      } else if (arg && diagrams.some(d => d.key === arg.toLowerCase())) {
+        const target = diagrams.find(d => d.key === arg.toLowerCase());
+        console.log(`\x1b[32m✔ Compiling [${target.schema}] ${target.title}...\x1b[0m`);
+        run(`node ${archifyPath} deliver ${target.schema} ${target.spec} ${target.out} --repo-root . --quality showcase --json`, `Compiling ${target.title}`);
+        console.log(`\n• Output:   \x1b[34m${target.out}\x1b[0m`);
+        console.log(`• View:     \x1b[33mopen ${target.out}\x1b[0m\n`);
+      } else {
+        console.log(`\x1b[1;36m🏛️ Archify Interactive Architecture Blueprints (8 Certified Diagrams)\x1b[0m\n`);
+        console.log(`Each diagram is an interactive SVG with light/dark themes, pan/zoom, trace motion, and cards:\n`);
+        diagrams.forEach((d, idx) => {
+          console.log(`\x1b[33m[${idx + 1}] ${d.title}\x1b[0m (\x1b[36m${d.schema}\x1b[0m)`);
+          console.log(`    File:   \x1b[34m${d.out}\x1b[0m`);
+          console.log(`    Open:   \x1b[32mopen ${d.out}\x1b[0m`);
+          console.log(`    Rebuild: \x1b[90mnpx hsf diagram ${d.key}\x1b[0m\n`);
+        });
+        console.log(`\x1b[1;32m🌐 Open Complete Interactive Gallery Hub:\x1b[0m`);
+        console.log(`    \x1b[33mopen docs/architecture/index.html\x1b[0m\n`);
+        console.log(`\x1b[90mTip: Run "npx hsf diagram all" to recompile all 8 blueprints at once.\x1b[0m\n`);
+      }
     }
     break;
 
@@ -293,6 +327,45 @@ switch (command) {
     }
     break;
 
+  case 'leaderboard':
+  case 'arena':
+    banner();
+    run('python3 scripts/leaderboard.py board', 'Loading Teammate Leaderboard');
+    break;
+
+  case 'quest':
+  case 'quests':
+    banner();
+    {
+      const subAction = process.argv[3];
+      if (subAction === 'claim') {
+        const questId = process.argv[4];
+        let teammate = 'Lead Architect';
+        const tIdx = process.argv.indexOf('--teammate');
+        if (tIdx !== -1 && process.argv[tIdx + 1]) {
+          teammate = process.argv[tIdx + 1];
+        }
+        if (!questId) {
+          console.log(`\x1b[31mUsage: hsf quest claim <quest-id> [--teammate "Name"]\x1b[0m`);
+          console.log(`Example: hsf quest claim q-ignition --teammate "Backend Lead"`);
+          break;
+        }
+        run(`python3 scripts/leaderboard.py claim "${questId}" --teammate "${teammate.replace(/"/g, '\\"')}"`, 'Claiming Hackathon Quest');
+      } else {
+        run('python3 scripts/leaderboard.py quests', 'Listing Hackathon Quests');
+      }
+    }
+    break;
+
+  case 'cheer':
+  case 'highfive':
+    banner();
+    {
+      const receiver = process.argv.slice(3).join(' ') || 'Backend Lead';
+      run(`python3 scripts/leaderboard.py cheer "${receiver.replace(/"/g, '\\"')}"`, 'Sending Teammate Synergy Cheer');
+    }
+    break;
+
   case 'help':
   default:
     banner();
@@ -300,6 +373,9 @@ switch (command) {
 \x1b[1mAvailable Commands:\x1b[0m
   \x1b[33mhsf wizard\x1b[0m      - 60-second interactive onboarding wizard (assigns role, branch & Autobot)
   \x1b[33mhsf cheat\x1b[0m       - View teammate pocket cheat sheet (roles, files to edit, test commands)
+  \x1b[33mhsf leaderboard\x1b[0m - Cybernetic Arena scoreboard: Teammate XP, levels, Autobots & rankings
+  \x1b[33mhsf quest\x1b[0m       - List active 24h quests or claim bounty: hsf quest claim <id> --teammate <name>
+  \x1b[33mhsf cheer\x1b[0m       - High-five teammate and award +25 Synergy XP: hsf cheer <name>
   \x1b[33mhsf init\x1b[0m        - Bootstrap .env, launch Docker multi-service stack, and seed DB
   \x1b[33mhsf strategize\x1b[0m  - Activate Orbit Mascot Agent to deconstruct problem & generate prompts
   \x1b[33mhsf onboard\x1b[0m     - Launch interactive Senior Orbit onboarding wizard for teammate
@@ -315,7 +391,7 @@ switch (command) {
   \x1b[33mhsf demo\x1b[0m        - Run animated terminal cURL demo (stage backup if UI lags)
   \x1b[33mhsf eval\x1b[0m        - Run RAGAS 25-case golden dataset accuracy & faithfulness tests
   \x1b[33mhsf review\x1b[0m      - Run automated PR reviewer agent on latest branch changes
-  \x1b[33mhsf diagram\x1b[0m     - Deliver verified Archify full-stack architecture diagram HTML
+  \x1b[33mhsf diagram\x1b[0m     - Deliver verified Archify full-stack architecture diagram HTML (7 blueprints)
 
 \x1b[1mQuickstart for Teammates:\x1b[0m
   1. git clone https://github.com/Sathvik1533/hackathon-strategy-framework.git
@@ -323,6 +399,7 @@ switch (command) {
   3. ./init.sh
   4. npx hsf wizard (or python3 scripts/quickstart_wizard.py)
   5. npx hsf cheat  (view your exact files and test commands)
+  6. npx hsf leaderboard (check your live XP rank in the arena)
     `);
     break;
 }

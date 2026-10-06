@@ -1,0 +1,75 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "End-to-End 24-Hour Hackathon Execution Timeline",
+    "output": "docs/architecture/hackathon-execution.workflow.html",
+    "animation": "trace",
+    "visual_preset": "signal-flow",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/Sathvik1533/hackathon-strategy-framework",
+      "revision": "a69b7f690e06623c0e1093a364520cf9c2c0d580",
+      "provider": "github",
+      "link_mode": "web"
+    }
+  },
+  "lanes": [
+    { "id": "strategy", "label": "Strategy & Governance" },
+    { "id": "engineering", "label": "Full-Stack Engineering" },
+    { "id": "validation", "label": "Hardening & Evaluation" },
+    { "id": "stage", "label": "Stage Pitch & Defense" }
+  ],
+  "phases": [
+    { "id": "phase1", "label": "Intake & Parallel Boot", "fromCol": 0, "toCol": 1 },
+    { "id": "phase2", "label": "Core Build & Integration", "fromCol": 2, "toCol": 3, "variant": "emphasis" },
+    { "id": "phase3", "label": "Hardening & Stage Victory", "fromCol": 4, "toCol": 5, "variant": "dashed" }
+  ],
+  "mainPath": ["h0", "h1", "h8", "h16", "h20", "h23", "h24"],
+  "nodes": [
+    { "id": "h0", "lane": "strategy", "col": 0, "type": "external", "label": "Hour 0: Drop", "sublabel": "Orbit Deconstruct", "tag": "hsf director", "width": 140, "sources": [{ "path": "scripts/mascot_agent.py", "line": 1 }] },
+    { "id": "h1", "lane": "engineering", "col": 1, "type": "backend", "label": "Hour 0-1: Boot", "sublabel": "60s Parallel Setup", "tag": "hsf wizard", "width": 140, "sources": [{ "path": "scripts/quickstart_wizard.py", "line": 1 }] },
+    { "id": "h8", "lane": "engineering", "col": 2, "type": "backend", "label": "Hour 1-8: Core", "sublabel": "FastAPI + pgvector", "tag": "FastMCP SSE", "width": 140, "sources": [{ "path": "backend/src/app/main.py", "line": 1 }] },
+    { "id": "h16", "lane": "engineering", "col": 3, "type": "frontend", "label": "Hour 8-16: Wire", "sublabel": "SSE Feeds & RLS", "tag": "Redis Cache", "width": 140, "sources": [{ "path": "frontend/app.js", "line": 1 }] },
+    { "id": "h20", "lane": "validation", "col": 4, "type": "security", "label": "Hour 16-20: Test", "sublabel": "Circuits & RAGAS", "tag": "Faithfulness >=0.90", "width": 140, "sources": [{ "path": "ai_layer/eval_harness.py", "line": 1 }] },
+    { "id": "h23", "lane": "stage", "col": 4, "type": "cloud", "label": "Hour 20-23: Demo", "sublabel": "Marp Slides & demo.sh", "tag": "Offline Stage Safe", "width": 140, "sources": [{ "path": "scripts/pitch_rehearsal.py", "line": 1 }] },
+    { "id": "h24", "lane": "stage", "col": 5, "type": "external", "label": "Hour 24: Victory", "sublabel": "6-Min Stage Defense", "tag": "Top Score", "width": 140, "sources": [{ "path": "docs/JUDGE_CERTIFICATION.md", "line": 1 }] }
+  ],
+  "edges": [
+    { "id": "h0-to-h1", "from": "h0", "to": "h1", "label": "launch squad", "variant": "emphasis" },
+    { "id": "h1-to-h8", "from": "h1", "to": "h8", "label": "parallel code", "variant": "emphasis" },
+    { "id": "h8-to-h16", "from": "h8", "to": "h16", "label": "connect SSE", "variant": "emphasis" },
+    { "id": "h16-to-h20", "from": "h16", "to": "h20", "label": "run hardening", "variant": "emphasis" },
+    { "id": "h20-to-h23", "from": "h20", "to": "h23", "label": "stage rehearsal", "variant": "emphasis" },
+    { "id": "h23-to-h24", "from": "h23", "to": "h24", "label": "flawless defense", "variant": "emphasis" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Phase 1: Minute 0 to Hour 1",
+      "items": [
+        "Orbit Prime ingests announced problem statement and selects architecture pattern in 60s",
+        "Every teammate runs quickstart wizard to claim isolated git branch and Autobot companion",
+        "Docker compose brings up FastAPI, Redis, and Postgres + pgvector in under 60 seconds"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Phase 2: Hour 1 to Hour 16",
+      "items": [
+        "Backend builds async routes with Pydantic v2 contracts and Redis distributed mutex locks",
+        "AI Lead configures LangGraph supervisor, FastMCP SSE tools, and FlashRank neural reranking",
+        "Frontend Lead selects one of 5 aesthetic paradigms and connects real-time SSE stream"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Phase 3: Hour 16 to Hour 24",
+      "items": [
+        "Run evaluation suite to guarantee RAGAS faithfulness >= 0.90 with zero hallucinations",
+        "Execute pitch rehearsal simulator with timed audio cues and Marp interactive slides",
+        "Present offline terminal cURL demo on stage with 0 external network dependencies"
+      ]
+    }
+  ]
+}

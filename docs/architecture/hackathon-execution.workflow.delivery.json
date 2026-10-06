@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "a03fe0e2-9684-47a1-846c-b36e8f8251c1",
+  "status": "current",
+  "command": "deliver",
+  "type": "workflow",
+  "input": "/Users/k.sathvik/.gemini/antigravity/scratch/hackathon-strategy-framework/.archify/workflow-hackathon-execution-20261005-234500/candidate.json",
+  "output": "/Users/k.sathvik/.gemini/antigravity/scratch/hackathon-strategy-framework/docs/architecture/hackathon-execution.workflow.html",
+  "specification": {
+    "sha256": "1a7cba8812bff556e8c0bbca54ad48d8848ce781ce050be3ed8d9b8827edc0d1",
+    "bytes": 4665
+  },
+  "artifact": {
+    "sha256": "d4ad1a6e17245a55449d8e93a814ec341c6419dbe09fffc32605926dd1053fdb",
+    "bytes": 761349
+  }
+}

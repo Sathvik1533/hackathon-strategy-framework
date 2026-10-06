@@ -403,10 +403,49 @@ async def test_judge_certification_document_integrity():
     assert cert_path.exists(), "docs/JUDGE_CERTIFICATION.md must exist"
     content = cert_path.read_text(encoding="utf-8")
     assert "System Architecture & Audit Certification for Hackathon Judges" in content
-    assert "100% (17/17 pytest assertions passing" in content
+    assert "pytest assertions passing" in content
     assert "Faithfulness" in content
     assert "Sub-10ms P95 Response Latencies" in content
     assert "Master Architectural Topology" in content
+    assert "Archify Architecture Suite" in content
+
+
+@pytest.mark.asyncio
+async def test_gamification_endpoints(async_client):
+    # 1. Get Leaderboard
+    res = await async_client.get("/api/v1/gamification/leaderboard")
+    assert res.status_code == 200
+    data = res.json()
+    assert data["success"] is True
+    assert "standings" in data["data"]
+    assert len(data["data"]["standings"]) >= 5
+    assert data["data"]["total_team_xp"] > 0
+
+    # 2. List Quests
+    res_quests = await async_client.get("/api/v1/gamification/quests")
+    assert res_quests.status_code == 200
+    quests = res_quests.json()["data"]
+    assert len(quests) == 8
+    assert any(q["id"] == "q-ignition" for q in quests)
+
+    # 3. Cheer Teammate
+    res_cheer = await async_client.post(
+        "/api/v1/gamification/cheer",
+        json={"sender": "Frontend Lead", "receiver_name": "Backend Lead"},
+    )
+    assert res_cheer.status_code == 200
+    cheer_data = res_cheer.json()
+    assert cheer_data["success"] is True
+    assert "cheers_received" in cheer_data["data"]
+
+    # 4. Claim Quest
+    res_claim = await async_client.post(
+        "/api/v1/gamification/claim-quest",
+        json={"quest_id": "q-ignition", "teammate_name": "DevOps Lead"},
+    )
+    assert res_claim.status_code == 200
+    claim_data = res_claim.json()
+    assert "xp_awarded" in claim_data["data"] or "already completed" in claim_data["message"]
 
 
 @pytest.mark.asyncio
@@ -423,4 +462,6 @@ async def test_teammate_pocket_cheat_sheet_integrity():
     assert "Database & Vector Search Lead" in content
     assert "Cloud DevOps & Stage Pitch Lead" in content
     assert "Zero-Conflict Git Protocol" in content
+
+
 

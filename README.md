@@ -30,7 +30,7 @@ chmod +x init.sh bin/cli.js pitch/generate_pitch.sh pitch/demo.sh infra/deploy_a
 * 🗄️ **PostgreSQL 16 + pgvector**: `localhost:5432` (pre-seeded with 1536-dim vectors)
 * ⚡ **Redis Task Broker & Semantic Cache**: `localhost:6379`
 * 📊 **Pitch Deck Engine**: `pitch/presentation.html`
-* 🗺️ **Archify Interactive Visual Architecture**: [docs/architecture/system-architecture.html](docs/architecture/system-architecture.html)
+* 🗺️ **Archify Interactive Visual Architecture Hub (7 Blueprints)**: [docs/architecture/index.html](docs/architecture/index.html) *(Master Topology, Request Sequence, Circuit Breaker Lifecycle, Dataflow RAG, Autobot Squad, Polyglot Bridge, 24h Timeline)*
 * 🏆 **Team Advantage & Pitch Guide**: [docs/team-advantages-guide.md](docs/team-advantages-guide.md)
 * 📋 **Teammate Pocket Cheat Sheet**: [docs/TEAMMATE_CHEAT_SHEET.md](docs/TEAMMATE_CHEAT_SHEET.md)
 * 📜 **Judge Audit & Verification Certificate**: [docs/JUDGE_CERTIFICATION.md](docs/JUDGE_CERTIFICATION.md)
@@ -197,6 +197,8 @@ flowchart TD
     click JudgeCert "docs/JUDGE_CERTIFICATION.md" "View Judge Audit Certificate"
 ```
 
+> 🌐 **[Open Interactive Archify SVG: Master System Topology Blueprint](docs/architecture/system-architecture.html)** *(Dark/Light themes, pan/zoom, node card inspection, packet trace motion & high-DPI export)*
+
 ---
 
 ### 2. Full-Stack Component Architecture
@@ -294,6 +296,8 @@ flowchart TD
     click Docker "infra/Dockerfile" "View Multi-Stage Dockerfile"
 ```
 
+> 🌐 **[Open Interactive Archify SVG: Full-Stack Component Architecture](docs/architecture/system-architecture.html)** *(Interactive container inspection, port mappings, and verified code anchors)*
+
 ---
 
 ### 2. Real-Time Request & SSE Job Execution Flow
@@ -332,6 +336,8 @@ sequenceDiagram
     UI-->>Judge: Real-Time Animated Results Displayed
 ```
 
+> 🌐 **[Open Interactive Archify SVG: Request Lifecycle & SSE Sequence Blueprint](docs/architecture/request-execution.sequence.html)** *(Sub-10ms cache bypass trace, token streaming via SSE, human-in-the-loop pause gate)*
+
 ---
 
 ### 3. Production Circuit Breaker State Machine
@@ -354,6 +360,8 @@ stateDiagram-v2
     class HALF_OPEN halfOpenState
 ```
 
+> 🌐 **[Open Interactive Archify SVG: Production Circuit Breaker Lifecycle Blueprint](docs/architecture/circuit-breaker.lifecycle.html)** *(Automated failover state transitions, exponential backoff, fail-safe local fallback)*
+
 ---
 
 ## 🔗 Inter-Layer Connectivity Matrix & Connection Protocols
@@ -365,11 +373,22 @@ In modern production systems, inter-layer connectivity is not just "generic HTTP
 The single source of truth for connection monitoring is the `ConnectivityTopologyManager` class. It runs inside [Core Page 4 (`frontend/connectivity.html`)](frontend/connectivity.html) and continuously probes `/api/v1/health`, calculates network latency in milliseconds, verifies Supabase RLS security, and updates status chips across all 7 layers in real time.
 * **Plain English Analogy**: Like an **air traffic control radar** that constantly pings all 7 planes in the sky, tracks their speed, and alerts the pilot immediately if any wire or engine flickers.
 
-### 🗺️ Visual Architecture Engine: Archify Interactive Explorer
-We integrated the **Archify** visual architecture engine to compile a verified, interactive standalone SVG/HTML diagram of the entire system:
-* 🌐 **Interactive Diagram View**: [docs/architecture/system-architecture.html](docs/architecture/system-architecture.html)
-* 🚀 **Run via CLI**: `npm run diagram` or `hsf diagram`
-* 💎 **Key Capabilities**: Interactive node inspection, dark/light theme switching, animated packet trace motion, zero layout crossings, and instant PNG/SVG/PDF exports for pitch decks.
+### 🗺️ Visual Architecture Engine: Archify Interactive Explorer Suite (7 Certified Blueprints)
+We integrated the **Archify** visual architecture engine to compile a comprehensive, verified suite of 7 interactive standalone SVG/HTML architecture diagrams. Every diagram is independently checked and validated (`0 syntax or geometry errors`):
+
+* 🌐 **Complete Interactive Gallery Hub**: [docs/architecture/index.html](docs/architecture/index.html) *(Browse all 7 diagrams from a unified control deck)*
+* 🚀 **Run via CLI**: `npx hsf diagram` *(lists all)* or `npx hsf diagram all` *(recompiles all 7)*
+* 💎 **Key Capabilities**: Interactive node & participant card inspection, dark/light theme switching, animated message packet traces, zero layout crossings, and instant high-DPI SVG/PNG/PDF export.
+
+| # | Blueprint Title | Schema Family | Interactive SVG Viewer | Core Verified Scope |
+| :- | :--- | :--- | :--- | :--- |
+| **1** | **Master Full-Stack Topology** | `architecture` | [docs/architecture/system-architecture.html](docs/architecture/system-architecture.html) | End-to-end ports (3000, 8000, 8080, 5432, 6379, 9092), microservice layers, RLS policies |
+| **2** | **Request Lifecycle & SSE Trace** | `sequence` | [docs/architecture/request-execution.sequence.html](docs/architecture/request-execution.sequence.html) | Token-by-token SSE streaming, sub-10ms Redis cache hit shortcut, human review gate |
+| **3** | **Production Circuit Breaker** | `lifecycle` | [docs/architecture/circuit-breaker.lifecycle.html](docs/architecture/circuit-breaker.lifecycle.html) | 3-state machine (`CLOSED`, `OPEN`, `HALF_OPEN`), trip thresholds, automatic recovery backoff |
+| **4** | **Inter-Layer Dataflow & Neural RAG** | `dataflow` | [docs/architecture/inter-layer-dataflow.html](docs/architecture/inter-layer-dataflow.html) | HNSW vector + BM25 RRF fusion, FlashRank cross-encoder (<18ms), RAGAS faithfulness ≥0.90 |
+| **5** | **Autobots Squad Orchestration** | `workflow` | [docs/architecture/autobot-squad.workflow.html](docs/architecture/autobot-squad.workflow.html) | 6 Transformers robot companions, dynamic 1-to-6+ member pairing, git branch scaffolding |
+| **6** | **Zero-Collision Polyglot Bridge** | `architecture` | [docs/architecture/polyglot-bridge.architecture.html](docs/architecture/polyglot-bridge.architecture.html) | Python AI Brain decoupled from Java Enterprise Muscle via Kafka event bus & OpenAPI 3.1 |
+| **7** | **24-Hour Execution Timeline** | `workflow` | [docs/architecture/hackathon-execution.workflow.html](docs/architecture/hackathon-execution.workflow.html) | Minute 0 bootstrap to Minute 1440 stage pitch, Hour 6 slides, Hour 22 code freeze |
 
 ---
 
@@ -1540,6 +1559,10 @@ flowchart LR
     click H24 "docs/JUDGE_CERTIFICATION.md" "View Judge Certification"
 ```
 
+> 🌐 **[Open Interactive Archify SVG: 24-Hour Hackathon Execution Timeline Workflow](docs/architecture/hackathon-execution.workflow.html)** *(Hour-by-hour milestones, slide generation, test freezes & live stage rehearsal)*
+
+---
+
 ### Phase 1: Problem Drop & Autonomous Dispatch (Hour 0 – Hour 1)
 * **Minute 0 – 5 (All Hands)**: The hackathon organizers release the problem statements. Run Orbit:
   ```bash
@@ -1726,6 +1749,8 @@ flowchart TD
     click AIMenu "ai_layer/fastmcp_server.py" "Explore AI Feature Menu"
     click DevMenu "infra/Dockerfile" "Explore DevOps Feature Menu"
 ```
+
+> 🌐 **[Open Interactive Archify SVG: Autobots Squad Orchestration Workflow](docs/architecture/autobot-squad.workflow.html)** *(Dynamic 1-to-6+ member pairing, tactical callsigns, features menu & continuous telemetry)*
 
 ---
 

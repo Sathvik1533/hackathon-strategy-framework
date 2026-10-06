@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": {
+    "title": "Real-Time Request Lifecycle & SSE Job Execution Flow",
+    "output": "docs/architecture/request-execution.sequence.html",
+    "viewBox": [1080, 680],
+    "column_fit": "spread",
+    "animation": "trace",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/Sathvik1533/hackathon-strategy-framework",
+      "revision": "a69b7f690e06623c0e1093a364520cf9c2c0d580",
+      "provider": "github",
+      "link_mode": "web"
+    }
+  },
+  "participants": [
+    { "id": "judge", "type": "external", "label": "User / Judge", "sublabel": "Stage Console", "sources": [{ "path": "pitch/demo.sh", "line": 1 }] },
+    { "id": "ui", "type": "frontend", "label": "Frontend UI", "sublabel": "EventSource :8000", "sources": [{ "path": "frontend/index.html", "line": 1 }] },
+    { "id": "api", "type": "backend", "label": "FastAPI Gateway", "sublabel": "ASGI Engine :8000", "sources": [{ "path": "backend/src/app/main.py", "line": 1 }] },
+    { "id": "redis", "type": "database", "label": "Redis 7 Broker", "sublabel": "Cache / PubSub :6379", "sources": [{ "path": "backend/src/app/core/redis.py", "line": 1 }] },
+    { "id": "agent", "type": "backend", "label": "LangGraph Agent", "sublabel": "Supervisor Graph", "sources": [{ "path": "ai_layer/langgraph_supervisor.py", "line": 1 }] },
+    { "id": "db", "type": "database", "label": "PostgreSQL 16", "sublabel": "pgvector HNSW :5432", "sources": [{ "path": "database/supabase_rls.sql", "line": 1 }] },
+    { "id": "review", "type": "security", "label": "Human Gate", "sublabel": "Safety Interrupt", "sources": [{ "path": "ai_layer/guardrails.py", "line": 1 }] }
+  ],
+  "segments": [
+    { "from": 145, "to": 285, "label": "1. Ingress & Mutex" },
+    { "from": 290, "to": 375, "label": "2. Hybrid Vector Search" },
+    { "from": 380, "to": 435, "label": "3. Human Approval Gate" },
+    { "from": 440, "to": 545, "label": "4. SSE Event Stream" }
+  ],
+  "messages": [
+    { "id": "submit-request", "from": "judge", "to": "ui", "y": 160, "label": "Submit Workflow Request", "variant": "default" },
+    { "id": "post-job", "from": "ui", "to": "api", "y": 188, "label": "POST /api/v1/jobs/render", "variant": "emphasis" },
+    { "id": "check-lock", "from": "api", "to": "redis", "y": 216, "label": "SETNX Idempotency Mutex", "variant": "default" },
+    { "id": "job-accepted", "from": "api", "to": "ui", "y": 244, "label": "202 Accepted (job_id)", "variant": "return" },
+    { "id": "open-sse", "from": "ui", "to": "api", "y": 272, "label": "GET /api/v1/jobs/{id}/stream", "variant": "emphasis" },
+    { "id": "redis-sub", "from": "api", "to": "redis", "y": 300, "label": "SUBSCRIBE channel:jobs:{id}", "variant": "default" },
+    { "id": "hybrid-search", "from": "agent", "to": "db", "y": 328, "label": "Hybrid Dense + Sparse RRF Search", "variant": "emphasis" },
+    { "id": "return-chunks", "from": "db", "to": "agent", "y": 356, "label": "Top 25 Document Chunks", "variant": "return" },
+    { "id": "human-interrupt", "from": "agent", "to": "review", "y": 390, "label": "Pause at interrupt_before gate", "variant": "security" },
+    { "id": "human-approval", "from": "review", "to": "agent", "y": 418, "label": "Authorize Execution", "variant": "return" },
+    { "id": "pub-progress", "from": "agent", "to": "redis", "y": 450, "label": "Publish Progress Payload", "variant": "default" },
+    { "id": "sse-push", "from": "redis", "to": "ui", "y": 478, "label": "SSE Push (Log Chunk)", "variant": "return" },
+    { "id": "final-complete", "from": "agent", "to": "redis", "y": 506, "label": "Publish Completed State", "variant": "emphasis" },
+    { "id": "render-ui", "from": "ui", "to": "judge", "y": 534, "label": "Render Completed Result", "variant": "return" }
+  ],
+  "activations": [
+    { "participant": "ui", "from": 185, "to": 540, "type": "frontend" },
+    { "participant": "api", "from": 188, "to": 250, "type": "backend" },
+    { "participant": "api", "from": 272, "to": 305, "type": "backend" },
+    { "participant": "redis", "from": 216, "to": 248, "type": "database" },
+    { "participant": "redis", "from": 450, "to": 512, "type": "database" },
+    { "participant": "agent", "from": 320, "to": 512, "type": "backend" },
+    { "participant": "db", "from": 328, "to": 360, "type": "database" },
+    { "participant": "review", "from": 390, "to": 424, "type": "security" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Sub-10ms Ingress & Mutex",
+      "items": [
+        "FastAPI issues 202 Accepted in <15ms with Redis SETNX idempotency locks",
+        "Frontend opens lightweight persistent text/event-stream connection",
+        "Zero HTTP timeout risks during deep multi-step agent reasoning"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Hybrid RAG + Neural Reranking",
+      "items": [
+        "pgvector HNSW cosine search combined with BM25 full-text matching via RRF (k=60)",
+        "FlashRank CPU cross-encoder reranks top 25 down to top 5 in <18ms",
+        "RAGAS evaluation harness verifies answer faithfulness >= 0.90"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Human-in-the-Loop Safety Gate",
+      "items": [
+        "LangGraph StateGraph halts at interrupt_before=['human_gate'] for sensitive operations",
+        "Prevents unverified database mutations or financial calls live on stage",
+        "Execution resumes instantly upon signed human authorization"
+      ]
+    }
+  ]
+}

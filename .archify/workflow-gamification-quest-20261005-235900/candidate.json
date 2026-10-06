@@ -1,0 +1,77 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Interactive Teammate Gamification & Quest Bounty Loop",
+    "output": "docs/architecture/gamification-quest.workflow.html",
+    "animation": "trace",
+    "visual_preset": "signal-flow",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/Sathvik1533/hackathon-strategy-framework",
+      "revision": "a69b7f690e06623c0e1093a364520cf9c2c0d580",
+      "provider": "github",
+      "link_mode": "web"
+    }
+  },
+  "lanes": [
+    { "id": "coordination", "label": "Teammate Interaction & Quests" },
+    { "id": "gamification", "label": "Gamification Engine & Telemetry" },
+    { "id": "presentation", "label": "Live Leaderboard & Stage Arena", "variant": "exception" }
+  ],
+  "phases": [
+    { "id": "onboard-phase", "label": "Hour 0 Onboarding", "fromCol": 0, "toCol": 1 },
+    { "id": "bounty-phase", "label": "Bounty Claim & Synergy", "fromCol": 2, "toCol": 3, "variant": "emphasis" },
+    { "id": "arena-phase", "label": "Live Arena & MVP Crowning", "fromCol": 4, "toCol": 5, "variant": "dashed" }
+  ],
+  "mainPath": ["wizard", "quests", "claim", "engine", "sync", "arcade"],
+  "nodes": [
+    { "id": "wizard", "lane": "coordination", "col": 0, "type": "backend", "label": "Quickstart Wizard", "sublabel": "hsf wizard / role pick", "tag": "Hour 0 Boot", "width": 140, "sources": [{ "path": "scripts/quickstart_wizard.py", "line": 1 }] },
+    { "id": "quests", "lane": "coordination", "col": 1, "type": "backend", "label": "24h Quest Catalog", "sublabel": "8 Hackathon Bounties", "tag": "XP Bounties", "width": 140, "sources": [{ "path": "ai_layer/dynamic_squad_orchestrator.py", "line": 1 }] },
+    { "id": "cheer", "lane": "coordination", "col": 3, "type": "frontend", "label": "Peer High-Five", "sublabel": "+25 Synergy XP", "tag": "Morale Boost", "width": 140, "sources": [{ "path": "frontend/app.js", "line": 1 }] },
+    { "id": "claim", "lane": "coordination", "col": 2, "type": "backend", "label": "Bounty Claim", "sublabel": "POST /claim-quest", "tag": "Proof Verified", "width": 140, "sources": [{ "path": "backend/src/app/api/v1/endpoints/jobs.py", "line": 1 }] },
+    { "id": "engine", "lane": "gamification", "col": 3, "type": "backend", "label": "Gamification Engine", "sublabel": "XP & Level Thresholds", "tag": "Rankings", "width": 140, "sources": [{ "path": "ai_layer/mascot_agent.py", "line": 1 }] },
+    { "id": "sync", "lane": "gamification", "col": 4, "type": "database", "label": "Telemetry Sync", "sublabel": ".hsf/gamification.json", "tag": "Zero DB Dep", "width": 140, "sources": [{ "path": "ai_layer/orbit_memory_tracer.py", "line": 1 }] },
+    { "id": "arcade", "lane": "presentation", "col": 5, "type": "frontend", "label": "Web Arcade HUD", "sublabel": "frontend/leaderboard.html", "tag": "Live Standings", "width": 140, "sources": [{ "path": "frontend/index.html", "line": 1 }] },
+    { "id": "terminal", "lane": "presentation", "col": 4, "type": "frontend", "label": "Terminal Arena", "sublabel": "hsf leaderboard", "tag": "CLI Scoreboard", "width": 140, "sources": [{ "path": "scripts/senior_companion.py", "line": 1 }] }
+  ],
+  "edges": [
+    { "id": "e-wiz-quest", "from": "wizard", "to": "quests", "label": "acquire quests", "variant": "emphasis" },
+    { "id": "e-quest-claim", "from": "quests", "to": "claim", "label": "ship & claim", "variant": "emphasis" },
+    { "id": "e-claim-cheer", "from": "claim", "to": "cheer", "variant": "default" },
+    { "id": "e-claim-engine", "from": "claim", "to": "engine", "label": "award XP", "variant": "emphasis" },
+    { "id": "e-cheer-engine", "from": "cheer", "to": "engine", "label": "synergy bonus", "variant": "default" },
+    { "id": "e-engine-sync", "from": "engine", "to": "sync", "label": "save state", "variant": "emphasis" },
+    { "id": "e-sync-term", "from": "sync", "to": "terminal", "variant": "default" },
+    { "id": "e-sync-arcade", "from": "sync", "to": "arcade", "label": "broadcast HUD", "variant": "emphasis" }
+  ],
+  "cards": [
+    {
+      "dot": "amber",
+      "title": "Interactive Peer Synergy & High-Fives",
+      "items": [
+        "Teammates send real-time cheers via CLI (hsf cheer) or web arcade button",
+        "Awards +25 Synergy XP and extends team-wide sprint momentum streaks",
+        "Eliminates hackathon sprint fatigue through visible peer recognition"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "24-Hour Hackathon Quest Bounties",
+      "items": [
+        "8 structured milestones spanning Docker ignition to live stage rehearsals",
+        "Tiered XP rewards (+100 XP to +500 XP) align work with judge winning criteria",
+        "Unlocks verified badges (Ignite Master, Neural Marksman, Champion of Orbit)"
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "Real-Time Cybernetic Leaderboard",
+      "items": [
+        "Live standings at frontend/leaderboard.html and in-terminal CLI arena",
+        "Tracks player ranks, levels (Cadet to Grandmaster), and Autobot companions",
+        "Crowns dynamic hackathon MVP to showcase team synergy during final pitch"
+      ]
+    }
+  ]
+}
