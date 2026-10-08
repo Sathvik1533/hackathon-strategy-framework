@@ -1,0 +1,1 @@
+From 0 to production in 60s: meet HSF v1.0 — FastAPI, pgvector 16, LangGraph, Redis circuit breakers, zero-collision Java+Python polyglot, 8 Archify interactive blueprints, and a live teammate gamification arena. Ready for the judge stage.

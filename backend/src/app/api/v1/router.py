@@ -7,6 +7,7 @@ from src.app.api.v1.endpoints import (
     gamification,
     health,
     jobs,
+    mentor,
 )
 
 api_v1_router = APIRouter()
@@ -24,4 +25,6 @@ api_v1_router.include_router(
 api_v1_router.include_router(
     gamification.router, prefix="/gamification", tags=["Gamification & Leaderboard"]
 )
-
+api_v1_router.include_router(
+    mentor.router, prefix="/mentor", tags=["Dynamic Multi-Agent Mentoring"]
+)

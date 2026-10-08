@@ -64,3 +64,6 @@ htmlcov/
 .next/
 out/
 
+# Brag intermediate work files
+brag-output/work/
+

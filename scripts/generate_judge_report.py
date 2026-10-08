@@ -41,11 +41,15 @@ def main():
 
     # 1. Run Unit Tests
     print(f"\n{BOLD}[1/4] Running Backend Test Suite (Pytest)...{RESET}")
-    test_ok, test_dur, test_out, _ = run_cmd("PYTHONPATH=backend pytest", "Running 20 Pytest Assertions")
+    test_ok, test_dur, test_out, _ = run_cmd(
+        "PYTHONPATH=backend pytest", "Running 20 Pytest Assertions"
+    )
     if "20 passed" in test_out:
         print(f"  {GREEN}✔ All 20 unit and integration tests passed in {test_dur:.2f}s!{RESET}")
     else:
-        print(f"  {YELLOW}ℹ Pytest output: {test_out.splitlines()[-1] if test_out else 'Pass'}{RESET}")
+        print(
+            f"  {YELLOW}ℹ Pytest output: {test_out.splitlines()[-1] if test_out else 'Pass'}{RESET}"
+        )
 
     # 2. Check Code Linting
     print(f"\n{BOLD}[2/4] Verifying Code Cleanliness (Ruff Linter)...{RESET}")
@@ -69,7 +73,10 @@ def main():
         ("Multi-Stage Docker (<180MB)", Path("infra/Dockerfile").exists()),
         ("Marp Pitch Presentation Deck", Path("pitch/pitch.marp.md").exists()),
         ("Offline Terminal Stage Demo", Path("pitch/demo.sh").exists()),
-        ("Archify 8-Blueprint Interactive SVG Suite", Path("docs/architecture/index.html").exists()),
+        (
+            "Archify 8-Blueprint Interactive SVG Suite",
+            Path("docs/architecture/index.html").exists(),
+        ),
         ("Cybernetic Gamification Arena", Path("frontend/leaderboard.html").exists()),
     ]
 
@@ -258,12 +265,18 @@ open frontend/leaderboard.html
     cert_content = cert_template.replace("__TIMESTAMP__", now)
     out_file = Path("docs/JUDGE_CERTIFICATION.md")
     out_file.write_text(cert_content, encoding="utf-8")
-    print(f"\n{GREEN}==============================================================================={RESET}")
+    print(
+        f"\n{GREEN}==============================================================================={RESET}"
+    )
     print(f"{GREEN}🎉 JUDGE CERTIFICATION GENERATED SUCCESSFULLY!{RESET}")
-    print(f"{GREEN}==============================================================================={RESET}")
+    print(
+        f"{GREEN}==============================================================================={RESET}"
+    )
     print(f"• Document: {CYAN}docs/JUDGE_CERTIFICATION.md{RESET}")
     print("• Ready to print, share as PDF, or link in Devpost submission!")
-    print(f"{GREEN}==============================================================================={RESET}\n")
+    print(
+        f"{GREEN}==============================================================================={RESET}\n"
+    )
 
 
 if __name__ == "__main__":

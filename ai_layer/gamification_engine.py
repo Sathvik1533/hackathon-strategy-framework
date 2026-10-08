@@ -60,7 +60,7 @@ DEFAULT_QUESTS = [
         description="Run ./init.sh and verify local Docker stack & health checks in under 60 seconds.",
         category="DevOps",
         xp_reward=100,
-        badge="🚀 Ignite Master"
+        badge="🚀 Ignite Master",
     ),
     Quest(
         id="q-autobot",
@@ -68,7 +68,7 @@ DEFAULT_QUESTS = [
         description="Run hsf wizard, choose role, pair with an Autobot companion, and acquire .hsf prompt.",
         category="Coordination",
         xp_reward=150,
-        badge="🤖 Autobot Bonded"
+        badge="🤖 Autobot Bonded",
     ),
     Quest(
         id="q-contract",
@@ -76,7 +76,7 @@ DEFAULT_QUESTS = [
         description="Define an OpenAPI 3.1 Pydantic schema or Supabase RLS security policy with zero type errors.",
         category="Backend & DB",
         xp_reward=200,
-        badge="🛡️ Contract Sentinel"
+        badge="🛡️ Contract Sentinel",
     ),
     Quest(
         id="q-neural-strike",
@@ -84,7 +84,7 @@ DEFAULT_QUESTS = [
         description="Execute hybrid dense HNSW + sparse BM25 query with FlashRank cross-encoder latency < 20ms.",
         category="AI & Data",
         xp_reward=250,
-        badge="⚡ Neural Marksman"
+        badge="⚡ Neural Marksman",
     ),
     Quest(
         id="q-resilience-fortress",
@@ -92,7 +92,7 @@ DEFAULT_QUESTS = [
         description="Trigger circuit breaker failover test and confirm automated 3-state recovery and local fallback.",
         category="Resilience",
         xp_reward=300,
-        badge="🏰 Citadel Defender"
+        badge="🏰 Citadel Defender",
     ),
     Quest(
         id="q-eval-supremacy",
@@ -100,7 +100,7 @@ DEFAULT_QUESTS = [
         description="Run RAGAS evaluation harness and verify Faithfulness score >= 0.90 on 25 golden cases.",
         category="Evals & QA",
         xp_reward=350,
-        badge="🎯 Truth Seeker"
+        badge="🎯 Truth Seeker",
     ),
     Quest(
         id="q-shadow-runner",
@@ -108,7 +108,7 @@ DEFAULT_QUESTS = [
         description="Execute offline stage runner (pitch/demo.sh) locally in <30 seconds with 0ms internet dependency.",
         category="Stage Defense",
         xp_reward=400,
-        badge="🕶️ Shadow Ghost"
+        badge="🕶️ Shadow Ghost",
     ),
     Quest(
         id="q-stage-victory",
@@ -116,8 +116,8 @@ DEFAULT_QUESTS = [
         description="Complete 6-minute live pitch rehearsal simulator with 0 judge critical flags.",
         category="Stage Victory",
         xp_reward=500,
-        badge="🏆 Champion of Orbit"
-    )
+        badge="🏆 Champion of Orbit",
+    ),
 ]
 
 DEFAULT_TEAMMATES = {
@@ -131,7 +131,7 @@ DEFAULT_TEAMMATES = {
         quests_completed=2,
         cheers_received=3,
         badges=["🤖 Autobot Bonded", "🚀 Ignite Master"],
-        recent_activity=["Bootstrapped HSF stack in 48s", "Paired with Orbit Prime"]
+        recent_activity=["Bootstrapped HSF stack in 48s", "Paired with Orbit Prime"],
     ),
     "Backend Lead": TeammateStats(
         name="Backend Lead",
@@ -143,7 +143,7 @@ DEFAULT_TEAMMATES = {
         quests_completed=3,
         cheers_received=4,
         badges=["🛡️ Contract Sentinel", "🏰 Citadel Defender"],
-        recent_activity=["Hardened circuit breaker failover", "Verified 19/19 pytest pass rate"]
+        recent_activity=["Hardened circuit breaker failover", "Verified 19/19 pytest pass rate"],
     ),
     "Frontend Lead": TeammateStats(
         name="Frontend Lead",
@@ -155,7 +155,7 @@ DEFAULT_TEAMMATES = {
         quests_completed=2,
         cheers_received=5,
         badges=["🎨 Aesthetic Visionary", "🚀 Ignite Master"],
-        recent_activity=["Deployed Next.js Motion HUD", "Crafted Glassmorphic design tokens"]
+        recent_activity=["Deployed Next.js Motion HUD", "Crafted Glassmorphic design tokens"],
     ),
     "AI Lead": TeammateStats(
         name="AI Lead",
@@ -167,7 +167,10 @@ DEFAULT_TEAMMATES = {
         quests_completed=4,
         cheers_received=6,
         badges=["⚡ Neural Marksman", "🎯 Truth Seeker"],
-        recent_activity=["Verified RAGAS Faithfulness 0.94", "Benchmarked FlashRank CPU latency 16ms"]
+        recent_activity=[
+            "Verified RAGAS Faithfulness 0.94",
+            "Benchmarked FlashRank CPU latency 16ms",
+        ],
     ),
     "DevOps Lead": TeammateStats(
         name="DevOps Lead",
@@ -179,8 +182,8 @@ DEFAULT_TEAMMATES = {
         quests_completed=3,
         cheers_received=4,
         badges=["🕶️ Shadow Ghost", "🚀 Ignite Master"],
-        recent_activity=["Compiled Marp pitch deck in 1.8s", "Tested offline pitch/demo.sh runner"]
-    )
+        recent_activity=["Compiled Marp pitch deck in 1.8s", "Tested offline pitch/demo.sh runner"],
+    ),
 }
 
 
@@ -216,7 +219,7 @@ class GamificationEngine:
             team_level=3,
             mvp_teammate="AI Lead",
             teammates=DEFAULT_TEAMMATES,
-            quests=DEFAULT_QUESTS
+            quests=DEFAULT_QUESTS,
         )
         self._save(state)
         return state
@@ -233,7 +236,7 @@ class GamificationEngine:
         ranked = sorted(
             self.state.teammates.values(),
             key=lambda t: (t.xp, t.cheers_received, t.quests_completed),
-            reverse=True
+            reverse=True,
         )
 
         # Update MVP and team totals
@@ -250,7 +253,7 @@ class GamificationEngine:
             "mvp_teammate": self.state.mvp_teammate,
             "standings": [t.model_dump() for t in ranked],
             "quests": [q.model_dump() for q in self.state.quests],
-            "last_updated": self.state.last_updated
+            "last_updated": self.state.last_updated,
         }
 
     def claim_quest(self, quest_id: str, teammate_name: str) -> Dict[str, Any]:
@@ -269,9 +272,7 @@ class GamificationEngine:
         if not matched_key:
             matched_key = teammate_name
             self.state.teammates[matched_key] = TeammateStats(
-                name=teammate_name,
-                role="Operative",
-                autobot_companion="Orbit Prime 🤖👑"
+                name=teammate_name, role="Operative", autobot_companion="Orbit Prime 🤖👑"
             )
 
         teammate = self.state.teammates[matched_key]
@@ -280,7 +281,7 @@ class GamificationEngine:
         if teammate_name in quest.completed_by:
             return {
                 "success": False,
-                "message": f"Quest '{quest.title}' was already completed by {teammate.name}."
+                "message": f"Quest '{quest.title}' was already completed by {teammate.name}.",
             }
 
         quest.completed_by.append(teammate.name)
@@ -314,7 +315,7 @@ class GamificationEngine:
             "level": teammate.level,
             "level_title": teammate.level_title,
             "leveled_up": leveled_up,
-            "badge": quest.badge
+            "badge": quest.badge,
         }
 
     def cheer_teammate(self, sender: str, receiver_name: str) -> Dict[str, Any]:
@@ -342,13 +343,17 @@ class GamificationEngine:
             "success": True,
             "message": f"🙌 {sender} cheered {receiver.name}! Synergy boosted (+25 XP).",
             "cheers_received": receiver.cheers_received,
-            "receiver_xp": receiver.xp
+            "receiver_xp": receiver.xp,
         }
 
 
 if __name__ == "__main__":
     engine = GamificationEngine()
     board = engine.get_leaderboard()
-    print(f"Team: {board['team_name']} | Total XP: {board['total_team_xp']} | MVP: {board['mvp_teammate']}")
+    print(
+        f"Team: {board['team_name']} | Total XP: {board['total_team_xp']} | MVP: {board['mvp_teammate']}"
+    )
     for idx, s in enumerate(board["standings"], 1):
-        print(f"#{idx} {s['name']} (Lv {s['level']} {s['level_title']}) - {s['xp']} XP | {s['autobot_companion']}")
+        print(
+            f"#{idx} {s['name']} (Lv {s['level']} {s['level_title']}) - {s['xp']} XP | {s['autobot_companion']}"
+        )

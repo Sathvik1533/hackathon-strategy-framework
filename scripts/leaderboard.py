@@ -29,9 +29,15 @@ def show_leaderboard():
     engine = GamificationEngine()
     board = engine.get_leaderboard()
 
-    print(f"\n{CYAN}╔═══════════════════════════════════════════════════════════════════════════════╗{RESET}")
-    print(f"{CYAN}║             🎮 HSF CYBERNETIC ARENA • TEAMMATE LEADERBOARD                    ║{RESET}")
-    print(f"{CYAN}╚═══════════════════════════════════════════════════════════════════════════════╝{RESET}\n")
+    print(
+        f"\n{CYAN}╔═══════════════════════════════════════════════════════════════════════════════╗{RESET}"
+    )
+    print(
+        f"{CYAN}║             🎮 HSF CYBERNETIC ARENA • TEAMMATE LEADERBOARD                    ║{RESET}"
+    )
+    print(
+        f"{CYAN}╚═══════════════════════════════════════════════════════════════════════════════╝{RESET}\n"
+    )
 
     print(
         f"{YELLOW}🏆 Team: {board['team_name']}{RESET}  |  "
@@ -40,17 +46,21 @@ def show_leaderboard():
         f"{CYAN}👑 MVP: {board['mvp_teammate']}{RESET}\n"
     )
 
-    print(f"{BOLD}{'Rank':<5} {'Teammate':<18} {'Level / Title':<26} {'XP':<9} {'Cheers':<8} {'Autobot Companion':<24}{RESET}")
+    print(
+        f"{BOLD}{'Rank':<5} {'Teammate':<18} {'Level / Title':<26} {'XP':<9} {'Cheers':<8} {'Autobot Companion':<24}{RESET}"
+    )
     print(f"{DIM}{'─' * 90}{RESET}")
 
     medals = ["🥇", "🥈", "🥉", " 4.", " 5.", " 6."]
     for idx, s in enumerate(board["standings"]):
-        m = medals[idx] if idx < len(medals) else f" {idx+1}."
+        m = medals[idx] if idx < len(medals) else f" {idx + 1}."
         lvl_str = f"Lv.{s['level']} {s['level_title']}"
         xp_str = f"{s['xp']} XP"
         cheers_str = f"{s['cheers_received']} 🙌"
         color = GREEN if idx == 0 else (CYAN if idx in (1, 2) else RESET)
-        print(f"{color}{m:<5} {s['name']:<18} {lvl_str:<26} {xp_str:<9} {cheers_str:<8} {s['autobot_companion']}{RESET}")
+        print(
+            f"{color}{m:<5} {s['name']:<18} {lvl_str:<26} {xp_str:<9} {cheers_str:<8} {s['autobot_companion']}{RESET}"
+        )
 
     print(f"\n{BOLD}🎯 Active Team Badges & Quests Summary:{RESET}")
     completed_q = sum(1 for q in board["quests"] if q["completed"])
@@ -66,12 +76,18 @@ def show_quests():
 
     print(f"\n{CYAN}🎯 HSF 24-HOUR HACKATHON QUESTS & BOUNTIES{RESET}\n")
     for q in board["quests"]:
-        status = f"{GREEN}✔ COMPLETED{RESET}" if q["completed"] else f"{YELLOW}⏳ ACTIVE BOUNTY{RESET}"
+        status = (
+            f"{GREEN}✔ COMPLETED{RESET}" if q["completed"] else f"{YELLOW}⏳ ACTIVE BOUNTY{RESET}"
+        )
         by = f" {DIM}(by {', '.join(q['completed_by'])}){RESET}" if q["completed_by"] else ""
-        print(f"{BOLD}[{q['id']}]{RESET} {q['title']}  {PURPLE}+{q['xp_reward']} XP{RESET}  {q['badge']}  |  {status}{by}")
+        print(
+            f"{BOLD}[{q['id']}]{RESET} {q['title']}  {PURPLE}+{q['xp_reward']} XP{RESET}  {q['badge']}  |  {status}{by}"
+        )
         print(f"     {DIM}{q['description']}{RESET}\n")
 
-    print(f"{CYAN}Claim bounty via:{RESET} {YELLOW}npx hsf quest claim <quest-id> --teammate \"Your Name\"{RESET}\n")
+    print(
+        f'{CYAN}Claim bounty via:{RESET} {YELLOW}npx hsf quest claim <quest-id> --teammate "Your Name"{RESET}\n'
+    )
 
 
 def claim_quest(quest_id: str, teammate_name: str):
@@ -79,7 +95,9 @@ def claim_quest(quest_id: str, teammate_name: str):
     res = engine.claim_quest(quest_id, teammate_name)
     if res.get("success"):
         print(f"\n{GREEN}🎉 {res['message']}{RESET}")
-        print(f"⭐ XP Awarded: {PURPLE}+{res['xp_awarded']}{RESET} | Total XP: {res['total_xp']} (Level {res['level']} {res['level_title']})")
+        print(
+            f"⭐ XP Awarded: {PURPLE}+{res['xp_awarded']}{RESET} | Total XP: {res['total_xp']} (Level {res['level']} {res['level_title']})"
+        )
         print(f"🎖️ Badge Unlocked: {res['badge']}\n")
     else:
         print(f"\n{YELLOW}ℹ {res.get('message') or res.get('error')}{RESET}\n")
@@ -107,7 +125,9 @@ def main():
     # claim
     claim_p = subparsers.add_parser("claim")
     claim_p.add_argument("quest_id", help="ID of quest (e.g. q-ignition)")
-    claim_p.add_argument("--teammate", default="Lead Architect", help="Teammate name claiming quest")
+    claim_p.add_argument(
+        "--teammate", default="Lead Architect", help="Teammate name claiming quest"
+    )
 
     # cheer
     cheer_p = subparsers.add_parser("cheer")

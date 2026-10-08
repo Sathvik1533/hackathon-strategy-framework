@@ -17,7 +17,6 @@ router = APIRouter()
 engine = GamificationEngine()
 
 
-
 class ClaimQuestRequest(BaseModel):
     quest_id: str = Field(..., description="ID of the quest to claim (e.g., q-ignition)")
     teammate_name: str = Field(..., description="Name of the teammate claiming the quest")
@@ -47,7 +46,9 @@ async def claim_quest(payload: ClaimQuestRequest):
     """Awards XP, badges and levels up a teammate upon quest completion."""
     res = engine.claim_quest(payload.quest_id, payload.teammate_name)
     if not res.get("success"):
-        return ResponseEnvelope(success=False, data=res, message=res.get("message") or res.get("error"))
+        return ResponseEnvelope(
+            success=False, data=res, message=res.get("message") or res.get("error")
+        )
     return ResponseEnvelope(data=res, message=res.get("message"))
 
 

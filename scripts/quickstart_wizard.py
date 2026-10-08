@@ -155,7 +155,9 @@ def check_prerequisites():
                 print(f"  {RED}❌ {name} ({cmd}) is missing! Required for HSF.{RESET}")
                 all_good = False
             else:
-                print(f"  {YELLOW}⚠️  {name} ({cmd}) not detected globally (Optional for local mocks).{RESET}")
+                print(
+                    f"  {YELLOW}⚠️  {name} ({cmd}) not detected globally (Optional for local mocks).{RESET}"
+                )
     return all_good
 
 
@@ -169,9 +171,15 @@ def prompt_user_profile(auto=False, default_role="2"):
         role_choice = default_role
     else:
         # Problem statement
-        prompt_prob = f"{BOLD}Enter your Hackathon Problem Statement{RESET} [Press Enter for default]: "
+        prompt_prob = (
+            f"{BOLD}Enter your Hackathon Problem Statement{RESET} [Press Enter for default]: "
+        )
         problem_input = input(prompt_prob).strip()
-        problem = problem_input if problem_input else "Autonomous Enterprise Multi-Agent Intelligence System"
+        problem = (
+            problem_input
+            if problem_input
+            else "Autonomous Enterprise Multi-Agent Intelligence System"
+        )
 
         # Team size
         prompt_size = f"{BOLD}How many members are in your squad?{RESET} [1-6, default: 5]: "
@@ -205,12 +213,16 @@ def setup_git_branch(branch_name):
     print(f"\n{YELLOW}🌿 [Step 3/5] Setting Up Isolated Git Branch...{RESET}")
     try:
         # Check current branch
-        curr = subprocess.run("git rev-parse --abbrev-ref HEAD", shell=True, capture_output=True, text=True).stdout.strip()
+        curr = subprocess.run(
+            "git rev-parse --abbrev-ref HEAD", shell=True, capture_output=True, text=True
+        ).stdout.strip()
         if curr == branch_name:
             print(f"  {GREEN}✔ Already on branch {branch_name}{RESET}")
         else:
             # Check if branch exists
-            check = subprocess.run(f"git show-ref --verify --quiet refs/heads/{branch_name}", shell=True).returncode
+            check = subprocess.run(
+                f"git show-ref --verify --quiet refs/heads/{branch_name}", shell=True
+            ).returncode
             if check == 0:
                 subprocess.run(f"git checkout {branch_name}", shell=True, check=True)
                 print(f"  {GREEN}✔ Switched to existing branch: {branch_name}{RESET}")
@@ -228,34 +240,34 @@ def generate_teammate_prompt_and_memory(problem, team_size, name, role_info):
 
     # 1. Generate customized AI prompt markdown
     prompt_file = hsf_dir / "my_agent_prompt.md"
-    prompt_content = f"""# 🤖 Hackathon Agent Prompt: {role_info['title']}
+    prompt_content = f"""# 🤖 Hackathon Agent Prompt: {role_info["title"]}
 **Teammate**: {name}  
-**Companion Autobot**: {role_info['robot']}  
+**Companion Autobot**: {role_info["robot"]}  
 **Sprint Problem Statement**: "{problem}"  
-**Assigned Git Branch**: `{role_info['branch']}`  
-**Assigned Layers**: {', '.join(role_info['layers'])}  
+**Assigned Git Branch**: `{role_info["branch"]}`  
+**Assigned Layers**: {", ".join(role_info["layers"])}  
 
 ---
 
 ## 🎯 Your Mission & Architectural Contract
-You are paired with **{role_info['robot']}** in the Hackathon Strategy Framework (HSF).
+You are paired with **{role_info["robot"]}** in the Hackathon Strategy Framework (HSF).
 Your job is to implement production-grade, tested solutions for:
 **{problem}**
 
 ### 📁 Your Primary Files to Edit:
-{chr(10).join(['- `' + f + '`' for f in role_info['files_to_edit']])}
+{chr(10).join(["- `" + f + "`" for f in role_info["files_to_edit"]])}
 
 ### 🚫 DO NOT TOUCH (Zero-Collision Rule):
-{chr(10).join(['- `' + f + '`' for f in role_info['do_not_touch']])}
+{chr(10).join(["- `" + f + "`" for f in role_info["do_not_touch"]])}
 
 ### ⚡ Verification Commands:
-{chr(10).join(['```bash', *role_info['core_commands'], '```'])}
+{chr(10).join(["```bash", *role_info["core_commands"], "```"])}
 
 ---
 
 ## 🧠 Instructions for Your AI IDE (Cursor / Claude Code / Antigravity):
 Copy and paste this prompt to your AI assistant:
-> "I am {name}, acting as {role_info['title']} paired with {role_info['robot']} on branch `{role_info['branch']}`.
+> "I am {name}, acting as {role_info["title"]} paired with {role_info["robot"]} on branch `{role_info["branch"]}`.
 > We are solving: '{problem}'.
 > Strictly respect the zero-collision boundaries. Touch only my assigned files.
 > Implement production patterns with full error handling, Pydantic type safety, and unit tests."
@@ -293,9 +305,13 @@ Copy and paste this prompt to your AI assistant:
 
 
 def print_completion_summary(name, role_info):
-    print(f"\n{GREEN}==============================================================================={RESET}")
+    print(
+        f"\n{GREEN}==============================================================================={RESET}"
+    )
     print(f"{GREEN}🎉 ONBOARDING COMPLETE! YOU ARE READY TO SPRINT IN 60 SECONDS!{RESET}")
-    print(f"{GREEN}==============================================================================={RESET}")
+    print(
+        f"{GREEN}==============================================================================={RESET}"
+    )
     print(f"\n{BOLD}Teammate:{RESET}  {name}")
     print(f"{BOLD}Role:{RESET}      {role_info['title']}")
     print(f"{BOLD}Companion:{RESET} {role_info['robot']}")
@@ -309,21 +325,31 @@ def print_completion_summary(name, role_info):
         print(f"   $ {YELLOW}{c}{RESET}")
 
     print(f"\n{BOLD}🤖 What to do next:{RESET}")
-    print(f"   1. Open {CYAN}.hsf/my_agent_prompt.md{RESET} and paste it into your AI IDE (Antigravity/Cursor/Claude).")
+    print(
+        f"   1. Open {CYAN}.hsf/my_agent_prompt.md{RESET} and paste it into your AI IDE (Antigravity/Cursor/Claude)."
+    )
     print(f"   2. Start developing your feature in branch {CYAN}{role_info['branch']}{RESET}.")
-    print(f"   3. Need advice? Ask Senior Orbit: {YELLOW}python3 scripts/senior_companion.py --ask \"How do I build this?\"{RESET}")
-    print(f"{GREEN}==============================================================================={RESET}\n")
+    print(
+        f'   3. Need advice? Ask Senior Orbit: {YELLOW}python3 scripts/senior_companion.py --ask "How do I build this?"{RESET}'
+    )
+    print(
+        f"{GREEN}==============================================================================={RESET}\n"
+    )
 
 
 def main():
     parser = argparse.ArgumentParser(description="HSF Teammate Quickstart Onboarding Wizard")
     parser.add_argument("--auto", action="store_true", help="Run in non-interactive automatic mode")
-    parser.add_argument("--role", default="2", choices=list(ROLES_MAP.keys()), help="Default role choice (1-6)")
+    parser.add_argument(
+        "--role", default="2", choices=list(ROLES_MAP.keys()), help="Default role choice (1-6)"
+    )
     args = parser.parse_args()
 
     print_banner()
     check_prerequisites()
-    problem, team_size, name, role_info = prompt_user_profile(auto=args.auto, default_role=args.role)
+    problem, team_size, name, role_info = prompt_user_profile(
+        auto=args.auto, default_role=args.role
+    )
     setup_git_branch(role_info["branch"])
     generate_teammate_prompt_and_memory(problem, team_size, name, role_info)
     print_completion_summary(name, role_info)

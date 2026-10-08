@@ -364,6 +364,13 @@ switch (command) {
       const receiver = process.argv.slice(3).join(' ') || 'Backend Lead';
       run(`python3 scripts/leaderboard.py cheer "${receiver.replace(/"/g, '\\"')}"`, 'Sending Teammate Synergy Cheer');
     }
+  case 'mentor':
+  case 'mentoring':
+    banner();
+    {
+      const extraArgs = process.argv.slice(3).map(a => `"${a.replace(/"/g, '\\"')}"`).join(' ');
+      run(`python3 scripts/mentor.py ${extraArgs}`.trim(), 'Activating Dynamic Multi-Agent Mentoring Orchestrator');
+    }
     break;
 
   case 'help':
@@ -371,6 +378,7 @@ switch (command) {
     banner();
     console.log(`
 \x1b[1mAvailable Commands:\x1b[0m
+  \x1b[33mhsf mentor\x1b[0m      - Dynamic multi-agent mentoring orchestrator (Hour 0 to Hour 24 stages)
   \x1b[33mhsf wizard\x1b[0m      - 60-second interactive onboarding wizard (assigns role, branch & Autobot)
   \x1b[33mhsf cheat\x1b[0m       - View teammate pocket cheat sheet (roles, files to edit, test commands)
   \x1b[33mhsf leaderboard\x1b[0m - Cybernetic Arena scoreboard: Teammate XP, levels, Autobots & rankings

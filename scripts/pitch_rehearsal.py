@@ -108,8 +108,12 @@ def print_banner():
 
 def run_rehearsal(speed_multiplier=1.0, test_demo=False):
     print_banner()
-    print(f"{YELLOW}⚡ Rehearsal Mode: {speed_multiplier:.1f}x speed | Total Duration: {6.0 / speed_multiplier:.1f} minutes{RESET}")
-    print(f"{CYAN}Cues will ring terminal bells and print slide talking points in real-time.{RESET}")
+    print(
+        f"{YELLOW}⚡ Rehearsal Mode: {speed_multiplier:.1f}x speed | Total Duration: {6.0 / speed_multiplier:.1f} minutes{RESET}"
+    )
+    print(
+        f"{CYAN}Cues will ring terminal bells and print slide talking points in real-time.{RESET}"
+    )
     input(f"\n{BOLD}Press ENTER to start the stage timer and begin speaking...{RESET}")
 
     total_seconds = int(360 / speed_multiplier)
@@ -133,20 +137,30 @@ def run_rehearsal(speed_multiplier=1.0, test_demo=False):
             sec_data = SECTIONS[current_section_idx]
             sys.stdout.write("\a")  # Terminal bell cue
             sys.stdout.flush()
-            print(f"\n\n{PURPLE}==============================================================================={RESET}")
+            print(
+                f"\n\n{PURPLE}==============================================================================={RESET}"
+            )
             print(f"{BOLD}{GREEN}🔔 [{actual_min:04.1f}m / 6.0m] {sec_data['title']}{RESET}")
-            print(f"{PURPLE}==============================================================================={RESET}")
+            print(
+                f"{PURPLE}==============================================================================={RESET}"
+            )
             print(f"  {BOLD}👤 Speaker:{RESET}  {sec_data['speaker']}")
             print(f"  {BOLD}🖥️  Slide:{RESET}    {CYAN}{sec_data['slide']}{RESET}")
             print(f"\n  {BOLD}🎯 Key Talking Points:{RESET}")
             for tp in sec_data["talking_points"]:
                 print(f"    • {tp}")
-            print(f"{PURPLE}-------------------------------------------------------------------------------{RESET}")
+            print(
+                f"{PURPLE}-------------------------------------------------------------------------------{RESET}"
+            )
 
             if test_demo and current_section_idx == 2:
-                print(f"\n{YELLOW}⚡ [AUTOMATED TEST] Executing pitch/demo.sh to verify live demo timing...{RESET}\n")
+                print(
+                    f"\n{YELLOW}⚡ [AUTOMATED TEST] Executing pitch/demo.sh to verify live demo timing...{RESET}\n"
+                )
                 subprocess.run("bash pitch/demo.sh", shell=True)
-                print(f"\n{GREEN}✔ Live demo simulation finished! Continuing pitch rehearsal...{RESET}\n")
+                print(
+                    f"\n{GREEN}✔ Live demo simulation finished! Continuing pitch rehearsal...{RESET}\n"
+                )
 
         # Countdown tick
         remaining_sec = total_seconds - elapsed_sec
@@ -158,20 +172,32 @@ def run_rehearsal(speed_multiplier=1.0, test_demo=False):
 
         time.sleep(1.0 / speed_multiplier)
 
-    print(f"\n\n{GREEN}==============================================================================={RESET}")
+    print(
+        f"\n\n{GREEN}==============================================================================={RESET}"
+    )
     print(f"{GREEN}🎉 TIME'S UP! 6-MINUTE STAGE REHEARSAL COMPLETE!{RESET}")
-    print(f"{GREEN}==============================================================================={RESET}")
+    print(
+        f"{GREEN}==============================================================================={RESET}"
+    )
     print("  ✔ Both speakers maintained pacing within the 6-minute hard limit.")
     print("  ✔ Live demo was allocated 90 seconds without running out of time.")
     print("  ✔ Ready to present on stage with total confidence!")
-    print(f"{GREEN}==============================================================================={RESET}\n")
+    print(
+        f"{GREEN}==============================================================================={RESET}\n"
+    )
 
 
 def main():
     parser = argparse.ArgumentParser(description="HSF Live Pitch Rehearsal Simulator")
-    parser.add_argument("--quick", action="store_true", help="Speed run (60 seconds total, 6x speed)")
-    parser.add_argument("--speed", type=float, default=1.0, help="Custom speed multiplier (e.g. 2.0)")
-    parser.add_argument("--test-demo", action="store_true", help="Automatically trigger demo.sh during demo phase")
+    parser.add_argument(
+        "--quick", action="store_true", help="Speed run (60 seconds total, 6x speed)"
+    )
+    parser.add_argument(
+        "--speed", type=float, default=1.0, help="Custom speed multiplier (e.g. 2.0)"
+    )
+    parser.add_argument(
+        "--test-demo", action="store_true", help="Automatically trigger demo.sh during demo phase"
+    )
     args = parser.parse_args()
 
     multiplier = 6.0 if args.quick else args.speed

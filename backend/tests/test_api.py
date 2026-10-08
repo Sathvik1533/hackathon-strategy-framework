@@ -449,6 +449,48 @@ async def test_gamification_endpoints(async_client):
 
 
 @pytest.mark.asyncio
+async def test_dynamic_mentoring_endpoints(async_client):
+    # 1. List stages
+    res_stages = await async_client.get("/api/v1/mentor/stages")
+    assert res_stages.status_code == 200
+    stages_data = res_stages.json()
+    assert stages_data["success"] is True
+    assert len(stages_data["data"]) == 6
+
+    # 2. List roles
+    res_roles = await async_client.get("/api/v1/mentor/roles")
+    assert res_roles.status_code == 200
+    roles_data = res_roles.json()
+    assert roles_data["success"] is True
+    assert len(roles_data["data"]) == 5
+
+    # 3. Orchestrate consultation
+    res_orch = await async_client.post(
+        "/api/v1/mentor/orchestrate",
+        json={
+            "teammate_name": "Sathvik",
+            "role": "Backend Lead",
+            "stage": "hour_12",
+            "problem_statement": "Fintech Real-Time Fraud Sentinel",
+            "current_blocker": "Testing circuit breaker trip threshold",
+        },
+    )
+    assert res_orch.status_code == 200
+    data = res_orch.json()["data"]
+    assert data["teammate_name"] == "Sathvik"
+    assert data["role"] == "Backend Lead"
+    assert data["companion"]["autobot"] == "Ironhide"
+    assert "persona_advice" in data
+    assert "Ironhide" in data["persona_advice"]["agent_name"]
+    assert "architecture_supervisor" in data
+    assert "peer_synergy_agent" in data
+    assert "action_dispatcher" in data
+    assert len(data["recommended_commands"]) > 0
+    assert data["xp_bounty_available"] == 250
+    assert data["quest_id"] == "q-neural-strike"
+
+
+@pytest.mark.asyncio
 async def test_teammate_pocket_cheat_sheet_integrity():
     from pathlib import Path
 
@@ -462,6 +504,3 @@ async def test_teammate_pocket_cheat_sheet_integrity():
     assert "Database & Vector Search Lead" in content
     assert "Cloud DevOps & Stage Pitch Lead" in content
     assert "Zero-Conflict Git Protocol" in content
-
-
-
